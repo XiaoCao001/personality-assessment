@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Claude Long Running Features",
+  "type": "object",
+  "required": [
+    "projectName",
+    "description",
+    "createdAt",
+    "updatedAt",
+    "features"
+  ],
+  "properties": {
+    "projectName": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "priority",
+          "status",
+          "acceptanceCriteria"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^F[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "acceptanceCriteria": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": [
+                "object",
+                "string"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "unknown",
+                    "pass",
+                    "fail"
+                  ]
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "testPlan": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_progress",
+              "ready_for_eval",
+              "needs_work",
+              "completed",
+              "blocked"
+            ]
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "attempts": {
+            "type": "array"
+          },
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "completedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "blockedReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

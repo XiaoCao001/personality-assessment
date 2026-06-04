@@ -1,0 +1,15 @@
+=== F001 Data Preparation Commands ===
+
+1. python scripts/prepare_data.py
+   - Main data extraction and standardisation script
+   - Output: PASS, all checks passed
+
+2. python scripts/validate_data.py
+   - Standalone validation of output files
+   - Output: All validations passed
+
+3. Acceptance criteria checks:
+   - AC001: Y matrix (2749, 100), range [1, 5], no NaN — PASS
+   - AC002: E_old matrix (100, 1024), L2 normalised — PASS
+   - AC003: 5 traits × 20 items each, 50/50 forward/reverse — PASS
+   - AC004: All files loadable via numpy.load / pandas.read_parquet — PASS

@@ -1,0 +1,19 @@
+# F003 Commands Log
+
+## Smoke test
+$ cd /workspace/questionnaire-embeddings && python scripts/cv_framework.py
+Exit: 0
+Output: ALL CHECKS PASSED (7/7 steps)
+
+## Unit tests
+$ cd /workspace/questionnaire-embeddings && python scripts/test_cv_framework.py
+Exit: 0
+Output: 112/112 passed, 0/112 failed
+
+## Acceptance criteria verification
+$ cd /workspace/questionnaire-embeddings && python -c "
+from cv_framework import participant_cv_split, compute_trait_scores, reverse_score
+...
+"
+Exit: 0
+Output: All acceptance criteria met.

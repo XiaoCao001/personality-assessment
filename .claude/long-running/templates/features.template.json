@@ -1,0 +1,43 @@
+{
+  "projectName": "Example Project",
+  "description": "Replace with your project description.",
+  "version": "2.0.0",
+  "createdAt": "2026-05-29T00:00:00-03:00",
+  "updatedAt": "2026-05-29T00:00:00-03:00",
+  "features": [
+    {
+      "id": "F001",
+      "title": "First small feature",
+      "category": "functional",
+      "description": "Describe one feature that can fit in one session.",
+      "priority": "high",
+      "dependsOn": [],
+      "steps": [
+        "Step 1",
+        "Step 2"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AC001",
+          "text": "Concrete behavior is verifiable.",
+          "status": "unknown",
+          "evidence": []
+        }
+      ],
+      "testPlan": [
+        "Run scripts/check.sh or project-specific tests."
+      ],
+      "status": "pending",
+      "evidence": {
+        "directory": ".claude/long-running/evidence/F001",
+        "testCommand": null,
+        "testOutputFile": null,
+        "evaluatorReport": null
+      },
+      "attempts": [],
+      "createdAt": "2026-05-29T00:00:00-03:00",
+      "updatedAt": "2026-05-29T00:00:00-03:00",
+      "completedAt": null
+    }
+  ]
+}

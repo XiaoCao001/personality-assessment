@@ -1,0 +1,39 @@
+{
+  "featureId": "F002",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "10-fold item CV 运行无错误，覆盖全部 2749 名被试",
+      "status": "pass",
+      "evidence": ["test-output.txt shows all 10 folds completed; CSV has 2749 rows"],
+      "notes": "2 subjects have NaN r due to constant predictions — explicitly handled, not an error."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "Mean item-level Pearson r 在 .40–.50 范围内",
+      "status": "pass",
+      "evidence": ["test-output.txt: Mean r = 0.4628, 95% CI [0.4571, 0.4686]"],
+      "notes": "Within [0.40, 0.50]. Slight deviation from original 0.453 due to numpy vs pandas."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "结果保存到 results/baseline/original_10fold_itemcv_results.csv",
+      "status": "pass",
+      "evidence": ["results/baseline/original_10fold_itemcv_results.csv exists, 2749 rows"],
+      "notes": ""
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "输出包含 per-participant r 值和汇总统计量",
+      "status": "pass",
+      "evidence": ["CSV has subject_id, pearson_r, p_value, mae; summary in test-output.txt"],
+      "notes": "Summary includes mean, 95% CI, t-statistic, p-value, MAE."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "2 subjects NaN r due to constant predictions — known edge case",
+    "Mean r 0.4628 slightly higher than paper's 0.453, within acceptable margin"
+  ]
+}

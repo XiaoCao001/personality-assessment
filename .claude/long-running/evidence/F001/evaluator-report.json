@@ -1,0 +1,38 @@
+{
+  "featureId": "F001",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "Y 矩阵形状为 (2749, 100)，值域 [1,5]，无缺失值",
+      "status": "pass",
+      "evidence": ["data/processed/Y.npy verified: shape (2749,100), min=1.0, max=5.0, NaN=0", "validate_data.py lines 48-59 PASS"],
+      "notes": ""
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "E_old 矩阵形状为 (100, d)，d≥384，已 L2 normalize",
+      "status": "pass",
+      "evidence": ["data/processed/E_old.npy verified: shape (100,1024), L2 norms within 1e-5 of 1.0", "validate_data.py lines 62-74 PASS"],
+      "notes": ""
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "trait_id 包含 5 个维度各 20 题，reverse_id 正反比合理",
+      "status": "pass",
+      "evidence": ["metadata.parquet: O=20, C=20, E=20, A=20, N=20; reverse_id 50/50", "validate_data.py lines 78-87 PASS"],
+      "notes": ""
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "所有输出文件可通过 numpy.load / pandas.read_parquet 读取",
+      "status": "pass",
+      "evidence": ["Y.npy, E_old.npy loaded via numpy.load", "metadata.parquet loaded via pandas.read_parquet", "subject_ids.txt loadable", "validate_data.py file existence checks PASS"],
+      "notes": ""
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "prepare_data.py hardcodes expected dimensions; data drift could be masked."
+  ]
+}

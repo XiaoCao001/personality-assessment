@@ -1,0 +1,443 @@
+diff --git a/CLAUDE.md b/CLAUDE.md
+new file mode 100644
+index 0000000..3a68586
+--- /dev/null
++++ b/CLAUDE.md
+@@ -0,0 +1,69 @@
++# CLAUDE.md
++
++This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
++
++## Project overview
++
++Research codebase for the paper "A Deep Language Approach to Personality Assessment: Generalizing Across Items and Expanding the Reach of Survey-Based Research." The project uses text embeddings (Sentence-BERT, Word2Vec, LIWC) of personality questionnaire items to predict individual participant responses, and compares model performance against human raters.
++
++## Environment setup
++
++```bash
++conda env create --file questionnaire.yaml
++conda activate questionnaire
++```
++
++Key dependencies: pandas, numpy, scikit-learn, scipy, matplotlib, seaborn, statsmodels, sentence-transformers (for S-BERT extraction), tensorflow-hub.
++
++## Architecture
++
++### Data flow
++
++1. **Extract embeddings** (`scripts/extract_questions_embeddings.ipynb`): Questionnaire item texts → Sentence-BERT embeddings (using `roberta-large-nli-stsb-mean-tokens`), saved as CSVs to `embeddings/{DATASET}/`.
++2. **Train models** (`scripts/Study1.ipynb` through `Study4.ipynb`): Embeddings → 10-fold cross-validation over questions → per-user Ridge/KNN/SVC/KnnReg prediction → results saved to `results/{DATASET}/nonReversed/`.
++3. **Human comparison** (within Study notebooks): Model predictions compared against human raters from Qualtrics experiments (data in `human_studies/`).
++
++### Core module: `scripts/functions.py`
++
++All notebooks import from this shared module. It provides:
++
++- **Data loading**: `chooseData(dataset)`, `chooseEmb(type)`, `getResponses(folder, data, R)` — load questionnaire embeddings and response matrices from `embeddings/`.
++- **Model selection**: `predModel(nr, par)` — returns model by numeric code: 0=Ridge, 1=RidgeClassifier, 2=KNN, 3=SVC, 4=KNNRegressor.
++- **Cross-validation**: `compareModels()`, `modelPerformance()` — 10-fold CV over questions, training per-user. `compareModelsConstructs()`, `compareModelsKey()` — construct/key direction prediction variants.
++- **Evaluation**: `corrUserBased(x, y)` — per-user Pearson correlation (primary metric), returns mean correlation, CI, p-value. `accuracy_constr()`, `accuracy_keys()` — classification accuracy for construct/key tasks.
++- **Human comparison**: `regCorr()`, `predictionPerformance()`, `welch_t_test()` — compare model vs. human rater correlations.
++
++### Data directory conventions
++
++`embeddings/{DATASET}/` contains:
++- `{dataset}_questions_text.csv` — item texts with construct labels and keying/encoding directions
++- `{dataset}_questions_embeddings_{TYPE}.csv` — embeddings (SENTENCEBERT, WORD2VEC, or LIWC)
++- `{dataset}_responses.csv` — raw participant responses (reversed-coded)
++- `{dataset}_responses_nonReversed.csv` — non-reversed responses
++
++`results/{DATASET}/nonReversed/` contains prediction outputs named `{ModelName}_{param}_{EmbeddingType}_{task}.csv`.
++
++### Datasets
++
++BIG5 (NEO-PI-R), IPIP (full), IPIP2 (assigned items only), RIASEC, HSQ, 16PF.
++
++### Embedding types
++
++SENTENCEBERT (primary), WORD2VEC (baseline), LIWC (baseline). The best-performing model across studies is typically **KNN Regressor (k=5) with Sentence-BERT embeddings**.
++
++### Fixed parameters
++
++- Random state: `0` throughout for reproducibility
++- 10-fold CV over questions, shuffled
++- PCA retaining 90% variance applied before training
++- StandardScaler applied to embeddings before PCA
++- Response scale clamped to 1–5 after prediction
++
++## Running the notebooks
++
++Execute notebooks in `scripts/` in order (extract embeddings first, then Study1–Study4). All paths are relative to the `scripts/` directory. The `compareModels(verbose=1)` call in Study1 runs a full grid search over all model × embedding × parameter combinations (takes significant time).
++
++## Plotting
++
++Aggregated performance data is cached in `plot_data/` as CSVs. Plots are saved to `plot_data/` as PDF/TIFF/SVG.
++
+diff --git a/data/processed/E_old.npy b/data/processed/E_old.npy
+new file mode 100644
+index 0000000..f1265e6
+Binary files /dev/null and b/data/processed/E_old.npy differ
+diff --git a/data/processed/Y.npy b/data/processed/Y.npy
+new file mode 100644
+index 0000000..dea56fd
+Binary files /dev/null and b/data/processed/Y.npy differ
+diff --git a/data/processed/metadata.parquet b/data/processed/metadata.parquet
+new file mode 100644
+index 0000000..c133998
+Binary files /dev/null and b/data/processed/metadata.parquet differ
+diff --git a/scripts/prepare_data.py b/scripts/prepare_data.py
+new file mode 100644
+index 0000000..c66965c
+--- /dev/null
++++ b/scripts/prepare_data.py
+@@ -0,0 +1,278 @@
++#!/usr/bin/env python3
++"""
++F001: Data preparation and matrix standardisation.
++
++Extract and standardise Y matrix (2749x100), E_old SBERT embedding (100xd),
++item_text, trait_id, and reverse_id from the BIG5 dataset CSV files.
++Output .npy and .parquet files to data/processed/.
++
++Usage:
++    python scripts/prepare_data.py
++"""
++
++import os
++import sys
++from pathlib import Path
++
++import numpy as np
++import pandas as pd
++
++# Project root is parent of scripts/
++PROJECT_ROOT = Path(__file__).resolve().parent.parent
++DATA_SRC = PROJECT_ROOT / "embeddings" / "BIG5"
++DATA_OUT = PROJECT_ROOT / "data" / "processed"
++
++# Expected dimensions
++EXPECTED_N_ITEMS = 100
++EXPECTED_N_SUBJECTS = 2749
++
++
++def ensure_output_dir():
++    """Create output directory if it does not exist."""
++    DATA_OUT.mkdir(parents=True, exist_ok=True)
++    print(f"[OK] Output directory: {DATA_OUT}")
++
++
++def load_questions_text():
++    """
++    Load item metadata from big5_questions_text.csv.
++
++    Returns
++    -------
++    qt : pd.DataFrame  (100 x 5)
++        Columns: question-id(index), item, grammartical_item, construct, encoding
++    """
++    fp = DATA_SRC / "big5_questions_text.csv"
++    qt = pd.read_csv(fp, index_col=0)
++    print(f"[OK] Loaded questions_text: {qt.shape[0]} items, columns={list(qt.columns)}")
++    return qt
++
++
++def load_responses():
++    """
++    Load raw participant responses from big5_responses.csv.
++
++    The CSV has 100 rows (items) x 2751 columns (question-id, item, 2749 subjects).
++    We transpose to get a (2749 x 100) subject-by-item matrix Y.
++
++    Returns
++    -------
++    Y : np.ndarray  (2749, 100)  dtype=float32
++        Raw 1-5 responses, NO reverse scoring applied.
++    subject_ids : list[str]
++        Hashed subject identifiers (column headers from CSV).
++    item_ids : list[str]
++        Item identifiers q1..q100 (row labels from CSV).
++    """
++    fp = DATA_SRC / "big5_responses.csv"
++    df = pd.read_csv(fp, index_col=0)
++
++    # Drop the 'item' text column — keep only numeric response columns
++    if "item" in df.columns:
++        df = df.drop(columns=["item"])
++
++    item_ids = list(df.index)  # q1..q100
++    subject_ids = list(df.columns)  # hashed subject IDs
++
++    # Transpose: items (rows) -> subjects (rows)
++    Y = df.values.T.astype(np.float32)
++
++    print(f"[OK] Loaded responses: Y shape={Y.shape}, "
++          f"value range=[{Y.min():.0f}, {Y.max():.0f}]")
++    return Y, subject_ids, item_ids
++
++
++def load_sbert_embeddings(item_ids):
++    """
++    Load original SBERT embeddings and L2-normalise each row.
++
++    Parameters
++    ----------
++    item_ids : list[str]
++        Expected item order q1..q100.
++
++    Returns
++    -------
++    E_old : np.ndarray  (100, d)  dtype=float32, L2-normalised.
++    """
++    fp = DATA_SRC / "big5_questions_embeddings_SENTENCEBERT.csv"
++    df = pd.read_csv(fp, index_col=0)
++
++    # Ensure item order matches
++    df = df.loc[item_ids]
++    E = df.values.astype(np.float32)
++
++    # L2 normalise each row
++    norms = np.linalg.norm(E, axis=1, keepdims=True)
++    if np.any(norms == 0):
++        raise ValueError("Zero-norm embedding row detected — cannot L2-normalise.")
++    E_norm = E / norms
++
++    print(f"[OK] Loaded SBERT embeddings: shape={E_norm.shape}, "
++          f"L2 norms min={norms.min():.6f} max={norms.max():.6f}")
++    return E_norm
++
++
++def build_metadata(qt):
++    """
++    Build metadata arrays from questions_text.
++
++    Parameters
++    ----------
++    qt : pd.DataFrame
++        Questions text with 'construct' and 'encoding' columns.
++
++    Returns
++    -------
++    metadata : pd.DataFrame  (100 x 4)
++        Columns: item_text, trait_id, reverse_id, question_id
++    """
++    metadata = pd.DataFrame(index=qt.index)
++    metadata["question_id"] = qt.index.tolist()
++    metadata["item_text"] = qt["item"].values
++    metadata["trait_id"] = qt["construct"].values  # O, C, E, A, N
++    metadata["reverse_id"] = (qt["encoding"] == -1).astype(int).values  # 1 if reverse, 0 if forward
++
++    print(f"[OK] Built metadata: {len(metadata)} items, "
++          f"traits={metadata['trait_id'].value_counts().to_dict()}, "
++          f"reverse ratio={metadata['reverse_id'].mean():.2f}")
++    return metadata
++
++
++def validate(Y, E_old, metadata):
++    """
++    Run integrity checks and print a data report.
++
++    Returns
++    -------
++    passed : bool
++    """
++    all_ok = True
++
++    # --- Y matrix ---
++    print("\n--- Y matrix validation ---")
++    if Y.shape != (EXPECTED_N_SUBJECTS, EXPECTED_N_ITEMS):
++        print(f"[FAIL] Y shape is {Y.shape}, expected ({EXPECTED_N_SUBJECTS}, {EXPECTED_N_ITEMS})")
++        all_ok = False
++    else:
++        print(f"[PASS] Y shape = {Y.shape} ✓")
++
++    if np.any(np.isnan(Y)):
++        print("[FAIL] Y contains NaN values")
++        all_ok = False
++    else:
++        print("[PASS] No missing values ✓")
++
++    y_min, y_max = Y.min(), Y.max()
++    if y_min < 1 or y_max > 5:
++        print(f"[FAIL] Y value range [{y_min}, {y_max}] outside [1, 5]")
++        all_ok = False
++    else:
++        print(f"[PASS] Y value range = [{y_min:.0f}, {y_max:.0f}] ✓")
++
++    # --- E_old matrix ---
++    print("\n--- E_old matrix validation ---")
++    if E_old.shape[0] != EXPECTED_N_ITEMS:
++        print(f"[FAIL] E_old has {E_old.shape[0]} rows, expected {EXPECTED_N_ITEMS}")
++        all_ok = False
++    else:
++        print(f"[PASS] E_old rows = {E_old.shape[0]} ✓")
++
++    d = E_old.shape[1]
++    if d < 384:
++        print(f"[FAIL] E_old dimension d={d} < 384")
++        all_ok = False
++    else:
++        print(f"[PASS] E_old dimension d={d} ✓")
++
++    # Check L2 normalisation
++    norms = np.linalg.norm(E_old, axis=1)
++    if not np.allclose(norms, 1.0, atol=1e-5):
++        print(f"[FAIL] E_old not L2-normalised: norm range [{norms.min():.6f}, {norms.max():.6f}]")
++        all_ok = False
++    else:
++        print(f"[PASS] E_old L2 norms ≈ 1.0 (tolerance 1e-5) ✓")
++
++    # --- Metadata ---
++    print("\n--- Metadata validation ---")
++    trait_counts = metadata["trait_id"].value_counts()
++    expected_traits = {"O", "C", "E", "A", "N"}
++    actual_traits = set(trait_counts.index)
++    if actual_traits != expected_traits:
++        print(f"[FAIL] trait_id set {actual_traits} != expected {expected_traits}")
++        all_ok = False
++    else:
++        all_twenty = all(v == 20 for v in trait_counts.values)
++        if all_twenty:
++            print(f"[PASS] 5 traits × 20 items each ✓")
++        else:
++            print(f"[FAIL] Trait distribution: {trait_counts.to_dict()}")
++            all_ok = False
++
++    n_reverse = metadata["reverse_id"].sum()
++    n_forward = len(metadata) - n_reverse
++    print(f"[INFO] Forward: {n_forward}, Reverse: {n_reverse} (ratio={n_reverse / len(metadata):.2f})")
++
++    # --- Cross-consistency ---
++    print("\n--- Cross-consistency ---")
++    if len(metadata) == Y.shape[1] == E_old.shape[0]:
++        print("[PASS] All sources agree on n_items=100 ✓")
++    else:
++        print(f"[FAIL] Item count mismatch: metadata={len(metadata)}, Y_cols={Y.shape[1]}, E_rows={E_old.shape[0]}")
++        all_ok = False
++
++    return all_ok
++
++
++def save_outputs(Y, E_old, metadata):
++    """
++    Save Y, E_old as .npy and metadata as .parquet.
++    """
++    np.save(DATA_OUT / "Y.npy", Y)
++    print(f"[OK] Saved Y.npy  ({Y.shape}, {Y.dtype})")
++
++    np.save(DATA_OUT / "E_old.npy", E_old)
++    print(f"[OK] Saved E_old.npy  ({E_old.shape}, {E_old.dtype})")
++
++    metadata.to_parquet(DATA_OUT / "metadata.parquet", index=True)
++    print(f"[OK] Saved metadata.parquet  ({len(metadata)} rows × {len(metadata.columns)} cols)")
++
++
++def main():
++    print("=" * 60)
++    print("F001: Data Preparation & Matrix Standardisation")
++    print("=" * 60)
++
++    ensure_output_dir()
++
++    # 1. Load item metadata
++    qt = load_questions_text()
++
++    # 2. Build Y matrix [2749, 100]
++    Y, subject_ids, item_ids = load_responses()
++
++    # 3. Build E_old matrix [100, d], L2-normalised
++    E_old = load_sbert_embeddings(item_ids)
++
++    # 4. Build metadata table
++    metadata = build_metadata(qt)
++
++    # 5. Validate
++    passed = validate(Y, E_old, metadata)
++
++    # 6. Save
++    if passed:
++        save_outputs(Y, E_old, metadata)
++        print("\n" + "=" * 60)
++        print("F001 COMPLETE — all checks passed.")
++        print("=" * 60)
++        return 0
++    else:
++        print("\n" + "=" * 60)
++        print("F001 FAILED validation. See [FAIL] messages above.")
++        print("=" * 60)
++        return 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/scripts/validate_data.py b/scripts/validate_data.py
+new file mode 100644
+index 0000000..0f6c342
+--- /dev/null
++++ b/scripts/validate_data.py
+@@ -0,0 +1,66 @@
++#!/usr/bin/env python3
++"""
++Validation script for F001 outputs.
++
++Checks that Y.npy, E_old.npy, and metadata.parquet exist and are valid.
++
++Usage:
++    python scripts/validate_data.py
++"""
++
++import sys
++from pathlib import Path
++
++import numpy as np
++import pandas as pd
++
++PROJECT_ROOT = Path(__file__).resolve().parent.parent
++DATA_DIR = PROJECT_ROOT / "data" / "processed"
++
++
++def main():
++    errors = []
++
++    # Check files exist
++    for fname in ["Y.npy", "E_old.npy", "metadata.parquet"]:
++        fp = DATA_DIR / fname
++        if not fp.exists():
++            errors.append(f"Missing file: {fp}")
++            print(f"[FAIL] {fp} not found")
++
++    if errors:
++        print("\n".join(errors))
++        return 1
++
++    # Load and validate Y
++    Y = np.load(DATA_DIR / "Y.npy")
++    print(f"Y.npy: shape={Y.shape}, dtype={Y.dtype}, range=[{Y.min():.0f}, {Y.max():.0f}]")
++    assert Y.shape == (2749, 100), f"Y shape {Y.shape} != (2749, 100)"
++    assert Y.min() >= 1 and Y.max() <= 5, "Y values out of [1,5]"
++    assert not np.any(np.isnan(Y)), "Y contains NaN"
++    print("[PASS] Y matrix ✓")
++
++    # Load and validate E_old
++    E = np.load(DATA_DIR / "E_old.npy")
++    print(f"E_old.npy: shape={E.shape}, dtype={E.dtype}")
++    assert E.shape[0] == 100, f"E_old rows {E.shape[0]} != 100"
++    assert E.shape[1] >= 384, f"E_old dim {E.shape[1]} < 384"
++    norms = np.linalg.norm(E, axis=1)
++    assert np.allclose(norms, 1.0, atol=1e-5), f"L2 norms not 1.0: range [{norms.min():.6f}, {norms.max():.6f}]"
++    print("[PASS] E_old matrix ✓")
++
++    # Load and validate metadata
++    meta = pd.read_parquet(DATA_DIR / "metadata.parquet")
++    print(f"metadata.parquet: shape={meta.shape}, columns={list(meta.columns)}")
++    assert len(meta) == 100, f"metadata rows {len(meta)} != 100"
++    assert set(meta["trait_id"].unique()) == {"O", "C", "E", "A", "N"}, "Unexpected traits"
++    trait_counts = meta["trait_id"].value_counts()
++    assert all(v == 20 for v in trait_counts.values), f"Uneven trait distribution: {trait_counts.to_dict()}"
++    print("[PASS] Metadata ✓")
++
++    print("\nAll validations passed.")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())

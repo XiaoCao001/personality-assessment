@@ -1,0 +1,33 @@
+[PASS] File exists: Y.npy ✓
+[PASS] File exists: E_old.npy ✓
+[PASS] File exists: metadata.parquet ✓
+[PASS] File exists: subject_ids.txt ✓
+
+--- Y.npy ---
+  shape=(2749, 100), dtype=float32, range=[1, 5]
+[PASS] Y shape = (2749, 100) ✓
+[PASS] Y values in [1, 5] ✓
+[PASS] No NaN values ✓
+
+--- E_old.npy ---
+  shape=(100, 1024), dtype=float32
+[PASS] E_old rows = 100 ✓
+[PASS] E_old dimension d=1024 ✓
+[PASS] L2 norms ≈ 1.0 (range [0.999999, 1.000001]) ✓
+
+--- metadata.parquet ---
+  shape=(100, 4), columns=['question_id', 'item_text', 'trait_id', 'reverse_id']
+[PASS] metadata rows = 100 ✓
+[PASS] All 5 traits present ✓
+[PASS] 5 traits × 20 items each ✓
+
+--- subject_ids.txt ---
+[PASS] subject count = 2749 ✓
+[PASS] All subject IDs unique ✓
+
+--- Cross-consistency ---
+[PASS] subject_ids (2749) == Y rows (2749) ✓
+[PASS] 100 items = 100 Y cols = 100 E rows ✓
+
+========================================
+All validations PASSED.

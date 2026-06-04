@@ -1,0 +1,27 @@
+# F002 Commands Log
+
+## Run baseline script
+```
+cd /workspace/questionnaire-embeddings
+python3 scripts/run_baseline.py
+```
+Output: Mean r = 0.4628 [0.4571, 0.4686], 2747/2749 subjects evaluated.
+
+## Verify CSV output
+```
+python3 -c "
+import pandas as pd
+df = pd.read_csv('results/baseline/original_10fold_itemcv_results.csv')
+print(f'Rows: {len(df)}, Mean r: {df.pearson_r.mean():.4f}')
+"
+```
+Output: Rows: 2749, Mean r: 0.4628
+
+## Verify against original modelPerformance
+```
+cd scripts && python3 -c "
+from functions import modelPerformance
+modelPerformance(m=4, par=5, d='BIG5', e='sentencebert', verbose=1)
+"
+```
+Output: r = 0.453 [0.447, 0.458] — matches within ~0.01

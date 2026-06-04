@@ -1,0 +1,154 @@
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/root/miniconda3/lib/python3.10/site-packages/numpy/core/_methods.py:206: RuntimeWarning: Degrees of freedom <= 0 for slice
+  ret = _var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/root/miniconda3/lib/python3.10/site-packages/numpy/core/_methods.py:198: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+============================================================
+F003: cv_framework — Unit Tests
+============================================================
+
+--- AC001: participant_cv_split ---
+  [PASS] Returns 5 folds (got 5)
+  [PASS] Fold 0: train ratio = 0.7999 (expected ~0.8)
+  [PASS] Fold 0: no train/test overlap
+  [PASS] Fold 1: train ratio = 0.7999 (expected ~0.8)
+  [PASS] Fold 1: no train/test overlap
+  [PASS] Fold 2: train ratio = 0.7999 (expected ~0.8)
+  [PASS] Fold 2: no train/test overlap
+  [PASS] Fold 3: train ratio = 0.7999 (expected ~0.8)
+  [PASS] Fold 3: no train/test overlap
+  [PASS] Fold 4: train ratio = 0.8003 (expected ~0.8)
+  [PASS] Fold 4: no train/test overlap
+  [PASS] All 2749 subjects covered exactly once (got 2749)
+  [PASS] Fold 0: train indices deterministic
+  [PASS] Fold 0: test indices deterministic
+  [PASS] Fold 1: train indices deterministic
+  [PASS] Fold 1: test indices deterministic
+  [PASS] Fold 2: train indices deterministic
+  [PASS] Fold 2: test indices deterministic
+  [PASS] Fold 3: train indices deterministic
+  [PASS] Fold 3: test indices deterministic
+  [PASS] Fold 4: train indices deterministic
+  [PASS] Fold 4: test indices deterministic
+  [PASS] Different seeds produce different splits
+  [PASS] Works with n_subjects=10
+  [PASS] Works with n_folds=2
+  [PASS] 2-fold gives ~50/50 split
+
+--- inner_validation_split ---
+  [PASS] All indices preserved
+  [PASS] Val ratio ~0.2 (got 0.200)
+  [PASS] No overlap between train_inner and valid_inner
+  [PASS] Deterministic output
+  [PASS] val_ratio=0 gives 1 validation subject
+
+--- AC002: reverse_score ---
+  [PASS] Forward items unchanged
+  [PASS] Reverse items: score = 6 - y
+  [PASS] Reverse item 2 correct
+  [PASS] Forward item 3 unchanged
+  [PASS] Input not mutated
+  [PASS] Double reverse = identity
+  [PASS] Real data: forward items unchanged by reverse_score
+  [PASS] Real data: Y + unrev(Y) ≈ 6 on reverse items (max dev: 0.0000)
+
+--- AC003: compute_trait_scores ---
+  [PASS] Shape (2, 5) — got (2, 5)
+  [PASS] Subject 0 trait scores correct
+  [PASS] Subject 1 trait scores correct
+  [PASS] Multi-item trait means correct
+  [PASS] Single subject shape (1, 5)
+  [PASS] Missing trait (N) is NaN
+  [PASS] Present trait (O) is not NaN
+  [PASS] NaN item makes that trait NaN for that subject
+  [PASS] Other traits (C) unaffected by NaN in O
+  [PASS] Real data shape (2749, 5): got (2749, 5)
+  [PASS] Real data: no NaN trait scores
+  [PASS] Real data: trait scores in [1, 5] (got [1.00, 5.00])
+
+--- compute_profile_correlation ---
+  [PASS] Perfect correlation (shifted): r=1.0000
+  [PASS] Near-zero correlation: r=-0.0959
+  [PASS] Insufficient valid traits → NaN per_subject
+  [PASS] Mean NaN when no valid subjects
+
+--- simulate_real_testing ---
+  [PASS] y_observed: S items are non-NaN
+  [PASS] y_observed: non-S items are NaN
+  [PASS] y_held_out: S items are NaN
+  [PASS] y_held_out: non-S items are non-NaN
+  [PASS] Input y_test not mutated
+
+--- AC004: evaluate_predictions output format ---
+  [PASS] Top-level key 'item_level' present
+  [PASS] Top-level key 'trait_level' present
+  [PASS] Top-level key 'profile_correlation' present
+  [PASS] item_level key 'pearson_r' present
+  [PASS] item_level key 'mae' present
+  [PASS] item_level key 'rmse' present
+  [PASS] item_level key 'rounded_accuracy' present
+  [PASS] item_level key 'per_subject_r' present
+  [PASS] pearson_r is 3-tuple (mean, ci_low, ci_high)
+  [PASS] mae is 3-tuple (mean, ci_low, ci_high)
+  [PASS] rmse is 3-tuple (mean, ci_low, ci_high)
+  [PASS] rounded_accuracy is 3-tuple (mean, ci_low, ci_high)
+  [PASS] per_subject_r has 50 entries
+  [PASS] trait_level key 'per_trait_r' present
+  [PASS] trait_level key 'per_trait_mae' present
+  [PASS] trait_level key 'per_trait_rmse' present
+  [PASS] trait_level key 'mean_big5_r' present
+  [PASS] trait_level key 'trait_scores_true' present
+  [PASS] trait_level key 'trait_scores_short_form' present
+  [PASS] trait_level key 'trait_scores_imputed_full' present
+  [PASS] trait_level key 'trait_scores_held_out' present
+  [PASS] per_trait_r has 'O'
+  [PASS] per_trait_r has 'C'
+  [PASS] per_trait_r has 'E'
+  [PASS] per_trait_r has 'A'
+  [PASS] per_trait_r has 'N'
+  [PASS] trait_scores_true shape (50, 5)
+  [PASS] profile_correlation key 'mean' present
+  [PASS] profile_correlation key 'ci_lower' present
+  [PASS] profile_correlation key 'ci_upper' present
+  [PASS] profile_correlation key 'per_subject' present
+  [PASS] per_subject has 50 entries
+
+--- evaluate_predictions: perfect prediction ---
+  [PASS] Perfect prediction: r=1.0000 ≈ 1.0
+  [PASS] Perfect prediction: MAE ≈ 0
+
+--- _mean_ci ---
+  [PASS] Mean = 3.0000
+  [PASS] CI bounds are ordered
+  [PASS] All NaN → all NaN
+  [PASS] Single value: mean OK, CI NaN
+
+--- Integration: real data pipeline ---
+  [PASS] Y has 2749 subjects (got 2749)
+  [PASS] Y has 100 items (got 100)
+  [PASS] y_obs shape matches
+  [PASS] y_held shape matches
+  [PASS] Integration: item_level present
+  [PASS] Integration: trait_level present
+  [PASS] Integration: profile_correlation present
+  [PASS] Integration: item r = -0.0072 (not NaN)
+  [PASS] Integration: mean Big5 r = 0.4041 (not NaN)
+  [PASS] Integration: profile r = 0.4958 (not NaN)
+  [PASS] True trait scores shape
+  [PASS] Imputed trait scores shape
+  [PASS] Short form trait scores shape
+  [PASS] Held-out trait scores shape
+  [OK] Full integration pipeline completed
+
+============================================================
+Results: 112/112 passed, 0/112 failed
+============================================================

@@ -1,0 +1,48 @@
+/workspace/questionnaire-embeddings/scripts/run_baseline.py:213: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, p = sp_stats.pearsonr(y_true[valid], y_pred[valid])
+============================================================
+F002: Original Baseline — 10-Fold Item CV (KNN K=5)
+============================================================
+
+[1/5] Loading data ...
+[OK] Loaded Y (non-rev): (2749, 100)  range=[1, 5]
+[OK] Loaded E_old:      (100, 1024)  L2-norm
+[OK] Subjects:          2749, Items: 100
+
+[2/5] Preprocessing embeddings (StandardScaler + PCA 0.9) ...
+[OK] StandardScaler + PCA(0.9): 1024 dims → 46 PCs (0.901 variance retained)
+
+[3/5] Running 10-fold item CV for 2749 participants ...
+  Fold 1/10  (train=90, test=10) ... done
+  Fold 2/10  (train=90, test=10) ... done
+  Fold 3/10  (train=90, test=10) ... done
+  Fold 4/10  (train=90, test=10) ... done
+  Fold 5/10  (train=90, test=10) ... done
+  Fold 6/10  (train=90, test=10) ... done
+  Fold 7/10  (train=90, test=10) ... done
+  Fold 8/10  (train=90, test=10) ... done
+  Fold 9/10  (train=90, test=10) ... done
+  Fold 10/10  (train=90, test=10) ... done
+
+[4/5] Evaluating per-participant Pearson r ...
+
+============================================================
+RESULTS SUMMARY
+============================================================
+  Subjects evaluated:      2747/2749
+  Subjects with NaN r:     2
+  Mean Pearson r:          0.4628
+  95% CI:                  [0.4571, 0.4686]
+  t-statistic vs 0:        156.94
+  p-value (H0: r=0):       0.000000
+  Mean MAE:                0.8913
+
+  ✓ Mean r 0.4628 within expected range [0.40, 0.50]
+
+[5/5] Saving results ...
+[OK] Saved 2749 rows to /workspace/questionnaire-embeddings/results/baseline/original_10fold_itemcv_results.csv
+[OK] Saved predictions matrix to /workspace/questionnaire-embeddings/results/baseline/predictions.npy
+
+============================================================
+F002 COMPLETE.
+============================================================

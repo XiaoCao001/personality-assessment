@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data files (large)
+*.npy
+*.parquet
+*.csv
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Node (if any)
+node_modules/
+.npm-global/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Harness runtime noise
+.claude/long-running/active-feature.json

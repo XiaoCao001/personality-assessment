@@ -1,0 +1,12 @@
+{
+  "featureId": "F001",
+  "phase": "delegated_to_feature_dev",
+  "status": "in_progress",
+  "startedAt": "2026-05-29T00:00:00-03:00",
+  "startedFromCommit": "abc1234",
+  "dirty": false,
+  "changedFiles": [],
+  "evidenceDir": ".claude/long-running/evidence/F001",
+  "lastEvaluatorVerdict": null,
+  "handoffPromptFile": ".claude/long-running/evidence/F001/feature-dev-handoff.md"
+}

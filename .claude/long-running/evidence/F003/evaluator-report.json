@@ -1,0 +1,34 @@
+{
+  "featureId": "F003",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "5-fold split每折 train:test ≈ 80:20，被试不跨折泄漏",
+      "status": "pass",
+      "evidence": ["cv_framework.py lines 49-79", "test_cv_framework.py lines 62-113", "test-output.txt: all 5 folds have train ratio 0.7999–0.8003, no train/test overlap, all 2749 subjects covered exactly once"]
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "反向计分正确：正向题 score=y，反向题 score=6-y",
+      "status": "pass",
+      "evidence": ["cv_framework.py line 154", "test_cv_framework.py lines 142-196", "test-output.txt: forward items unchanged, reverse items: score = 6 - y, double reverse = identity, real data verified"]
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "维度分数 = 该维度所有题项 score 的均值",
+      "status": "pass",
+      "evidence": ["cv_framework.py lines 190-201", "test_cv_framework.py lines 204-256", "test-output.txt: multi-item trait means correct, real data shape (2749,5), trait scores in [1,5]"]
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "评估指标输出格式统一，可通过脚本批量调用",
+      "status": "pass",
+      "evidence": ["cv_framework.py lines 260-405", "test_cv_framework.py lines 328-395", "test-output.txt: all 35 format checks passed"]
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "RuntimeWarnings appear with constant predictions (Pearson r undefined → NaN). This is correctly handled."
+  ]
+}
