@@ -1,0 +1,30 @@
+diff --git a/.claude/long-running/features.json b/.claude/long-running/features.json
+index ae76ece..4ebb370 100644
+--- a/.claude/long-running/features.json
++++ b/.claude/long-running/features.json
+@@ -161,16 +161,22 @@
+         "python scripts/run_selection_baselines.py",
+         "python -c \"from selection import BalancedRandomSelector; s=BalancedRandomSelector().select(10); print(len(s), 'items selected')\""
+       ],
+-      "status": "pending",
++      "status": "in_progress",
+       "evidence": {
+         "directory": ".claude/long-running/evidence/F004",
+         "testCommand": null,
+         "testOutputFile": null,
+         "evaluatorReport": null
+       },
+-      "attempts": [],
++      "attempts": [
++        {
++          "attemptNumber": 1,
++          "startedAt": "2026-06-05T00:00:00Z",
++          "status": "in_progress"
++        }
++      ],
+       "createdAt": "2026-06-04T16:00:00Z",
+-      "updatedAt": "2026-06-04T16:00:00Z",
++      "updatedAt": "2026-06-05T00:00:00Z",
+       "completedAt": null
+     },
+     {

@@ -1,0 +1,17 @@
+{
+  "featureId": "F004",
+  "phase": "completed",
+  "status": "completed",
+  "completedAt": "2026-06-05T04:30:00Z",
+  "startedAt": "2026-06-05T00:00:00Z",
+  "startedFromCommit": "c4afaac",
+  "dirty": false,
+  "changedFiles": [
+    "questionnaire-embeddings/scripts/selection.py",
+    "questionnaire-embeddings/scripts/run_selection_baselines.py"
+  ],
+  "evidenceDir": ".claude/long-running/evidence/F004",
+  "lastEvaluatorVerdict": "PASS",
+  "handoffPromptFile": ".claude/long-running/evidence/F004/feature-dev-handoff.md",
+  "lastModifiedAt": "2026-06-05T04:28:00+00:00"
+}

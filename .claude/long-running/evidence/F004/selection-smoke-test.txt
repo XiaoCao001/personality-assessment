@@ -1,0 +1,24 @@
+============================================================
+F004 selection — smoke test
+============================================================
+
+[1] RandomSelector
+    select(10): 10 items, indices=[2, 16, 26, 54, 55, 73, 75, 86, 93, 95]
+    select_multi(10, 50): 50 repeats, 50 unique sets
+  [OK] Randomness verified: 50/50 unique sets
+    select(10): 10 items  [OK]
+    select(30): 30 items  [OK]
+    select(50): 50 items  [OK]
+    select(90): 90 items  [OK]
+
+[2] BalancedRandomSelector
+    m=10: {'O': 2, 'C': 2, 'E': 2, 'A': 2, 'N': 2}  (max deviation=0)
+    m=30: {'O': 6, 'C': 6, 'E': 6, 'A': 6, 'N': 6}  (max deviation=0)
+    m=50: {'O': 10, 'C': 10, 'E': 10, 'A': 10, 'N': 10}  (max deviation=0)
+    m=90: {'O': 18, 'C': 18, 'E': 18, 'A': 18, 'N': 18}  (max deviation=0)
+  [OK] Balanced constraint verified: max deviation ≤ 1 for all ratios
+    select_multi(10, 50): 50 unique sets
+
+============================================================
+F004 selection — ALL CHECKS PASSED
+============================================================

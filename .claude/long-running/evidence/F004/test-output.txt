@@ -1,0 +1,86 @@
+============================================================
+F004: Selection Strategy Evaluation — FULL
+============================================================
+
+[1/5] Loading data ...
+[OK] Loaded Y:      (2749, 100)  range=[1, 5]
+[OK] Loaded E_old:  (100, 1024)
+[OK] Loaded metadata: 100 items
+[OK] Cosine distance matrix: (100, 100)
+
+[2/5] Creating selectors ...
+    Random: RandomSelector [OK]
+    BalancedRandom: BalancedRandomSelector [OK]
+
+[3/5] Running 5-fold participant CV ...
+
+--- Fold 1/5 (train=2199, test=550) ---
+  [          Random] m=10  item_r=0.0699  big5_r=0.4224  (50 reps, 45.3s)
+  [          Random] m=30  item_r=0.1960  big5_r=0.7719  (50 reps, 45.8s)
+  [          Random] m=50  item_r=0.2872  big5_r=0.9163  (50 reps, 46.0s)
+  [          Random] m=90  item_r=0.3415  big5_r=0.9923  (50 reps, 45.6s)
+  [  BalancedRandom] m=10  item_r=0.0780  big5_r=0.4811  (50 reps, 46.0s)
+  [  BalancedRandom] m=30  item_r=0.2171  big5_r=0.8258  (50 reps, 46.1s)
+  [  BalancedRandom] m=50  item_r=0.2847  big5_r=0.9282  (50 reps, 46.1s)
+  [  BalancedRandom] m=90  item_r=0.3598  big5_r=0.9928  (50 reps, 45.9s)
+
+--- Fold 2/5 (train=2199, test=550) ---
+  [          Random] m=10  item_r=0.0676  big5_r=0.4053  (50 reps, 45.8s)
+  [          Random] m=30  item_r=0.1962  big5_r=0.7750  (50 reps, 46.1s)
+  [          Random] m=50  item_r=0.2722  big5_r=0.9118  (50 reps, 46.2s)
+  [          Random] m=90  item_r=0.3158  big5_r=0.9921  (50 reps, 45.7s)
+  [  BalancedRandom] m=10  item_r=0.0752  big5_r=0.4592  (50 reps, 45.9s)
+  [  BalancedRandom] m=30  item_r=0.2147  big5_r=0.8159  (50 reps, 45.8s)
+  [  BalancedRandom] m=50  item_r=0.2882  big5_r=0.9248  (50 reps, 45.3s)
+  [  BalancedRandom] m=90  item_r=0.3422  big5_r=0.9925  (50 reps, 45.0s)
+
+--- Fold 3/5 (train=2199, test=550) ---
+  [          Random] m=10  item_r=0.0674  big5_r=0.4021  (50 reps, 45.0s)
+  [          Random] m=30  item_r=0.1946  big5_r=0.7795  (50 reps, 45.3s)
+  [          Random] m=50  item_r=0.2761  big5_r=0.9171  (50 reps, 45.3s)
+  [          Random] m=90  item_r=0.3112  big5_r=0.9926  (50 reps, 45.1s)
+  [  BalancedRandom] m=10  item_r=0.0748  big5_r=0.4780  (50 reps, 45.3s)
+  [  BalancedRandom] m=30  item_r=0.2135  big5_r=0.8243  (50 reps, 45.3s)
+  [  BalancedRandom] m=50  item_r=0.2839  big5_r=0.9296  (50 reps, 45.2s)
+  [  BalancedRandom] m=90  item_r=0.3457  big5_r=0.9929  (50 reps, 45.0s)
+
+--- Fold 4/5 (train=2199, test=550) ---
+  [          Random] m=10  item_r=0.0648  big5_r=0.4018  (50 reps, 44.8s)
+  [          Random] m=30  item_r=0.1962  big5_r=0.7879  (50 reps, 45.3s)
+  [          Random] m=50  item_r=0.2637  big5_r=0.9163  (50 reps, 45.2s)
+  [          Random] m=90  item_r=0.3062  big5_r=0.9922  (50 reps, 44.9s)
+  [  BalancedRandom] m=10  item_r=0.0758  big5_r=0.4680  (50 reps, 44.9s)
+  [  BalancedRandom] m=30  item_r=0.2051  big5_r=0.8171  (50 reps, 45.2s)
+  [  BalancedRandom] m=50  item_r=0.2787  big5_r=0.9274  (50 reps, 45.2s)
+  [  BalancedRandom] m=90  item_r=0.3292  big5_r=0.9927  (50 reps, 45.0s)
+
+--- Fold 5/5 (train=2200, test=549) ---
+  [          Random] m=10  item_r=0.0725  big5_r=0.4347  (50 reps, 44.8s)
+  [          Random] m=30  item_r=0.2090  big5_r=0.7907  (50 reps, 45.2s)
+  [          Random] m=50  item_r=0.2844  big5_r=0.9221  (50 reps, 45.0s)
+  [          Random] m=90  item_r=0.3326  big5_r=0.9928  (50 reps, 44.9s)
+  [  BalancedRandom] m=10  item_r=0.0715  big5_r=0.4728  (50 reps, 44.8s)
+  [  BalancedRandom] m=30  item_r=0.2174  big5_r=0.8265  (50 reps, 45.2s)
+  [  BalancedRandom] m=50  item_r=0.2907  big5_r=0.9291  (50 reps, 45.1s)
+  [  BalancedRandom] m=90  item_r=0.3414  big5_r=0.9930  (50 reps, 45.0s)
+
+[4/5] Aggregating results ...
+
+--- Per-strategy × ratio (averaged across folds & repeats) ---
+    BalancedRandom  m=10  item_r=0.0751  big5=0.4718
+    BalancedRandom  m=30  item_r=0.2136  big5=0.8219
+    BalancedRandom  m=50  item_r=0.2852  big5=0.9278
+    BalancedRandom  m=90  item_r=0.3437  big5=0.9928
+            Random  m=10  item_r=0.0684  big5=0.4132
+            Random  m=30  item_r=0.1984  big5=0.7810
+            Random  m=50  item_r=0.2767  big5=0.9167
+            Random  m=90  item_r=0.3214  big5=0.9924
+
+[5/5] Saving results ...
+[OK] Detail results (2000 rows) → /workspace/questionnaire-embeddings/results/phase1/random_baseline_detail.csv
+[OK] Aggregated results (40 rows) → /workspace/questionnaire-embeddings/results/phase1/random_baseline_aggregated.csv
+[OK] Summary (8 rows) → /workspace/questionnaire-embeddings/results/phase1/random_baseline_summary.csv
+
+============================================================
+F004 COMPLETE.
+============================================================

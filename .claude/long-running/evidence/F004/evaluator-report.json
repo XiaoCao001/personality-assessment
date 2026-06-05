@@ -1,0 +1,53 @@
+{
+  "featureId": "F004",
+  "verdict": "PASS",
+  "evaluatedAt": "2026-06-05T04:30:00Z",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "Random 选题在 50 次重复间题目集合不同（验证随机性）",
+      "status": "pass",
+      "evidence": [
+        "selection-smoke-test.txt: 50/50 unique sets — Randomness verified",
+        "selection.py L219-227: assert len(unique_sets) >= 40"
+      ],
+      "notes": "RandomSelector.select_multi(10, 50) produced 50 unique sets out of 50 repeats."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "Balanced Random 每维度题数偏差 ≤1",
+      "status": "pass",
+      "evidence": [
+        "selection-smoke-test.txt L15-19: all ratios max deviation=0",
+        "selection.py L246: assert max_dev <= 1"
+      ],
+      "notes": "All four ratios have exact per-trait allocation with zero deviation."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "两种方法均覆盖 10/30/50/90 四种比例",
+      "status": "pass",
+      "evidence": [
+        "test-output.txt L18-65: Both strategies at all 4 ratios × 5 folds",
+        "results/phase1/random_baseline_summary.csv: 8 rows covering all combinations"
+      ],
+      "notes": "Both selectors evaluated at all four ratios in 5-fold CV."
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "评估指标包含 item-level r 和 trait-level r（至少 Big Five mean）",
+      "status": "pass",
+      "evidence": [
+        "test-output.txt: each line prints item_r and big5_r",
+        "results/phase1/random_baseline_summary.csv: item_r, trait_r_mean, trait_r_O/C/E/A/N columns"
+      ],
+      "notes": "Both item-level Pearson r and per-trait Big Five r captured."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "Item-level r is very low at m=10 (~0.07) — inherent to data sparsity (10 training items → 90 test items)",
+    "Neuroticism (N) trait r is consistently lowest at m=10 — warrants investigation in subsequent features",
+    "All ratios are multiples of 5, so BalancedRandom remainder logic not exercised here, though implemented correctly"
+  ]
+}

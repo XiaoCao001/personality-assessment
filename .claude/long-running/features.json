@@ -152,26 +152,32 @@
         "6. 保存各 fold/repeat 的选题结果和评估指标到 results/phase1/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Random 选题在 50 次重复间题目集合不同（验证随机性）", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "Balanced Random 每维度题数偏差 ≤1", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "两种方法均覆盖 10/30/50/90 四种比例", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "评估指标包含 item-level r 和 trait-level r（至少 Big Five mean）", "status": "unknown", "evidence": []}
+        {"id": "AC001", "text": "Random 选题在 50 次重复间题目集合不同（验证随机性）", "status": "pass", "evidence": ["selection-smoke-test.txt: 50/50 unique sets", "selection.py L219-227: assert len(unique_sets) >= 40"]},
+        {"id": "AC002", "text": "Balanced Random 每维度题数偏差 ≤1", "status": "pass", "evidence": ["selection-smoke-test.txt: all ratios max deviation=0", "selection.py L246: assert max_dev <= 1"]},
+        {"id": "AC003", "text": "两种方法均覆盖 10/30/50/90 四种比例", "status": "pass", "evidence": ["test-output.txt: both strategies at all 4 ratios × 5 folds", "results/phase1/random_baseline_summary.csv: 8 rows"]},
+        {"id": "AC004", "text": "评估指标包含 item-level r 和 trait-level r（至少 Big Five mean）", "status": "pass", "evidence": ["test-output.txt: item_r + big5_r printed per evaluation", "random_baseline_summary.csv: item_r, trait_r_mean, trait_r_O/C/E/A/N columns"]}
       ],
       "testPlan": [
         "python scripts/run_selection_baselines.py",
         "python -c \"from selection import BalancedRandomSelector; s=BalancedRandomSelector().select(10); print(len(s), 'items selected')\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F004",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_selection_baselines.py",
+        "testOutputFile": ".claude/long-running/evidence/F004/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F004/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T00:00:00Z",
+          "status": "completed"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-05T04:30:00Z",
+      "completedAt": "2026-06-05T04:30:00Z"
     },
     {
       "id": "F005",

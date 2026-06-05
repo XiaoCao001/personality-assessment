@@ -1,0 +1,39 @@
+## Commands executed for F004
+
+### Smoke tests
+```bash
+# Verify selector correctness
+python scripts/selection.py
+# → ALL CHECKS PASSED
+
+# Verify runner correctness (1 fold, 1 repeat, 1 ratio)
+python scripts/run_selection_baselines.py --smoke
+# → OK, 2 evaluations complete
+
+# Quick verification (1 fold, 2 repeats)
+python scripts/run_selection_baselines.py --quick
+```
+
+### Full experiment
+```bash
+python scripts/run_selection_baselines.py
+# → Running 5-fold CV, 4 ratios × 2 strategies × 50 repeats
+```
+
+### Verification commands
+```bash
+# Verify outputs exist
+ls results/phase1/random_baseline_detail.csv
+ls results/phase1/random_baseline_aggregated.csv
+ls results/phase1/random_baseline_summary.csv
+
+# Verify selector import
+python -c "from selection import RandomSelector, BalancedRandomSelector; print('OK')"
+
+# Check results shape
+python -c "
+import pandas as pd
+df = pd.read_csv('results/phase1/random_baseline_detail.csv')
+print(f'Rows: {len(df)}, Strategies: {df.strategy.unique()}, Ratios: {sorted(df.ratio.unique())}')
+"
+```
