@@ -87,7 +87,23 @@
 - Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
 - Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - Outputs: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
-- 建议：Phase 4 低题量场景（m≤30）使用 CosineWeightedKNN
+- 建议：F009 SoftmaxKNN 已全面超越 CosineWeightedKNN，Phase 4 应优先使用 SoftmaxKNN
+
+### F009 — Phase 2: Softmax Weighted KNN 与 Kernel Smoothing 预测器 (completed 2026-06-05T08:15:00Z)
+- Refactored `scripts/predictors.py`（+140 行）— extracted `_weighted_average()` shared helper；新增 SoftmaxKNN 和 KernelSmoothing
+- SoftmaxKNN：softmax 归一化权重 + 温度 τ，网格 K∈{3,5,7,10,15} × τ∈{0.03,0.05,0.1,0.2,0.5}
+- KernelSmoothing：Nadaraya-Watson kernel regression，使用全部 |S| 题项，无需 K 参数
+- Created `scripts/run_softmax_kernel.py`（430 行）— 5-fold CV + Coverage 选题 + inner validation K×τ 网格搜索
+- **SoftmaxKNN 在所有比例上大幅领先 F008 CosineWeightedKNN**：
+  - m=10: item_r=0.2587 vs 0.1511（+71%）、m=30: 0.3542 vs 0.2884（+23%）
+  - m=50: 0.4037 vs 0.3422（+18%）、m=90: 0.5995 vs 0.5583（+7%）
+- KernelSmoothing 紧随其后（m=10: 0.2571, m=30: 0.3368, m=50: 0.3893, m=90: 0.6001）
+- τ 敏感度确认：τ=0.1 为低题量最优（bell-shaped curve）；τ→0 需更大 K，τ→∞ 趋近 uniform
+- 最佳参数：SoftmaxKNN K=7, τ=0.1 (m=10/30)；K=10, τ=0.1 (m=50)；K=3, τ≈0.035 (m=90)
+- Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
+- Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+- Outputs: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
+- **建议：Phase 4 所有比例使用 SoftmaxKNN（低题量 K=7, τ=0.1；高题量 K=3, τ≈0.035）**
 
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
@@ -99,19 +115,11 @@
 7. **Random** (F004): 0.2163
 8. **TraitPredictiveness** (F006): 0.1228
 
-### F009 — Phase 2: Softmax Weighted KNN 与 Kernel Smoothing 预测器 (completed 2026-06-05T08:15:00Z)
-- Extended `scripts/predictors.py`（+140 行）— 新增 SoftmaxKNN 和 KernelSmoothing 两个预测器
-- Extracted `_weighted_average()` shared helper for DRY per-subject weighted average
-- Created `scripts/run_softmax_kernel.py`（430 行）— 5-fold CV + Coverage 选题 + inner validation K×τ 网格搜索
-- **SoftmaxKNN 在所有比例上显著优于 F008 CosineWeightedKNN**：
-  - m=10: 0.2587 vs 0.1511 (+71%), m=30: 0.3542 vs 0.2884 (+23%)
-  - m=50: 0.4037 vs 0.3422 (+18%), m=90: 0.5995 vs 0.5583 (+7%)
-- KernelSmoothing 略低于 SoftmaxKNN（使用所有 |S| 项，无 K 参数）
-- τ=0.1 为低题量最优，τ 敏感度确认（bell-shaped 曲线）
-- Evaluator verdict: PASS — all 4 acceptance criteria met (attempt 1)
-- Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
-- Outputs: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
-- **建议：Phase 4 所有低题量场景使用 SoftmaxKNN (K=7, τ=0.1)**
+## Phase 2 predictor ranking (by mean item_r across m=10,30,50,90)
+1. **SoftmaxKNN** (F009): 0.4040
+2. **KernelSmoothing** (F009): 0.3958
+3. **CosineWeightedKNN** (F008): 0.3350
+4. **UniformKNN** (F008): 0.3274
 
 ## Current risks / blockers
 - 原文 SBERT embedding 可能使用较旧的 sentence-transformers 版本，baseline 复现时需注意版本兼容性
@@ -198,3 +206,16 @@
 - 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - 输出: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
 - 建议: Phase 4 低题量场景使用 CosineWeightedKNN
+
+### 2026-06-05T08:15:00Z F009 Implementation — Softmax KNN & Kernel Smoothing
+- Refactored `scripts/predictors.py`（+140 行）— extracted `_weighted_average()` helper；新增 SoftmaxKNN 和 KernelSmoothing
+- SoftmaxKNN：softmax 归一化权重 + 温度 τ；KernelSmoothing：Nadaraya-Watson kernel regression（全部 |S| 题项）
+- Created `scripts/run_softmax_kernel.py`（430 行）— 5-fold CV + Coverage 选题 + inner validation K×τ 网格搜索
+- **SoftmaxKNN 在所有比例上大幅领先 F008 CosineWeightedKNN**：
+  - m=10: 0.2587 vs 0.1511 (+71%)、m=30: 0.3542 vs 0.2884 (+23%)
+  - m=50: 0.4037 vs 0.3422 (+18%)、m=90: 0.5995 vs 0.5583 (+7%)
+- KernelSmoothing 紧随其后；τ=0.1 为低题量最优（bell-shaped 敏感度曲线确认）
+- Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
+- 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+- 输出: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
+- 建议: Phase 4 所有比例使用 SoftmaxKNN（低题量 K=7 τ=0.1；高题量 K=3 τ≈0.035）
