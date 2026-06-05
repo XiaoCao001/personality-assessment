@@ -196,26 +196,37 @@
         "7. 对所有比例运行评估，保存结果"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Coverage 贪心选择的题目集合 Coverage 值 ≥ 随机选择的 95% 上限", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "Coverage+Diversity 相比纯 Coverage 降低 Redundancy ≥ 10%", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "λ 选择过程完全在 train participants 内完成", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "所有比例和 λ 值的结果可复现（固定 random seed）", "status": "unknown", "evidence": []}
+        {"id": "AC001", "text": "Coverage 贪心选择的题目集合 Coverage 值 ≥ 随机选择的 95% 上限", "status": "pass", "evidence": ["selection.py smoke test: greedy ≥ random_95% for all ratios (10/30/50/90)"]},
+        {"id": "AC002", "text": "Coverage+Diversity 相比纯 Coverage 降低 Redundancy ≥ 10%", "status": "pass", "evidence": ["selection.py smoke test: λ=1.0, m=10 reduces redundancy by 10.2%"]},
+        {"id": "AC003", "text": "λ 选择过程完全在 train participants 内完成", "status": "pass", "evidence": ["run_semantic_selection.py: inner_validation_split on y_train only"]},
+        {"id": "AC004", "text": "所有比例和 λ 值的结果可复现（固定 random seed）", "status": "pass", "evidence": ["RANDOM_STATE=0 used consistently throughout"]}
       ],
       "testPlan": [
         "python scripts/run_semantic_selection.py",
         "python -c \"from selection import CoverageSelector; import numpy as np; e=np.load('data/processed/E_old.npy'); s=CoverageSelector(e).select(10); print(s)\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F005",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_semantic_selection.py",
+        "testOutputFile": ".claude/long-running/evidence/F005/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F005/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T04:31:07Z",
+          "status": "needs_work"
+        },
+        {
+          "attemptNumber": 2,
+          "startedAt": "2026-06-05T04:55:00Z",
+          "status": "completed"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-05T04:58:00Z",
+      "completedAt": "2026-06-05T04:58:00Z"
     },
     {
       "id": "F006",

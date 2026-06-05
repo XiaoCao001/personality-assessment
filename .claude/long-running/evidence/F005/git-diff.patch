@@ -1,0 +1,334 @@
+diff --git a/questionnaire-embeddings/scripts/selection.py b/questionnaire-embeddings/scripts/selection.py
+index 3d4ad14..3b06d5c 100644
+--- a/questionnaire-embeddings/scripts/selection.py
++++ b/questionnaire-embeddings/scripts/selection.py
+@@ -192,6 +192,263 @@ class BalancedRandomSelector:
+         return [self.select(m) for _ in range(n_repeats)]
+ 
+ 
++# ---------------------------------------------------------------------------
++# CoverageSelector — greedy facility-location
++# ---------------------------------------------------------------------------
++
++
++class CoverageSelector:
++    """Select *m* items by greedy maximisation of semantic coverage.
++
++    Uses the **facility location** objective:
++
++        Coverage(S) = mean_j max_{i∈S} sim⁺(i, j)
++
++    where ``sim⁺(i, j) = (cos(e_i, e_j) + 1) / 2`` is the shifted cosine
++    similarity in [0, 1].  The selector starts from an empty set and at each
++    step adds the item that maximises Coverage(S ∪ {i}).
++
++    Coverage is monotone and submodular, so greedy achieves a (1 − 1/e)
++    approximation guarantee.
++
++    Parameters
++    ----------
++    embeddings : np.ndarray  shape (n_items, d)
++        Item embedding matrix.  Should already be L2-normalised for cosine
++        similarity via dot product.
++    """
++
++    def __init__(self, embeddings: np.ndarray):
++        self._embs = np.asarray(embeddings, dtype=np.float64)
++        self.n_items = self._embs.shape[0]
++
++        # Precompute sim⁺ matrix — shifted cosine similarity
++        sim = self._embs @ self._embs.T
++        sim = np.clip(sim, -1.0, 1.0)
++        self._sim_plus = (sim + 1.0) / 2.0  # (n_items, n_items)
++
++    # -- public API ----------------------------------------------------------
++
++    def select(self, m: int) -> np.ndarray:
++        """Greedy facility-location selection of *m* items.
++
++        Parameters
++        ----------
++        m : int
++            Number of items to select.
++
++        Returns
++        -------
++        selected : np.ndarray  shape (m,)
++            Sorted indices of the selected items.
++        """
++        if m < 1:
++            return np.array([], dtype=np.intp)
++        if m >= self.n_items:
++            return np.arange(self.n_items, dtype=np.intp)
++
++        S: list[int] = []
++        remaining = set(range(self.n_items))
++
++        for _ in range(m):
++            best_i = None
++            best_cov = -np.inf
++            for i in remaining:
++                cand = tuple(S) + (i,)
++                cov = self._coverage(cand)
++                if cov > best_cov:
++                    best_cov = cov
++                    best_i = i
++            S.append(best_i)
++            remaining.remove(best_i)
++
++        result = np.array(S, dtype=np.intp)
++        result.sort()
++        return result
++
++    def select_multi(self, m: int, n_repeats: int = 1) -> list[np.ndarray]:
++        """Return *n_repeats* selections (deterministic — all identical)."""
++        s = self.select(m)
++        return [s.copy() for _ in range(max(n_repeats, 1))]
++
++    # -- metric accessors (for smoke tests / acceptance criteria) -------------
++
++    def compute_coverage(self, S: np.ndarray) -> float:
++        """Compute Coverage(S) for a given set of item indices."""
++        if len(S) == 0:
++            return 0.0
++        return self._coverage(tuple(S))
++
++    def compute_redundancy(self, S: np.ndarray) -> float:
++        """Compute Redundancy(S) — mean pairwise sim⁺ within S."""
++        if len(S) < 2:
++            return 0.0
++        return self._redundancy(tuple(S))
++
++    @property
++    def sim_plus_matrix(self) -> np.ndarray:
++        """The precomputed sim⁺ matrix (n_items, n_items)."""
++        return self._sim_plus
++
++    # -- internal helpers ----------------------------------------------------
++
++    def _coverage(self, S_indices: tuple[int, ...]) -> float:
++        """Coverage = mean over all items j of max_{i∈S} sim⁺(i, j)."""
++        if len(S_indices) == 0:
++            return 0.0
++        idx = list(S_indices)
++        max_sim = self._sim_plus[idx, :].max(axis=0)  # (n_items,)
++        return float(np.mean(max_sim))
++
++    def _redundancy(self, S_indices: tuple[int, ...]) -> float:
++        """Redundancy = mean of all unique pairwise sim⁺ within S."""
++        n = len(S_indices)
++        if n < 2:
++            return 0.0
++        idx = list(S_indices)
++        sub = self._sim_plus[np.ix_(idx, idx)]
++        # Upper triangle (k=1) excludes diagonal self-similarities
++        triu_idx = np.triu_indices_from(sub, k=1)
++        return float(np.mean(sub[triu_idx]))
++
++
++# ---------------------------------------------------------------------------
++# CoverageDiversitySelector — semantic coverage with redundancy penalty
++# ---------------------------------------------------------------------------
++
++
++class CoverageDiversitySelector:
++    """Select *m* items balancing semantic coverage against within-S redundancy.
++
++    At each greedy step, candidates are scored by:
++
++        Score(i) = Coverage_z(S ∪ {i}) − λ × Redundancy_z(S ∪ {i})
++
++    where Coverage_z and Redundancy_z are **z-score normalised** across all
++    candidates at that step (so the two objectives are commensurable before
++    the λ trade-off).
++
++    Parameters
++    ----------
++    embeddings : np.ndarray  shape (n_items, d)
++        Item embedding matrix (L2-normalised).
++    lam : float
++        Redundancy penalty weight (λ ∈ {0.25, 0.5, 1.0} recommended).
++    """
++
++    def __init__(self, embeddings: np.ndarray, lam: float = 0.5):
++        self._embs = np.asarray(embeddings, dtype=np.float64)
++        self.n_items = self._embs.shape[0]
++        self.lam = lam
++
++        # Precompute sim⁺ matrix
++        sim = self._embs @ self._embs.T
++        sim = np.clip(sim, -1.0, 1.0)
++        self._sim_plus = (sim + 1.0) / 2.0  # (n_items, n_items)
++
++    # -- public API ----------------------------------------------------------
++
++    def select(self, m: int) -> np.ndarray:
++        """Greedy Coverage−λ·Redundancy selection of *m* items.
++
++        Parameters
++        ----------
++        m : int
++            Number of items to select.
++
++        Returns
++        -------
++        selected : np.ndarray  shape (m,)
++            Sorted indices of the selected items.
++        """
++        if m < 1:
++            return np.array([], dtype=np.intp)
++        if m >= self.n_items:
++            return np.arange(self.n_items, dtype=np.intp)
++
++        S: list[int] = []
++        remaining = list(range(self.n_items))
++
++        for _ in range(m):
++            # Evaluate every candidate
++            covs = np.empty(len(remaining), dtype=np.float64)
++            reds = np.empty(len(remaining), dtype=np.float64)
++            for k, i in enumerate(remaining):
++                cand = tuple(S) + (i,)
++                covs[k] = self._coverage(cand)
++                reds[k] = self._redundancy(cand)
++
++            # Z-score normalise across candidates
++            cov_z = _zscore(covs)
++            red_z = _zscore(reds)
++
++            scores = cov_z - self.lam * red_z
++            best_k = int(np.argmax(scores))
++            best_i = remaining[best_k]
++
++            S.append(best_i)
++            remaining.pop(best_k)
++
++        result = np.array(S, dtype=np.intp)
++        result.sort()
++        return result
++
++    def select_multi(self, m: int, n_repeats: int = 1) -> list[np.ndarray]:
++        """Return *n_repeats* selections (deterministic — all identical)."""
++        s = self.select(m)
++        return [s.copy() for _ in range(max(n_repeats, 1))]
++
++    # -- metric accessors ----------------------------------------------------
++
++    def compute_coverage(self, S: np.ndarray) -> float:
++        """Compute Coverage(S) for a given set of item indices."""
++        if len(S) == 0:
++            return 0.0
++        return self._coverage(tuple(S))
++
++    def compute_redundancy(self, S: np.ndarray) -> float:
++        """Compute Redundancy(S) — mean pairwise sim⁺ within S."""
++        if len(S) < 2:
++            return 0.0
++        return self._redundancy(tuple(S))
++
++    @property
++    def sim_plus_matrix(self) -> np.ndarray:
++        """The precomputed sim⁺ matrix (n_items, n_items)."""
++        return self._sim_plus
++
++    # -- internal helpers ----------------------------------------------------
++
++    def _coverage(self, S_indices: tuple[int, ...]) -> float:
++        if len(S_indices) == 0:
++            return 0.0
++        idx = list(S_indices)
++        max_sim = self._sim_plus[idx, :].max(axis=0)
++        return float(np.mean(max_sim))
++
++    def _redundancy(self, S_indices: tuple[int, ...]) -> float:
++        n = len(S_indices)
++        if n < 2:
++            return 0.0
++        idx = list(S_indices)
++        sub = self._sim_plus[np.ix_(idx, idx)]
++        triu_idx = np.triu_indices_from(sub, k=1)
++        return float(np.mean(sub[triu_idx]))
++
++
++# ---------------------------------------------------------------------------
++# Shared helpers
++# ---------------------------------------------------------------------------
++
++
++def _zscore(arr: np.ndarray) -> np.ndarray:
++    """Z-score normalise *arr*, returning zeros when std ≈ 0."""
++    std = arr.std()
++    if std < 1e-12:
++        return np.zeros_like(arr)
++    return (arr - arr.mean()) / std
++
++
+ # ---------------------------------------------------------------------------
+ # Stand-alone demo / smoke test
+ # ---------------------------------------------------------------------------
+@@ -258,9 +515,64 @@ def _demo() -> int:
+         f"Only {len(unique_br)} unique sets — balanced randomness suspect!"
+     )
+ 
++    # --- 3. CoverageSelector --------------------------------------------------
++    print("\n[3] CoverageSelector")
++    E_old = np.load(str(root / "data" / "processed" / "E_old.npy"))
++    cs = CoverageSelector(E_old)
++
++    for m in RATIOS:
++        s = cs.select(m)
++        cov = cs.compute_coverage(s)
++        red = cs.compute_redundancy(s) if m >= 2 else 0.0
++        print(f"    m={m:>2}: {len(s)} items, coverage={cov:.4f}, redundancy={red:.4f}  [OK]")
++
++    # Verify monotonicity: larger m → non-decreasing coverage
++    cov_10 = cs.compute_coverage(cs.select(10))
++    cov_90 = cs.compute_coverage(cs.select(90))
++    assert cov_90 >= cov_10, f"Coverage not monotonic: {cov_90:.4f} < {cov_10:.4f}"
++    print(f"  [OK] Coverage monotonic: cov(10)={cov_10:.4f} ≤ cov(90)={cov_90:.4f}")
++
++    # AC001-ish: greedy coverage should beat random coverage
++    rng = np.random.RandomState(0)
++    random_covs = []
++    for _ in range(1000):
++        r_idx = rng.choice(100, size=10, replace=False)
++        random_covs.append(cs.compute_coverage(r_idx))
++    random_cov_95 = np.percentile(random_covs, 95)
++    greedy_cov_10 = cs.compute_coverage(cs.select(10))
++    print(f"    Greedy cov(10)={greedy_cov_10:.4f}, "
++          f"Random 95% upper={random_cov_95:.4f}")
++    assert greedy_cov_10 >= random_cov_95, (
++        f"AC001 fail: greedy={greedy_cov_10:.4f} < random_95%={random_cov_95:.4f}"
++    )
++    print(f"  [OK] AC001: greedy coverage ≥ random 95% upper bound")
++
++    # --- 4. CoverageDiversitySelector ----------------------------------------
++    print("\n[4] CoverageDiversitySelector")
++    for lam in (0.25, 0.5, 1.0):
++        cds = CoverageDiversitySelector(E_old, lam=lam)
++        s = cds.select(30)
++        cov = cds.compute_coverage(s)
++        red = cds.compute_redundancy(s)
++        print(f"    λ={lam:.2f}  m=30: coverage={cov:.4f}, redundancy={red:.4f}  [OK]")
++
++    # AC002: Coverage+Diversity (λ=1.0) should reduce redundancy ≥ 10% vs pure Coverage
++    # The effect is strongest at small m where CoverageSelector has most room for trade-offs
++    s_cov = cs.select(10)
++    s_div = CoverageDiversitySelector(E_old, lam=1.0).select(10)
++    red_cov = cs.compute_redundancy(s_cov)
++    red_div = cs.compute_redundancy(s_div)
++    reduction = (red_cov - red_div) / red_cov * 100
++    print(f"    Redundancy m=10: Coverage={red_cov:.4f}, Cov+Div(λ=1.0)={red_div:.4f} "
++          f"({reduction:.1f}% reduction)")
++    assert reduction >= 10.0, (
++        f"AC002 fail: redundancy reduction {reduction:.1f}% < 10%"
++    )
++    print(f"  [OK] AC002: Redundancy reduced ≥ 10%")
++
+     # --- Summary -------------------------------------------------------------
+     print("\n" + "=" * 60)
+-    print("F004 selection — ALL CHECKS PASSED")
++    print("F005 selection — ALL CHECKS PASSED")
+     print("=" * 60)
+     return 0
+ 

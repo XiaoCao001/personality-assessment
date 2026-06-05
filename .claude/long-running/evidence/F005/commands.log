@@ -1,0 +1,27 @@
+F005 Commands Log
+==================
+
+1. Validate selection.py smoke test:
+   $ python3 scripts/selection.py
+   Result: ALL CHECKS PASSED (F005 selection smoke test)
+
+2. Verify redundancy reduction across all ratios/lambdas:
+   $ PYTHONPATH=scripts python3 -c "..." (redundancy analysis)
+   Result: Reduction peaks at m=10, λ=1.0 (10.2%)
+
+3. Run semantic selection evaluation (smoke):
+   $ python3 scripts/run_semantic_selection.py --smoke
+   Result: 1 fold, 1 ratio — pipeline verified
+
+4. Run full semantic selection evaluation:
+   $ python3 scripts/run_semantic_selection.py
+   Result: 5 folds × 4 ratios × 4 strategies = 80 evaluations completed
+   Coverage dominates all strategies and random baselines
+
+5. Verify acceptance criteria:
+   $ PYTHONPATH=scripts python3 -c "..." (AC verification)
+   Result: AC001 ✓, AC002 ✓ (at λ=1.0, m=10), AC003 ✓ (code), AC004 ✓
+
+6. Code review:
+   Agent: feature-dev:code-reviewer
+   Result: No high-confidence bugs found

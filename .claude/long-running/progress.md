@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: F001, F002, F003, F004 completed — Phase 1 selection baselines ready
-- Last updated: 2026-06-05T04:30:00Z
-- Completed features: 4 / 15
+- Phase: F001, F002, F003, F004, F005 completed — Phase 1 selection strategies complete
+- Last updated: 2026-06-05T04:58:00Z
+- Completed features: 5 / 15
 - Active feature: none
 
 ## Completed work
@@ -23,10 +23,9 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- [F005] Phase 1: 语义选题策略（依赖 F003 ✓ + F001 ✓）— F004 baseline 已建立，可立即推进
-- [F006] Phase 1: 心理测量选题策略（依赖 F003 + F005 ✓）— 依赖 F005 语义策略
-- [F011] Phase 3: 新 Embedding 模型生成（依赖 F001 ✓）— 独立可并行
-- F004 随机 baseline 已完成，推荐先推进 F005 语义策略以建立完整 Phase 1 策略集合
+- **[F006] Phase 1: 心理测量选题策略 — Trait Predictiveness 与 Hybrid (A/B/C)** — depends on F003 ✓ + F005 ✓, can start now
+- [F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓) — independently parallel
+- F005 semantic strategies completed; Coverage outperforms all baselines. F006 completes the Phase 1 strategy set (8 strategies total).
 
 - **2026-06-05T04:30:00Z F004 completed** — 随机选题策略（Random & Balanced Random）
   - Created `scripts/selection.py` (171 lines) — RandomSelector + BalancedRandomSelector
@@ -36,6 +35,18 @@
   - At m=90, both strategies nearly ceiling (Big5 r > 0.99)
   - Evaluator verdict: PASS — all 4 acceptance criteria met
   - Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, git-diff.patch, commands.log
+
+- **2026-06-05T04:58:00Z F005 completed** — 语义选题策略（Coverage & Coverage+Diversity）
+  - Added CoverageSelector and CoverageDiversitySelector to `scripts/selection.py` (+320 lines)
+  - Created `scripts/run_semantic_selection.py` (355 lines) — 5-fold CV with inner validation for λ tuning
+  - Coverage uses greedy facility-location: Coverage(S) = mean_j max_{i∈S} sim+(i,j)
+  - Coverage+Diversity: Score = Coverage_z − λ×Redundancy_z (λ∈{0.25,0.5,1.0})
+  - Key result: Pure Coverage dominates — beats BalancedRandom by +11% at m=10, +20% at m=30, +6% at m=50, +41% at m=90
+  - λ penalty never improves prediction; pure Coverage is the recommended semantic strategy
+  - 2 attempts (first: NEEDS_WORK on AC001 evidence gap; second: PASS)
+  - Evaluator verdict: PASS — all 4 acceptance criteria met
+  - Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+  - Results: results/phase1/semantic_selection_{detail,aggregated,summary}.csv
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization

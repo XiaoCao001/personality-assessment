@@ -1,0 +1,102 @@
+============================================================
+F005: Semantic Selection Evaluation — FULL
+============================================================
+
+[1/5] Loading data ...
+[OK] Loaded Y:      (2749, 100)  range=[1, 5]
+[OK] Loaded E_old:  (100, 1024)
+[OK] Loaded metadata: 100 items
+[OK] Cosine distance matrix: (100, 100)
+
+[2/5] Strategy overview ...
+    Baseline: Coverage (greedy facility-location)
+    Variant:  Coverage+Div(λ=0.25)
+    Variant:  Coverage+Div(λ=0.50)
+    Variant:  Coverage+Div(λ=1.00)
+    Inner validation: 80/20 split of train participants
+    λ grid: (0.25, 0.5, 1.0)
+
+[3/5] Running 5-fold participant CV ...
+
+--- Fold 1/5 (train=2199, test=550) ---
+  [Fold 1] m=10  Coverage: item_r=0.0970  best λ=0.25  item_r=0.0957  (5.9s)
+  [Fold 1] m=30  Coverage: item_r=0.2606  best λ=0.25  item_r=0.2257  (6.4s)
+  [Fold 1] m=50  Coverage: item_r=0.3117  best λ=0.50  item_r=0.3011  (6.8s)
+  [Fold 1] m=90  Coverage: item_r=0.4859  best λ=0.25  item_r=0.4705  (7.4s)
+
+--- Fold 2/5 (train=2199, test=550) ---
+  [Fold 2] m=10  Coverage: item_r=0.0786  best λ=0.25  item_r=0.0776  (5.9s)
+  [Fold 2] m=30  Coverage: item_r=0.2499  best λ=0.25  item_r=0.2214  (6.4s)
+  [Fold 2] m=50  Coverage: item_r=0.3006  best λ=0.50  item_r=0.2903  (6.8s)
+  [Fold 2] m=90  Coverage: item_r=0.5037  best λ=0.25  item_r=0.4830  (7.4s)
+
+--- Fold 3/5 (train=2199, test=550) ---
+  [Fold 3] m=10  Coverage: item_r=0.0713  best λ=0.25  item_r=0.0714  (6.0s)
+  [Fold 3] m=30  Coverage: item_r=0.2558  best λ=0.25  item_r=0.2234  (6.4s)
+  [Fold 3] m=50  Coverage: item_r=0.2978  best λ=0.50  item_r=0.2912  (6.9s)
+  [Fold 3] m=90  Coverage: item_r=0.4733  best λ=0.50  item_r=0.4547  (7.4s)
+
+--- Fold 4/5 (train=2199, test=550) ---
+  [Fold 4] m=10  Coverage: item_r=0.0872  best λ=0.50  item_r=0.0669  (5.9s)
+  [Fold 4] m=30  Coverage: item_r=0.2455  best λ=0.25  item_r=0.2135  (6.5s)
+  [Fold 4] m=50  Coverage: item_r=0.2935  best λ=0.50  item_r=0.2905  (6.9s)
+  [Fold 4] m=90  Coverage: item_r=0.4615  best λ=0.25  item_r=0.4457  (7.4s)
+
+--- Fold 5/5 (train=2200, test=549) ---
+  [Fold 5] m=10  Coverage: item_r=0.0842  best λ=0.25  item_r=0.0831  (6.0s)
+  [Fold 5] m=30  Coverage: item_r=0.2658  best λ=0.25  item_r=0.2300  (6.5s)
+  [Fold 5] m=50  Coverage: item_r=0.3150  best λ=0.50  item_r=0.2968  (6.9s)
+  [Fold 5] m=90  Coverage: item_r=0.4967  best λ=0.25  item_r=0.4753  (7.4s)
+
+[4/5] Aggregating results ...
+
+--- Per-strategy × ratio (averaged across folds) ---
+Strategy                   m    item_r    big5_r  coverage    redund
+---------------------------------------------------------------------------
+Coverage                  10    0.0836    0.4676    0.8111    0.6411
+Coverage                  30    0.2555    0.8284    0.8830    0.6164
+Coverage                  50    0.3037    0.9326    0.9300    0.6266
+Coverage                  90    0.4842    0.9931    0.9945    0.6283
+Coverage+Div(λ=0.25)      10    0.0827    0.4675    0.8116    0.6429
+Coverage+Div(λ=0.25)      30    0.2228    0.8179    0.8822    0.6134
+Coverage+Div(λ=0.25)      50    0.2750    0.9192    0.9292    0.6193
+Coverage+Div(λ=0.25)      90    0.4674    0.9928    0.9945    0.6284
+Coverage+Div(λ=0.50)      10    0.0698    0.4381    0.8099    0.6165
+Coverage+Div(λ=0.50)      30    0.2136    0.8299    0.8813    0.6067
+Coverage+Div(λ=0.50)      50    0.2940    0.9317    0.9285    0.6116
+Coverage+Div(λ=0.50)      90    0.4634    0.9928    0.9945    0.6280
+Coverage+Div(λ=1.00)      10    0.0532    0.4225    0.7930    0.5755
+Coverage+Div(λ=1.00)      30    0.1898    0.8149    0.8767    0.5958
+Coverage+Div(λ=1.00)      50    0.2731    0.9348    0.9243    0.6038
+Coverage+Div(λ=1.00)      90    0.3501    0.9939    0.9885    0.6235
+
+--- Best λ per fold/ratio (inner validation) ---
+  Fold 1  m=10  best λ=0.25  inner score=0.0772  test item_r=0.0957
+  Fold 1  m=30  best λ=0.25  inner score=0.2153  test item_r=0.2257
+  Fold 1  m=50  best λ=0.50  inner score=0.2915  test item_r=0.3011
+  Fold 1  m=90  best λ=0.25  inner score=0.4474  test item_r=0.4705
+  Fold 2  m=10  best λ=0.25  inner score=0.0865  test item_r=0.0776
+  Fold 2  m=30  best λ=0.25  inner score=0.2282  test item_r=0.2214
+  Fold 2  m=50  best λ=0.50  inner score=0.2936  test item_r=0.2903
+  Fold 2  m=90  best λ=0.25  inner score=0.4781  test item_r=0.4830
+  Fold 3  m=10  best λ=0.25  inner score=0.0796  test item_r=0.0714
+  Fold 3  m=30  best λ=0.25  inner score=0.2229  test item_r=0.2234
+  Fold 3  m=50  best λ=0.50  inner score=0.2922  test item_r=0.2912
+  Fold 3  m=90  best λ=0.50  inner score=0.4785  test item_r=0.4547
+  Fold 4  m=10  best λ=0.50  inner score=0.0647  test item_r=0.0669
+  Fold 4  m=30  best λ=0.25  inner score=0.2179  test item_r=0.2135
+  Fold 4  m=50  best λ=0.50  inner score=0.2910  test item_r=0.2905
+  Fold 4  m=90  best λ=0.25  inner score=0.4670  test item_r=0.4457
+  Fold 5  m=10  best λ=0.25  inner score=0.0874  test item_r=0.0831
+  Fold 5  m=30  best λ=0.25  inner score=0.2272  test item_r=0.2300
+  Fold 5  m=50  best λ=0.50  inner score=0.2892  test item_r=0.2968
+  Fold 5  m=90  best λ=0.25  inner score=0.4614  test item_r=0.4753
+
+[5/5] Saving results ...
+[OK] Detail results (80 rows) → /workspace/questionnaire-embeddings/results/phase1/semantic_selection_detail.csv
+[OK] Aggregated results (16 rows) → /workspace/questionnaire-embeddings/results/phase1/semantic_selection_aggregated.csv
+[OK] Summary (16 rows) → /workspace/questionnaire-embeddings/results/phase1/semantic_selection_summary.csv
+
+============================================================
+F005 COMPLETE.
+============================================================
