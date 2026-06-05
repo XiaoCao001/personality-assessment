@@ -376,26 +376,32 @@
         "6. 保存结果到 results/phase2/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Softmax KNN 在低题量（10%, 30%）时 τ 参数敏感度合理", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "Kernel Smoothing 正确使用所有 |S| 个已作答题（不限于 K 个邻居）", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "网格搜索不涉及 test participants", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "所有预测器输出与 F008 格式一致，可直接比较", "status": "unknown", "evidence": []}
+        {"id": "AC001", "text": "Softmax KNN 在低题量（10%, 30%）时 τ 参数敏感度合理", "status": "pass", "evidence": ["test-output.txt: τ sensitivity table, τ=0.1 peaks at m=10/30, bell-shaped curve", "softmax_kernel_sensitivity.csv: 150 rows K×τ grid"]},
+        {"id": "AC002", "text": "Kernel Smoothing 正确使用所有 |S| 个已作答题（不限于 K 个邻居）", "status": "pass", "evidence": ["predictors.py L365: nn_items = np.tile(S[:, None], (1, n_T))", "KernelSmoothing has no K parameter, uses all |S| items"]},
+        {"id": "AC003", "text": "网格搜索不涉及 test participants", "status": "pass", "evidence": ["run_softmax_kernel.py L208-282: inner_validation_split on train indices only"]},
+        {"id": "AC004", "text": "所有预测器输出与 F008 格式一致，可直接比较", "status": "pass", "evidence": ["test-output.txt L178-201: side-by-side F008 comparison", "softmax_kernel_detail.csv: same schema + best_tau"]}
       ],
       "testPlan": [
         "python scripts/run_softmax_kernel.py",
         "python -c \"from predictors import SoftmaxKNN, KernelSmoothing; print('OK')\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F009",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_softmax_kernel.py",
+        "testOutputFile": ".claude/long-running/evidence/F009/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F009/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T08:00:00Z",
+          "status": "completed"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-05T08:15:00Z",
+      "completedAt": "2026-06-05T08:15:00Z"
     },
     {
       "id": "F010",

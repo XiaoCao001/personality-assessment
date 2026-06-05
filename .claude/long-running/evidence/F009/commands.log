@@ -1,0 +1,18 @@
+# F009 Commands Log
+# Timestamp: 2026-06-05
+
+## Smoke tests (all PASS)
+python scripts/predictors.py
+# → 12/12 checks passed: UniformKNN, CosineWeightedKNN, SoftmaxKNN, KernelSmoothing, AC003, AC004
+
+## Full evaluation
+python scripts/run_softmax_kernel.py
+# → 5-fold CV, 40 eval rows, 150 sensitivity rows, 614s elapsed
+# → Results saved to results/phase2/softmax_kernel_*.csv
+
+## Output verification
+ls results/phase2/softmax_kernel_*.csv
+# → softmax_kernel_detail.csv (40 rows)
+# → softmax_kernel_aggregated.csv (8 rows)
+# → softmax_kernel_summary.csv (8 rows)
+# → softmax_kernel_sensitivity.csv (150 rows)

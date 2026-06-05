@@ -1,0 +1,205 @@
+============================================================
+F009: Softmax KNN & Kernel Smoothing — FULL
+============================================================
+
+[1/6] Loading data ...
+[OK] Loaded Y:      (2749, 100)  range=[1, 5]
+[OK] Loaded E_old:  (100, 1024)
+[OK] Loaded metadata: 100 items
+
+[2/6] Computing cosine similarity matrix ...
+[OK] sim shape: (100, 100)  range=[-0.1621, 1.0000]
+
+[3/6] Predictors: SoftmaxKNN, KernelSmoothing
+      K candidates: [3, 5, 7, 10, 15]
+      τ candidates: [0.03, 0.05, 0.1, 0.2, 0.5]
+      Ratios: [10, 30, 50, 90]
+
+[4/6] Running participant CV ...
+--- Fold 1/5 (train=2199, test=550) ---
+  [1] ratio m=10: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.2533)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.2531)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.2650 [0.2528, 0.2772]  big5_r=0.6628
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.2639 [0.2517, 0.2760]  big5_r=0.6609
+  [1] ratio m=30: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.3406)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3243)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.3613 [0.3497, 0.3729]  big5_r=0.8621
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3423 [0.3310, 0.3536]  big5_r=0.8566
+  [1] ratio m=50: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=10, τ=0.1 (item_r=0.3918)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3821)
+    [SoftmaxKNN] test: K=10, τ=0.1  item_r=0.4100 [0.3968, 0.4231]  big5_r=0.9390
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3978 [0.3841, 0.4116]  big5_r=0.9385
+  [1] ratio m=90: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=3, τ=0.03 (item_r=0.5963)
+    [KernelSmoothing] inner val: best τ=0.03 (item_r=0.5963)
+    [SoftmaxKNN] test: K=3, τ=0.03  item_r=0.5990 [0.5746, 0.6234]  big5_r=0.9941
+    [KernelSmoothing] test: K=None, τ=0.03  item_r=0.5990 [0.5746, 0.6234]  big5_r=0.9941
+
+  [1] τ sensitivity analysis (m=30) ...
+    [OK] 30 sensitivity rows
+
+--- Fold 2/5 (train=2199, test=550) ---
+  [2] ratio m=10: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=5, τ=0.1 (item_r=0.2569)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.2555)
+    [SoftmaxKNN] test: K=5, τ=0.1  item_r=0.2537 [0.2417, 0.2656]  big5_r=0.6138
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.2522 [0.2405, 0.2639]  big5_r=0.6038
+  [2] ratio m=30: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.3549)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3361)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.3493 [0.3367, 0.3619]  big5_r=0.8403
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3315 [0.3194, 0.3437]  big5_r=0.8382
+  [2] ratio m=50: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.4046)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3898)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.3996 [0.3861, 0.4132]  big5_r=0.9292
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3847 [0.3707, 0.3986]  big5_r=0.9320
+  [2] ratio m=90: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=3, τ=0.03 (item_r=0.5874)
+    [KernelSmoothing] inner val: best τ=0.03 (item_r=0.5874)
+    [SoftmaxKNN] test: K=3, τ=0.03  item_r=0.6113 [0.5878, 0.6347]  big5_r=0.9928
+    [KernelSmoothing] test: K=None, τ=0.03  item_r=0.6113 [0.5878, 0.6347]  big5_r=0.9928
+
+  [2] τ sensitivity analysis (m=30) ...
+    [OK] 30 sensitivity rows
+
+--- Fold 3/5 (train=2199, test=550) ---
+  [3] ratio m=10: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.2591)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.2583)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.2525 [0.2403, 0.2647]  big5_r=0.6546
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.2501 [0.2380, 0.2623]  big5_r=0.6532
+  [3] ratio m=30: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=5, τ=0.1 (item_r=0.3559)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3365)
+    [SoftmaxKNN] test: K=5, τ=0.1  item_r=0.3472 [0.3352, 0.3592]  big5_r=0.8626
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3324 [0.3207, 0.3441]  big5_r=0.8589
+  [3] ratio m=50: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=10, τ=0.1 (item_r=0.4054)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3916)
+    [SoftmaxKNN] test: K=10, τ=0.1  item_r=0.4003 [0.3870, 0.4136]  big5_r=0.9424
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3878 [0.3742, 0.4014]  big5_r=0.9422
+  [3] ratio m=90: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=3, τ=0.05 (item_r=0.6201)
+    [KernelSmoothing] inner val: best τ=0.03 (item_r=0.6200)
+    [SoftmaxKNN] test: K=3, τ=0.05  item_r=0.5870 [0.5626, 0.6115]  big5_r=0.9939
+    [KernelSmoothing] test: K=None, τ=0.03  item_r=0.5919 [0.5676, 0.6162]  big5_r=0.9937
+
+  [3] τ sensitivity analysis (m=30) ...
+    [OK] 30 sensitivity rows
+
+--- Fold 4/5 (train=2199, test=550) ---
+  [4] ratio m=10: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.2510)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.2497)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.2573 [0.2446, 0.2700]  big5_r=0.6445
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.2550 [0.2423, 0.2676]  big5_r=0.6436
+  [4] ratio m=30: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=5, τ=0.1 (item_r=0.3475)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3287)
+    [SoftmaxKNN] test: K=5, τ=0.1  item_r=0.3497 [0.3370, 0.3624]  big5_r=0.8580
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3345 [0.3221, 0.3468]  big5_r=0.8535
+  [4] ratio m=50: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=5, τ=0.1 (item_r=0.3956)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3815)
+    [SoftmaxKNN] test: K=5, τ=0.1  item_r=0.3973 [0.3829, 0.4117]  big5_r=0.9369
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3868 [0.3728, 0.4007]  big5_r=0.9386
+  [4] ratio m=90: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=3, τ=0.05 (item_r=0.5851)
+    [KernelSmoothing] inner val: best τ=0.05 (item_r=0.5846)
+    [SoftmaxKNN] test: K=3, τ=0.05  item_r=0.5903 [0.5653, 0.6153]  big5_r=0.9938
+    [KernelSmoothing] test: K=None, τ=0.05  item_r=0.5884 [0.5631, 0.6136]  big5_r=0.9938
+
+  [4] τ sensitivity analysis (m=30) ...
+    [OK] 30 sensitivity rows
+
+--- Fold 5/5 (train=2200, test=549) ---
+  [5] ratio m=10: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.2631)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.2611)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.2649 [0.2523, 0.2776]  big5_r=0.6535
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.2642 [0.2516, 0.2769]  big5_r=0.6522
+  [5] ratio m=30: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=7, τ=0.1 (item_r=0.3573)
+    [KernelSmoothing] inner val: best τ=0.1 (item_r=0.3377)
+    [SoftmaxKNN] test: K=7, τ=0.1  item_r=0.3633 [0.3517, 0.3749]  big5_r=0.8574
+    [KernelSmoothing] test: K=None, τ=0.1  item_r=0.3435 [0.3319, 0.3552]  big5_r=0.8522
+  [5] ratio m=50: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=10, τ=0.1 (item_r=0.4070)
+    [KernelSmoothing] inner val: best τ=0.05 (item_r=0.3896)
+    [SoftmaxKNN] test: K=10, τ=0.1  item_r=0.4110 [0.3982, 0.4238]  big5_r=0.9404
+    [KernelSmoothing] test: K=None, τ=0.05  item_r=0.3895 [0.3758, 0.4033]  big5_r=0.9306
+  [5] ratio m=90: selecting items via Coverage ...
+    [SoftmaxKNN] inner val: best K=3, τ=0.03 (item_r=0.5992)
+    [KernelSmoothing] inner val: best τ=0.03 (item_r=0.5992)
+    [SoftmaxKNN] test: K=3, τ=0.03  item_r=0.6099 [0.5856, 0.6342]  big5_r=0.9936
+    [KernelSmoothing] test: K=None, τ=0.03  item_r=0.6099 [0.5856, 0.6342]  big5_r=0.9936
+
+  [5] τ sensitivity analysis (m=30) ...
+    [OK] 30 sensitivity rows
+
+[OK] CV completed in 614.0s (40 eval rows)
+
+[5/6] Aggregating and saving results ...
+[OK] Detail results (40 rows) → /workspace/questionnaire-embeddings/results/phase2/softmax_kernel_detail.csv
+[OK] Aggregated results (8 rows) → /workspace/questionnaire-embeddings/results/phase2/softmax_kernel_aggregated.csv
+[OK] Summary results → /workspace/questionnaire-embeddings/results/phase2/softmax_kernel_summary.csv
+[OK] Sensitivity results (150 rows) → /workspace/questionnaire-embeddings/results/phase2/softmax_kernel_sensitivity.csv
+
+--- Per-predictor × ratio (averaged across folds) ---
+Predictor              m    item_r    big5_r  best_K  best_tau
+--------------------------------------------------------------
+KernelSmoothing       10    0.2571    0.6427       —    0.1000
+KernelSmoothing       30    0.3368    0.8519       —    0.1000
+KernelSmoothing       50    0.3893    0.9364       —    0.0900
+KernelSmoothing       90    0.6001    0.9936       —    0.0340
+SoftmaxKNN            10    0.2587    0.6459       7    0.1000
+SoftmaxKNN            30    0.3542    0.8561       7    0.1000
+SoftmaxKNN            50    0.4037    0.9376      10    0.1000
+SoftmaxKNN            90    0.5995    0.9936       3    0.0380
+
+--- τ Sensitivity (m=30, best K per τ for SoftmaxKNN) ---
+  SoftmaxKNN:
+    τ=0.030: best K=7, item_r=0.3201
+    τ=0.050: best K=5, item_r=0.3373
+    τ=0.100: best K=7, item_r=0.3633
+    τ=0.200: best K=5, item_r=0.3573
+    τ=0.500: best K=3, item_r=0.3178
+  KernelSmoothing:
+    τ=0.030: item_r=0.3096
+    τ=0.050: item_r=0.3235
+    τ=0.100: item_r=0.3368
+    τ=0.200: item_r=0.2713
+    τ=0.500: item_r=0.2367
+
+[6/6] Comparison with F008 predictors ...
+[OK] Loaded F008 summary: 8 rows
+
+--- All predictors × ratio (item_r) ---
+  m=10:
+    [F009] SoftmaxKNN              item_r=0.2587
+    [F009] KernelSmoothing         item_r=0.2571
+    [F008] CosineWeightedKNN       item_r=0.1511
+    [F008] UniformKNN              item_r=0.1246
+  m=30:
+    [F009] SoftmaxKNN              item_r=0.3542
+    [F009] KernelSmoothing         item_r=0.3368
+    [F008] CosineWeightedKNN       item_r=0.2884
+    [F008] UniformKNN              item_r=0.2856
+  m=50:
+    [F009] SoftmaxKNN              item_r=0.4037
+    [F009] KernelSmoothing         item_r=0.3893
+    [F008] CosineWeightedKNN       item_r=0.3422
+    [F008] UniformKNN              item_r=0.3411
+  m=90:
+    [F009] KernelSmoothing         item_r=0.6001
+    [F009] SoftmaxKNN              item_r=0.5995
+    [F008] CosineWeightedKNN       item_r=0.5583
+    [F008] UniformKNN              item_r=0.5582
+
+============================================================
+F009 COMPLETE.
+============================================================

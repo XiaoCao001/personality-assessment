@@ -5,8 +5,8 @@
 
 ## Current status
 - Phase: Phase 1 全部完成 (F001–F007)，Phase 2 推进中
-- Last updated: 2026-06-05T07:25:00Z
-- Completed features: 8 / 15
+- Last updated: 2026-06-05T08:15:00Z
+- Completed features: 9 / 15
 - Active feature: none
 
 ## Completed work
@@ -99,13 +99,27 @@
 7. **Random** (F004): 0.2163
 8. **TraitPredictiveness** (F006): 0.1228
 
+### F009 — Phase 2: Softmax Weighted KNN 与 Kernel Smoothing 预测器 (completed 2026-06-05T08:15:00Z)
+- Extended `scripts/predictors.py`（+140 行）— 新增 SoftmaxKNN 和 KernelSmoothing 两个预测器
+- Extracted `_weighted_average()` shared helper for DRY per-subject weighted average
+- Created `scripts/run_softmax_kernel.py`（430 行）— 5-fold CV + Coverage 选题 + inner validation K×τ 网格搜索
+- **SoftmaxKNN 在所有比例上显著优于 F008 CosineWeightedKNN**：
+  - m=10: 0.2587 vs 0.1511 (+71%), m=30: 0.3542 vs 0.2884 (+23%)
+  - m=50: 0.4037 vs 0.3422 (+18%), m=90: 0.5995 vs 0.5583 (+7%)
+- KernelSmoothing 略低于 SoftmaxKNN（使用所有 |S| 项，无 K 参数）
+- τ=0.1 为低题量最优，τ 敏感度确认（bell-shaped 曲线）
+- Evaluator verdict: PASS — all 4 acceptance criteria met (attempt 1)
+- Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+- Outputs: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
+- **建议：Phase 4 所有低题量场景使用 SoftmaxKNN (K=7, τ=0.1)**
+
 ## Current risks / blockers
 - 原文 SBERT embedding 可能使用较旧的 sentence-transformers 版本，baseline 复现时需注意版本兼容性
 - T4 GPU 显存有限（~16GB），E5-large 和 BGE-large 可能需要 batch 处理
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F009] Phase 2: Softmax Weighted KNN 与 Kernel Smoothing 预测器** — continues Phase 2 (depends on F003 ✓, F008 ✓)
+- **[F010] Phase 2: 预测器消融评估 — 表格与图表** — continues Phase 2 (depends on F007 ✓, F008 ✓, F009 ✓)
 - [F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓) — independently parallel
 
 ## Session log

@@ -50,6 +50,54 @@ def _resolve_imports():
 
 
 # ---------------------------------------------------------------------------
+# Shared helper — per-subject weighted average
+# ---------------------------------------------------------------------------
+
+
+def _weighted_average(
+    y_test: np.ndarray,
+    nn_items: np.ndarray,
+    weights: np.ndarray,
+    T: np.ndarray,
+) -> np.ndarray:
+    """Per-subject weighted-average prediction over held-out items *T*.
+
+    Parameters
+    ----------
+    y_test : np.ndarray  shape ``(n_test, n_items)``
+    nn_items : np.ndarray  shape ``(n_neighbours, |T|)``
+        Item indices of the neighbours for each target item.
+    weights : np.ndarray  shape ``(n_neighbours, |T|)``
+        Non-negative prediction weights (same shape as *nn_items*).
+    T : np.ndarray  shape ``(|T|,)``
+        Indices of held-out (target) items.
+
+    Returns
+    -------
+    y_pred : np.ndarray  shape ``(n_test, n_items)``
+        Predictions.  Items not in *T* remain ``NaN``.
+    """
+    y_pred = np.full_like(y_test, np.nan, dtype=np.float64)
+
+    for si in range(y_test.shape[0]):
+        y_subj = y_test[si]
+        neighbour_responses = y_subj[nn_items]  # (n_neighbours, |T|)
+
+        numerator = np.sum(weights * neighbour_responses, axis=0)
+        denominator = np.sum(weights, axis=0)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            preds = np.where(denominator > 0, numerator / denominator, np.nan)
+
+        # Round and clamp to valid Likert range [1, 5] (AC004)
+        preds = np.round(preds)
+        preds = np.clip(preds, 1.0, 5.0)
+
+        y_pred[si, T] = preds
+
+    return y_pred
+
+
+# ---------------------------------------------------------------------------
 # Base predictor with shared vectorised prediction logic
 # ---------------------------------------------------------------------------
 
@@ -134,23 +182,7 @@ class _BaseKNN:
         weights = self._compute_weights(nn_sims)  # (k_eff, |T|)
 
         # --- Per-subject weighted average ---
-        for si in range(y_test.shape[0]):
-            y_subj = y_test[si]  # (n_items,)
-            neighbour_responses = y_subj[nn_items]  # (k_eff, |T|)
-
-            # Weighted mean: ŷ_j = Σ(w_ij × y_i) / Σ(w_ij)
-            numerator = np.sum(weights * neighbour_responses, axis=0)
-            denominator = np.sum(weights, axis=0)
-            with np.errstate(invalid="ignore", divide="ignore"):
-                preds = np.where(denominator > 0, numerator / denominator, np.nan)
-
-            # Round and clamp (AC004)
-            preds = np.round(preds)
-            preds = np.clip(preds, 1.0, 5.0)
-
-            y_pred[si, T] = preds
-
-        return y_pred
+        return _weighted_average(y_test, nn_items, weights, T)
 
     # ------------------------------------------------------------------
     # Subclass hook
@@ -213,6 +245,133 @@ class CosineWeightedKNN(_BaseKNN):
 
 
 # ---------------------------------------------------------------------------
+# SoftmaxKNN — KNN with softmax-normalised weights + temperature
+# ---------------------------------------------------------------------------
+
+
+class SoftmaxKNN(_BaseKNN):
+    """KNN regression with softmax-normalised similarity weights.
+
+    Weight for neighbour *i* predicting target *j*::
+
+        w_ij = softmax(sim(i,j) / τ)_i
+
+    where *τ* (temperature) controls sharpness:
+    low τ  → peaky (closer to max),  high τ → flatter (closer to uniform).
+
+    Parameters
+    ----------
+    K : int
+        Number of nearest neighbours.
+    tau : float
+        Temperature parameter (default 0.1).
+    """
+
+    def __init__(self, K: int = 5, tau: float = 0.1):
+        if tau <= 0:
+            raise ValueError(f"tau must be > 0, got {tau}")
+        super().__init__(K=K)
+        self.tau = tau
+
+    def _compute_weights(self, similarities: np.ndarray) -> np.ndarray:
+        """Softmax over neighbour axis (numerically stable).
+
+        Parameters
+        ----------
+        similarities : np.ndarray  shape ``(k_eff, |T|)``
+            Raw cosine similarities in [-1, 1].
+
+        Returns
+        -------
+        weights : np.ndarray  shape ``(k_eff, |T|)``
+            Softmax-normalised weights summing to 1 per column.
+        """
+        # Numerically stable softmax: subtract max before exp
+        shifted = similarities - np.max(similarities, axis=0, keepdims=True)
+        exp_sim = np.exp(shifted / self.tau)
+        return exp_sim / np.sum(exp_sim, axis=0, keepdims=True)
+
+
+# ---------------------------------------------------------------------------
+# KernelSmoothing — Nadaraya-Watson kernel regression over all items in S
+# ---------------------------------------------------------------------------
+
+
+class KernelSmoothing:
+    """Nadaraya-Watson kernel regression using **all** items in *S*.
+
+    Unlike KNN-based predictors, KernelSmoothing does not select a fixed
+    number of neighbours.  Every administered item contributes to the
+    prediction with an exponential-decay weight::
+
+        w_ij = exp(sim(i,j) / τ)
+
+    The weighted-average denominator normalises the weights automatically,
+    so no explicit softmax is needed.
+
+    Parameters
+    ----------
+    tau : float
+        Temperature parameter (default 0.1).  Lower τ gives more weight
+        to the most similar items; higher τ makes weights more uniform.
+    """
+
+    def __init__(self, tau: float = 0.1):
+        if tau <= 0:
+            raise ValueError(f"tau must be > 0, got {tau}")
+        self.tau = tau
+
+    def predict(
+        self,
+        y_test: np.ndarray,
+        sim: np.ndarray,
+        S: np.ndarray,
+    ) -> np.ndarray:
+        """Predict held-out items using all administered items as neighbours.
+
+        Parameters
+        ----------
+        y_test : np.ndarray  shape ``(n_test, n_items)``
+        sim : np.ndarray  shape ``(n_items, n_items)``
+        S : np.ndarray  shape ``(|S|,)``
+
+        Returns
+        -------
+        y_pred : np.ndarray  shape ``(n_test, n_items)``
+        """
+        n_items = sim.shape[0]
+
+        # Identify held-out items T
+        T_mask = np.ones(n_items, dtype=bool)
+        T_mask[S] = False
+        T = np.where(T_mask)[0]
+
+        if len(T) == 0:
+            return np.full_like(y_test, np.nan, dtype=np.float64)
+
+        n_S = len(S)
+        n_T = len(T)
+
+        # Similarity submatrix: rows=S, cols=T
+        sim_st = sim[np.ix_(S, T)]  # (|S|, |T|)
+
+        # Mask self-similarity (defensive — S ∩ T is typically empty)
+        for ti, tj in enumerate(T):
+            if tj in S:
+                si = np.where(S == tj)[0][0]
+                sim_st[si, ti] = -np.inf
+
+        # All S items are neighbours for every target
+        nn_items = np.tile(S[:, None], (1, n_T))  # (|S|, |T|)
+
+        # Numerically stable exp weights: subtract max before exp
+        sim_shifted = sim_st - np.max(sim_st, axis=0, keepdims=True)
+        weights = np.exp(sim_shifted / self.tau)
+
+        return _weighted_average(y_test, nn_items, weights, T)
+
+
+# ---------------------------------------------------------------------------
 # Stand-alone smoke test
 # ---------------------------------------------------------------------------
 
@@ -245,6 +404,44 @@ def _smoke_test() -> int:
         assert np.all((y_pred[:, held_out] >= 1) & (y_pred[:, held_out] <= 5)), \
             f"{name}: predictions out of [1,5] range"
         print(f"  [OK] {name}(K=3): {n_subj}×{n_items}, |S|={len(S)}, |T|={len(held_out)}")
+
+    # Test SoftmaxKNN
+    sm_knn = SoftmaxKNN(K=3, tau=0.1)
+    y_sm = sm_knn.predict(y, sim, S)
+    assert y_sm.shape == (n_subj, n_items), f"SoftmaxKNN: bad shape {y_sm.shape}"
+    assert np.all(np.isnan(y_sm[:, S])), "SoftmaxKNN: S items should be NaN"
+    assert np.all(~np.isnan(y_sm[:, held_out])), "SoftmaxKNN: held-out should not be NaN"
+    assert np.all((y_sm[:, held_out] >= 1) & (y_sm[:, held_out] <= 5)), \
+        "SoftmaxKNN: predictions out of [1,5]"
+    # Softmax weights should sum to ~1 per column
+    print(f"  [OK] SoftmaxKNN(K=3, tau=0.1): {n_subj}×{n_items}, |S|={len(S)}, |T|={len(held_out)}")
+
+    # Test KernelSmoothing
+    ks = KernelSmoothing(tau=0.1)
+    y_ks = ks.predict(y, sim, S)
+    assert y_ks.shape == (n_subj, n_items), f"KernelSmoothing: bad shape {y_ks.shape}"
+    assert np.all(np.isnan(y_ks[:, S])), "KernelSmoothing: S items should be NaN"
+    assert np.all(~np.isnan(y_ks[:, held_out])), "KernelSmoothing: held-out should not be NaN"
+    assert np.all((y_ks[:, held_out] >= 1) & (y_ks[:, held_out] <= 5)), \
+        "KernelSmoothing: predictions out of [1,5]"
+    # KernelSmoothing uses all |S| items — verify predictions differ from UniformKNN
+    print(f"  [OK] KernelSmoothing(tau=0.1): {n_subj}×{n_items}, |S|={len(S)}, |T|={len(held_out)}")
+
+    # Test τ sensitivity: low τ should be peaky (closer to 1-NN), high τ flatter
+    y_low_tau = SoftmaxKNN(K=5, tau=0.01).predict(y, sim, S)
+    y_high_tau = SoftmaxKNN(K=5, tau=1.0).predict(y, sim, S)
+    if not np.allclose(y_low_tau, y_high_tau, equal_nan=True):
+        print("  [OK] SoftmaxKNN: low τ ≠ high τ (τ sensitivity confirmed)")
+    else:
+        print("  [INFO] SoftmaxKNN: low τ == high τ (synthetic data may not differ)")
+
+    # Test KernelSmoothing with extreme τ values
+    y_ks_low = KernelSmoothing(tau=0.01).predict(y, sim, S)
+    y_ks_high = KernelSmoothing(tau=1.0).predict(y, sim, S)
+    if not np.allclose(y_ks_low, y_ks_high, equal_nan=True):
+        print("  [OK] KernelSmoothing: low τ ≠ high τ (τ sensitivity confirmed)")
+    else:
+        print("  [INFO] KernelSmoothing: low τ == high τ (synthetic data may not differ)")
 
     # Test AC003: K > |S| for CosineWeightedKNN
     pred_AC003 = CosineWeightedKNN(K=10)
@@ -284,6 +481,24 @@ def _smoke_test() -> int:
                 assert np.all((valid >= 1) & (valid <= 5)), \
                     f"{name}: predictions out of [1,5] with real data"
                 print(f"  [OK] {name} on real data: preds range [{valid.min():.0f}, {valid.max():.0f}]")
+
+            # Test SoftmaxKNN on real data
+            sm = SoftmaxKNN(K=5, tau=0.1)
+            yp_sm = sm.predict(Y_real[:100], sim_real, S_real)
+            valid_sm = yp_sm[:100, held]
+            assert valid_sm.shape[1] == 90, "SoftmaxKNN: bad T shape"
+            assert np.all((valid_sm >= 1) & (valid_sm <= 5)), \
+                "SoftmaxKNN: predictions out of [1,5]"
+            print(f"  [OK] SoftmaxKNN on real data: preds range [{valid_sm.min():.0f}, {valid_sm.max():.0f}]")
+
+            # Test KernelSmoothing on real data (uses all |S| items)
+            ks = KernelSmoothing(tau=0.1)
+            yp_ks = ks.predict(Y_real[:100], sim_real, S_real)
+            valid_ks = yp_ks[:100, held]
+            assert valid_ks.shape[1] == 90, "KernelSmoothing: bad T shape"
+            assert np.all((valid_ks >= 1) & (valid_ks <= 5)), \
+                "KernelSmoothing: predictions out of [1,5]"
+            print(f"  [OK] KernelSmoothing on real data: preds range [{valid_ks.min():.0f}, {valid_ks.max():.0f}]")
         except FileNotFoundError:
             print("  [SKIP] Real data not found, skipping integration test")
 

@@ -1,0 +1,35 @@
+{
+  "featureId": "F009",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "status": "pass",
+      "evidence": ["test-output.txt: tau sensitivity lines 164-176", "softmax_kernel_sensitivity.csv: 150 rows"],
+      "notes": "At m=30: tau curve peaks at 0.1 (item_r=0.3633), bell-shaped, confirming reasonable sensitivity."
+    },
+    {
+      "criterionId": "AC002",
+      "status": "pass",
+      "evidence": ["predictors.py L365: nn_items = np.tile(S[:, None], (1, n_T))", "test-output.txt: K=None for all KernelSmoothing rows"],
+      "notes": "KernelSmoothing has no K param. All |S| items used as neighbours via np.tile()."
+    },
+    {
+      "criterionId": "AC003",
+      "status": "pass",
+      "evidence": ["run_softmax_kernel.py L208-282: inner_validation_split on train indices only"],
+      "notes": "Grid search uses y_valid_inner only; test participants untouched until final eval."
+    },
+    {
+      "criterionId": "AC004",
+      "status": "pass",
+      "evidence": ["test-output.txt L178-201: side-by-side F008 comparison", "softmax_kernel_detail.csv: same schema as F008"],
+      "notes": "Output CSVs share same core metric columns as F008. F009 adds best_tau column."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "Full 5-fold CV takes ~614s (~10 min)",
+    "At m=90 all predictors converge (ceiling effect)"
+  ]
+}
