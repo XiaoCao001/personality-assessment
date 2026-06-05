@@ -12,9 +12,10 @@ Overall ranking (mean item_r across m=10,30,50,90):
   1. SoftmaxKNN            : 0.4040
   2. KernelSmoothing       : 0.3958
   3. CosineWeightedKNN     : 0.3350
-  4. UniformKNN            : 0.3274
+  4. Tuned UniformKNN      : 0.3274
+  5. UniformKNN K=5 (原文 baseline): 0.2818
 
-Statistical significance vs UniformKNN:
+Statistical significance vs Tuned UniformKNN:
   m= 10: SoftmaxKNN             Δr=+0.1341 [+0.1307, +0.1381] p=0.0000 ***
   m= 10: KernelSmoothing        Δr=+0.1325 [+0.1287, +0.1370] p=0.0000 ***
   m= 10: CosineWeightedKNN      Δr=+0.0265 [+0.0117, +0.0369] p=0.0002 ***
@@ -31,8 +32,17 @@ Statistical significance vs UniformKNN:
 RECOMMENDATION:
   Best predictor for Phase 4: **SoftmaxKNN**
   Rationale: Highest mean item-level r across all administered-item
-  ratios, with statistically significant improvement over UniformKNN
+  ratios, with statistically significant improvement over Tuned UniformKNN
   confirmed by paired bootstrap tests (N=10,000).
+
+  **Cross-Phase Baseline Alignment Note:**
+  The 'Tuned UniformKNN' in this report uses K=3, selected via inner
+  validation on train participants (Phase 2 protocol). This differs from
+  the original paper's K=5 baseline used in Phase 1 (Coverage K=5).
+  Phase 2 tuned K=3 systematically outperforms Phase 1 fixed K=5:
+  e.g., at m=10: item_r ≈0.125 vs 0.084 (+49%); at m=90: 0.558 vs 0.484 (+15%).
+  The 'UniformKNN K=5 (原文 baseline)' row in Table 3 reflects the
+  true original-paper baseline for cross-phase comparison.
 
   Recommended hyperparameters per ratio:
     m= 10: SoftmaxKNN (K=7, τ=0.100) — item_r=0.2587

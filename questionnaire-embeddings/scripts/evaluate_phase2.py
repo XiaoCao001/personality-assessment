@@ -9,7 +9,7 @@ and visualisation script.
 
 Outputs (saved to results/phase2/figures/):
   table3_predictor_ablation.csv  — 4 predictors × 4 ratios, item_r ± 95% CI
-  figure3_delta_r.pdf/png        — Δr over UniformKNN per ratio
+  figure3_delta_r.pdf/png        — Δr over Tuned UniformKNN per ratio
   statistical_tests_phase2.csv   — paired bootstrap tests
   phase2_recommendation.txt      — summary recommendation
 
@@ -45,14 +45,18 @@ N_BOOTSTRAP = 10_000
 
 # Predictor display order and colours
 PREDICTOR_ORDER = [
-    "UniformKNN",
+    "Tuned UniformKNN",
     "CosineWeightedKNN",
     "SoftmaxKNN",
     "KernelSmoothing",
 ]
 
+# Phase 1 Coverage K=5 baseline (original paper baseline)
+PHASE1_PREDICTOR_LABEL = "UniformKNN K=5 (原文 baseline)"
+
 COLORS = {
-    "UniformKNN": "#999999",
+    "Tuned UniformKNN": "#999999",
+    PHASE1_PREDICTOR_LABEL: "#666666",
     "CosineWeightedKNN": "#2A9D8F",
     "SoftmaxKNN": "#E63946",
     "KernelSmoothing": "#457B9D",
@@ -199,6 +203,11 @@ def load_data():
     # Concatenate
     df = pd.concat([df8, df9], ignore_index=True)
 
+    # Rename: "UniformKNN" → "Tuned UniformKNN" (F016 cross-phase alignment fix)
+    df["predictor"] = df["predictor"].replace(
+        {"UniformKNN": "Tuned UniformKNN"}
+    )
+
     # Normalise: add best_tau column to F008 rows (they have none)
     if "best_tau" not in df.columns:
         df["best_tau"] = np.nan
@@ -268,20 +277,49 @@ def build_table3(df: pd.DataFrame) -> pd.DataFrame:
                 "best_tau": best_tau,
             })
 
+    # --- Append Phase 1 Coverage K=5 baseline (原文 baseline) ---
+    phase1_agg_path = (
+        PROJECT_ROOT / "results" / "phase1" / "semantic_selection_aggregated.csv"
+    )
+    if phase1_agg_path.exists():
+        p1 = pd.read_csv(phase1_agg_path)
+        p1_coverage = p1[p1["strategy"] == "Coverage"]
+        for _, r in p1_coverage.iterrows():
+            ratio = int(r["ratio"])
+            if ratio not in RATIOS:
+                continue
+            rows.append({
+                "predictor": PHASE1_PREDICTOR_LABEL,
+                "ratio": ratio,
+                "item_r": r["item_r"],
+                "item_r_ci_lower": np.nan,  # Phase 1 CI uses different bootstrap
+                "item_r_ci_upper": np.nan,
+                "item_mae": r.get("item_mae", np.nan),
+                "trait_r_mean": r.get("trait_r_mean", np.nan),
+                "profile_r": r.get("profile_r", np.nan),
+                "best_K": 5,   # fixed K=5 (original paper)
+                "best_tau": np.nan,
+            })
+        print(f"  [LOAD] Phase 1 Coverage K=5 baseline: {len(p1_coverage)} rows")
+    else:
+        print(f"  [WARN] Phase 1 aggregated data not found: {phase1_agg_path}")
+
     t3 = pd.DataFrame(rows)
+    # Sort: main predictors first (by PREDICTOR_ORDER), then Phase 1 baseline
     so = {s: i for i, s in enumerate(PREDICTOR_ORDER)}
+    so[PHASE1_PREDICTOR_LABEL] = len(PREDICTOR_ORDER)  # last
     t3["_o"] = t3["predictor"].map(so)
     t3 = t3.sort_values(["ratio", "_o"]).drop(columns=["_o"]).reset_index(drop=True)
 
     # Print
-    header = (f"{'Predictor':<22s} {'m':>3s}  {'item_r':>8s}  "
+    header = (f"{'Predictor':<35s} {'m':>3s}  {'item_r':>8s}  "
               f"{'CI_low':>8s}  {'CI_hi':>8s}  {'MAE':>6s}  "
               f"{'Trait_r':>8s}  {'Prof_r':>7s}")
     print(header)
     print("-" * len(header))
     for _, r in t3.iterrows():
         print(
-            f"{r['predictor']:<22s} "
+            f"{r['predictor']:<35s} "
             f"{int(r['ratio']):3d}  "
             f"{r['item_r']:8.4f}  "
             f"{r['item_r_ci_lower']:8.4f}  "
@@ -291,22 +329,23 @@ def build_table3(df: pd.DataFrame) -> pd.DataFrame:
             f"{r['profile_r']:7.4f}"
         )
 
-    print(f"\n  Table 3: {len(t3)} rows ({len(PREDICTOR_ORDER)} predictors × "
+    n_predictors = len(PREDICTOR_ORDER) + (1 if phase1_agg_path.exists() else 0)
+    print(f"\n  Table 3: {len(t3)} rows ({n_predictors} predictors × "
           f"{len(RATIOS)} ratios)")
     return t3
 
 
 # ---------------------------------------------------------------------------
-# Figure 3: Δr over UniformKNN (AC002)
+# Figure 3: Δr over Tuned UniformKNN (AC002)
 # ---------------------------------------------------------------------------
 def build_figure3(df: pd.DataFrame, t3: pd.DataFrame):
-    """Build Figure 3: Δr = r_predictor - r_UniformKNN per ratio.
+    """Build Figure 3: Δr = r_predictor - r_Tuned UniformKNN per ratio.
 
     Bar chart with 95% CI error bars from paired bootstrap.
     """
     print()
     print("-" * 50)
-    print("Figure 3: Δr over UniformKNN (Weighted − Uniform)")
+    print("Figure 3: Δr over Tuned UniformKNN (Weighted − Tuned Uniform)")
     print("-" * 50)
 
     try:
@@ -322,7 +361,7 @@ def build_figure3(df: pd.DataFrame, t3: pd.DataFrame):
 
     # Compute Δr per predictor × ratio via paired bootstrap
     delta_data: dict[str, dict[int, tuple[float, float, float]]] = {}
-    uni_sub = df[df["predictor"] == "UniformKNN"]
+    uni_sub = df[df["predictor"] == "Tuned UniformKNN"]
 
     for pred_name in WEIGHTED_PREDICTORS:
         delta_data[pred_name] = {}
@@ -372,7 +411,7 @@ def build_figure3(df: pd.DataFrame, t3: pd.DataFrame):
     ax.set_xlabel("Number of Administered Items (m)", fontsize=13)
     ax.set_ylabel("Δr (item-level Pearson r)", fontsize=13)
     ax.set_title(
-        "Figure 3: Predictor Improvement over UniformKNN", fontsize=14
+        "Figure 3: Predictor Improvement over Tuned UniformKNN", fontsize=14
     )
     ax.set_xticks(x)
     ax.set_xticklabels(["10 (10%)", "30 (30%)", "50 (50%)", "90 (90%)"])
@@ -401,9 +440,9 @@ def run_statistical_tests(df: pd.DataFrame) -> pd.DataFrame:
     print("-" * 50)
 
     rows = []
-    uni_sub = df[df["predictor"] == "UniformKNN"]
+    uni_sub = df[df["predictor"] == "Tuned UniformKNN"]
 
-    # --- Each weighted predictor vs UniformKNN ---
+    # --- Each weighted predictor vs Tuned UniformKNN ---
     for pred_name in WEIGHTED_PREDICTORS:
         pred_sub = df[df["predictor"] == pred_name]
         for ratio in RATIOS:
@@ -418,9 +457,9 @@ def run_statistical_tests(df: pd.DataFrame) -> pd.DataFrame:
             result = paired_bootstrap(pred_vals, uni_vals)
             sig = sig_marker(result["p"])
             rows.append({
-                "comparison": f"{pred_name} vs UniformKNN",
+                "comparison": f"{pred_name} vs Tuned UniformKNN",
                 "predictor_a": pred_name,
-                "predictor_b": "UniformKNN",
+                "predictor_b": "Tuned UniformKNN",
                 "ratio": ratio,
                 "delta_mean": result["delta"],
                 "ci_lower": result["ci_low"],
@@ -430,7 +469,7 @@ def run_statistical_tests(df: pd.DataFrame) -> pd.DataFrame:
                 "n_pairs": result["n"],
             })
             print(
-                f"  {pred_name:22s} vs UniformKNN  m={int(ratio):3d}: "
+                f"  {pred_name:22s} vs Tuned UniformKNN  m={int(ratio):3d}: "
                 f"Δr={result['delta']:+.4f} "
                 f"[{result['ci_low']:+.4f}, {result['ci_high']:+.4f}] "
                 f"p={result['p']:.4f} {sig}"
@@ -537,11 +576,11 @@ def write_recommendation(t3: pd.DataFrame, tests: pd.DataFrame) -> str:
     lines.append("")
 
     # Significance summary
-    lines.append("Statistical significance vs UniformKNN:")
+    lines.append("Statistical significance vs Tuned UniformKNN:")
     for ratio in RATIOS:
         sub = tests[
             (tests["ratio"] == ratio)
-            & (tests["comparison"].str.contains("vs UniformKNN"))
+            & (tests["comparison"].str.contains("vs Tuned UniformKNN"))
         ].sort_values("delta_mean", ascending=False)
         for _, r in sub.iterrows():
             lines.append(
@@ -560,9 +599,18 @@ def write_recommendation(t3: pd.DataFrame, tests: pd.DataFrame) -> str:
         "  Rationale: Highest mean item-level r across all administered-item"
     )
     lines.append(
-        "  ratios, with statistically significant improvement over UniformKNN"
+        "  ratios, with statistically significant improvement over Tuned UniformKNN"
     )
     lines.append("  confirmed by paired bootstrap tests (N=10,000).")
+    lines.append("")
+    lines.append("  **Cross-Phase Baseline Alignment Note:**")
+    lines.append("  The 'Tuned UniformKNN' in this report uses K=3, selected via inner")
+    lines.append("  validation on train participants (Phase 2 protocol). This differs from")
+    lines.append("  the original paper's K=5 baseline used in Phase 1 (Coverage K=5).")
+    lines.append("  Phase 2 tuned K=3 systematically outperforms Phase 1 fixed K=5:")
+    lines.append("  e.g., at m=10: item_r ≈0.125 vs 0.084 (+49%); at m=90: 0.558 vs 0.484 (+15%).")
+    lines.append("  The 'UniformKNN K=5 (原文 baseline)' row in Table 3 reflects the")
+    lines.append("  true original-paper baseline for cross-phase comparison.")
 
     # Per-ratio best params
     lines.append("")

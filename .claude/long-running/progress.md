@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 推进中
-- Last updated: 2026-06-05T08:15:00Z
-- Completed features: 10 / 15
+- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3-4 待做 (F011–F015)
+- Last updated: 2026-06-05T10:00:00Z
+- Completed features: 11 / 16
 - Active feature: none
 
 ## Completed work
@@ -76,18 +76,19 @@
 - Outputs: results/phase1/figures/{table1,table2_*.csv,figure1/2.pdf,statistical_tests.csv,recommendation.txt}
 
 ### F008 — Phase 2: Cosine Weighted KNN 预测器 (completed 2026-06-05T07:25:00Z)
-- Created `scripts/predictors.py`（298 行）— 统一的向量化 KNN 预测模块：UniformKNN + CosineWeightedKNN
+- Created `scripts/predictors.py`（298 行）— 统一的向量化 KNN 预测模块：Tuned UniformKNN K=3 + CosineWeightedKNN
 - Created `scripts/run_weighted_knn.py`（480 行）— 5-fold CV + Coverage 选题 + inner validation K 调优
 - CosineWeightedKNN 权重公式：w_ij = sim+(i,j) = (cos(e_i,e_j)+1)/2
 - K 调优范围 {3,5,7,10,15}，per predictor/per fold/ratio，在 train-inner 80/20 上选择
-- 关键结果：m=10 时 CosineWeightedKNN 显著优于 UniformKNN（Δr=+0.0265, p=0.022, +21%）
+- Tuned UniformKNN inner validation 在所有 fold/ratio 均选中 K=3（非原文 fixed K=5）
+- 关键结果：m=10 时 CosineWeightedKNN 显著优于 Tuned UniformKNN（Δr=+0.0265, p=0.022, +21%）
 - m=30（Δr=+0.0028, p<0.001）、m=50（Δr=+0.0011, p<0.001）也有统计显著优势
 - m=90 差距可忽略（Δr=+0.0001, p=0.678）— 题量充足时加权无额外收益
-- 最佳 K：CosineWeightedKNN 在 m=10 用 K=10（权重使更多邻居可行），更高比例用 K=3；UniformKNN 始终 K=3
+- 最佳 K：CosineWeightedKNN 在 m=10 用 K=10（权重使更多邻居可行），更高比例用 K=3；Tuned UniformKNN 始终选择 K=3
 - Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
 - Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - Outputs: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
-- 建议：F009 SoftmaxKNN 已全面超越 CosineWeightedKNN，Phase 4 应优先使用 SoftmaxKNN
+- 建议：F009 SoftmaxKNN 已全面超越 CosineWeightedKNN 和 Tuned UniformKNN K=3，Phase 4 应优先使用 SoftmaxKNN
 
 ### F009 — Phase 2: Softmax Weighted KNN 与 Kernel Smoothing 预测器 (completed 2026-06-05T08:15:00Z)
 - Refactored `scripts/predictors.py`（+140 行）— extracted `_weighted_average()` shared helper；新增 SoftmaxKNN 和 KernelSmoothing
@@ -119,7 +120,10 @@
 1. **SoftmaxKNN** (F009): 0.4040
 2. **KernelSmoothing** (F009): 0.3958
 3. **CosineWeightedKNN** (F008): 0.3350
-4. **UniformKNN** (F008): 0.3274
+4. **Tuned UniformKNN K=3** (F008): 0.3274
+5. **UniformKNN K=5 (原文 baseline)**: 0.2818 (from Phase 1 Coverage K=5)
+
+> **Note (F016):** Phase 2 uses inner-validation tuned K=3 for UniformKNN (renamed "Tuned UniformKNN"), not the original paper's fixed K=5. The original K=5 baseline values are from Phase 1 Coverage K=5.
 
 ## Current risks / blockers
 - 原文 SBERT embedding 可能使用较旧的 sentence-transformers 版本，baseline 复现时需注意版本兼容性
@@ -127,7 +131,8 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓)** — Phase 2 已完成（F010），Phase 3 可独立并行推进
+- **[F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓)** — 在本地 T4 GPU 上为 NEO-PI-R 100 题生成 MiniLM/MPNet/E5/BGE embedding
+- F016 已完成：Phase 2 baseline 命名已修正，推荐继续推进 Phase 3
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization
@@ -195,12 +200,12 @@
 - 输出: results/phase1/figures/ 下完整图表和统计检验
 
 ### 2026-06-05T07:25:00Z F008 Implementation — Weighted KNN Predictor
-- 实现了 `scripts/predictors.py`（298行）— UniformKNN + CosineWeightedKNN + 共享向量化预测 pipeline
+- 实现了 `scripts/predictors.py`（298行）— Tuned UniformKNN K=3 + CosineWeightedKNN + 共享向量化预测 pipeline
 - 实现了 `scripts/run_weighted_knn.py`（480行）— 5-fold CV + Coverage 选题 + inner validation K 调参
-- CosineWeightedKNN 在 m=10 显著优于 UniformKNN（Δ=+0.0265, p=0.022, +21%）
+- CosineWeightedKNN 在 m=10 显著优于 Tuned UniformKNN K=3（Δ=+0.0265, p=0.022, +21%）
 - m=30 和 m=50 也有统计显著优势（p<0.001）
 - 最佳 K：CosineWeightedKNN 在 m=10 用 K=10（权重让更多邻居可行），更高比例用 K=3
-- UniformKNN 始终选 K=3
+- Tuned UniformKNN K=3 在所有 fold/ratio 均被 inner validation 选中
 - Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
 - 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - 输出: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
@@ -222,15 +227,49 @@
 ### 2026-06-05T08:35:00Z F010 Implementation — Phase 2 预测器消融评估
 - Created `scripts/evaluate_phase2.py`（340 行）— Phase 2 predictor ablation evaluation
 - 读取已有 F008/F009 detail CSV，不重新跑实验
-- 生成 Table 3（4 个预测器 × 4 种比例，item_r ± 95% CI, item_mae, trait_r_mean, profile_r）
-- 生成 Figure 3（Δr bar chart，加权方法 vs UniformKNN，分比例展示 95% CI）
+- 生成 Table 3（4 个预测器 × 4 种比例 + Phase 1 K=5 baseline，item_r ± 95% CI, item_mae, trait_r_mean, profile_r）
+- 生成 Figure 3（Δr bar chart，加权方法 vs Tuned UniformKNN K=3，分比例展示 95% CI）
 - AC004 验证通过：F008/F009 使用相同 Coverage S 集合，公平对照
 - 20 个 paired bootstrap tests（N=10,000），含 3 组比较
 - **Phase 2 最终结论：SoftmaxKNN 为最佳预测器**（mean item_r = 0.4040）
-- Predictor ranking: SoftmaxKNN (0.4040) > KernelSmoothing (0.3958) > CosineWeightedKNN (0.3350) > UniformKNN (0.3274)
-- SoftmaxKNN 在所有比例上显著优于 UniformKNN（p<0.001），CI 均不跨 0
+- Predictor ranking: SoftmaxKNN (0.4040) > KernelSmoothing (0.3958) > CosineWeightedKNN (0.3350) > Tuned UniformKNN K=3 (0.3274)
+- SoftmaxKNN 在所有比例上显著优于 Tuned UniformKNN K=3（p<0.001），CI 均不跨 0
 - m=90 时 KernelSmoothing 略优于 SoftmaxKNN（0.6001 vs 0.5995, ns）
 - Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
 - 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - 输出: results/phase2/figures/{table3_predictor_ablation.csv, figure3_delta_r.{pdf,png}, statistical_tests_phase2.csv, phase2_recommendation.txt}
 - **建议: Phase 4 使用 SoftmaxKNN（低题量 K=7 τ=0.1；中间题量 K=10 τ=0.1；高题量 KernelSmoothing τ≈0.034）**
+
+### 2026-06-05T09:00:00Z Cross-Phase Baseline Audit
+- **审计发现: Phase 2 "UniformKNN" 不是原文 K=5 baseline！**
+- Phase 1 (F005/F007): Coverage + KNN **K=5 (fixed)**，如 m=10 时 item_r=0.0836
+- Phase 2 (F008/F010): "UniformKNN" 实际使用 **inner validation tuned K=3**，m=10 时 item_r=0.1246 (+49%)
+- 根因: run_weighted_knn.py 对 UniformKNN 也做了 inner validation K 调优，K∈{3,5,7,10,15}，所有 fold/ratio 均选中 K=3
+- 后果: Phase 2 baseline 被系统性高估，Δr (weighted − baseline) 被低估
+- 验证: S 集合逐 fold/ratio 一致 ✓、fold splits 一致 ✓、evaluation mask 一致 ✓、aggregation 一致 ✓、预测实现数学等价 ✓
+- **唯一差异: K value (3 vs 5)**
+
+### 2026-06-05T09:00:00Z F016 Created — Cross-Phase Baseline Alignment Fix
+- 新增 F016: Phase 2 跨 Phase Baseline 对齐修正（Option A）
+- 计划: (1) UniformKNN → Tuned UniformKNN 重命名；(2) 新增 Phase 1 Coverage K=5 原文 baseline 行；(3) 更新 Figure 3/统计检验/推荐文本
+- Depends on: F007 (Phase 1 results), F010 (Phase 2 evaluation script)
+- 不重新跑实验，纯报告修正
+
+### 2026-06-05T10:00:00Z F016 Implementation — 跨 Phase Baseline 对齐修正
+- 修改 `scripts/evaluate_phase2.py`：
+  - PREDICTOR_ORDER: "UniformKNN" → "Tuned UniformKNN"
+  - COLORS: 同步更新 key + 新增 Phase 1 baseline 颜色
+  - load_data(): 运行时重命名 df["predictor"] = replace(UniformKNN → Tuned UniformKNN)
+  - build_table3(): 从 Phase 1 semantic_selection_aggregated.csv 加载 Coverage 行，追加为 "UniformKNN K=5 (原文 baseline)"
+  - build_figure3(): 标题更新为 "over Tuned UniformKNN"
+  - run_statistical_tests(): comparison/predictor_b 更新为 "Tuned UniformKNN"
+  - write_recommendation(): 新增 Cross-Phase Baseline Alignment Note 段落
+- 重新运行 evaluate_phase2.py（quick 模式，2k bootstrap）
+- Table 3 验证通过：20 rows (5 predictors × 4 ratios)
+  - Tuned UniformKNN K=3: item_r=0.125/0.286/0.341/0.558
+  - UniformKNN K=5 (原文 baseline): item_r=0.084/0.256/0.304/0.484 (K=5, best_K=5)
+- Statistical tests 验证通过：comparison 列使用 "vs Tuned UniformKNN"
+- Recommendation 包含 baseline 对齐说明
+- progress.md F008/F009/F010 session log 已完成 UniformKNN → Tuned UniformKNN K=3 修正
+- Phase 2 predictor ranking 新增 UniformKNN K=5 (原文 baseline) 行及说明注释
+- Evaluator verdict: pending

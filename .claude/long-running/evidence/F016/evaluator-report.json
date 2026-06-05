@@ -1,0 +1,38 @@
+{
+  "featureId": "F016",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "status": "pass",
+      "evidence": ["table3_predictor_ablation.csv: first row 'Tuned UniformKNN', new row 'UniformKNN K=5 (原文 baseline)' with Phase 1 Coverage K=5 values"],
+      "notes": "Table 3 first row is 'Tuned UniformKNN' (predictor renamed); new row 'UniformKNN K=5 (原文 baseline)' present with Phase 1 Coverage values"
+    },
+    {
+      "criterionId": "AC002",
+      "status": "pass",
+      "evidence": ["test-output.txt: 'Figure 3: Δr over Tuned UniformKNN (Weighted − Tuned Uniform)'", "figure3_delta_r.pdf regenerated"],
+      "notes": "Figure 3 title: 'Δr over Tuned UniformKNN'"
+    },
+    {
+      "criterionId": "AC003",
+      "status": "pass",
+      "evidence": ["statistical_tests_phase2.csv: all comparisons use 'vs Tuned UniformKNN'"],
+      "notes": "All 12 comparisons use 'vs Tuned UniformKNN'"
+    },
+    {
+      "criterionId": "AC004",
+      "status": "pass",
+      "evidence": ["phase2_recommendation.txt: Cross-Phase Baseline Alignment Note"],
+      "notes": "Explicitly states Phase 2 tuned K=3 systematically outperforms Phase 1 fixed K=5 with deltas (m=10: +49%, m=90: +15%)"
+    },
+    {
+      "criterionId": "AC005",
+      "status": "pass",
+      "evidence": ["progress.md: F008/F009/F010 session logs and completed work entries corrected to Tuned UniformKNN K=3"],
+      "notes": "All bare 'UniformKNN' references in F008/F010 entries corrected"
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": ["Figure 3 legend truncates 'Tuned UniformKNN' to 'Tuned Uniform' due to matplotlib space constraint — minor polish item, not a naming regression"]
+}

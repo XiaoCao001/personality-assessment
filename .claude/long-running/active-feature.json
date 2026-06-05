@@ -1,15 +1,15 @@
 {
-  "featureId": "F010",
+  "featureId": "F016",
   "phase": "completed",
   "status": "completed",
-  "startedAt": "2026-06-05T08:30:00Z",
-  "completedAt": "2026-06-05T08:35:00Z",
-  "startedFromCommit": "689e489",
-  "dirty": false,
+  "startedAt": "2026-06-05T09:30:00Z",
+  "completedAt": "2026-06-05T10:15:00Z",
+  "startedFromCommit": "2e93c7c",
+  "dirty": true,
   "changedFiles": [
     "questionnaire-embeddings/scripts/evaluate_phase2.py"
   ],
-  "evidenceDir": ".claude/long-running/evidence/F010",
+  "evidenceDir": ".claude/long-running/evidence/F016",
   "lastEvaluatorVerdict": "PASS",
-  "handoffPromptFile": ".claude/long-running/evidence/F010/feature-dev-handoff.md"
+  "handoffPromptFile": ".claude/long-running/evidence/F016/feature-dev-handoff.md"
 }

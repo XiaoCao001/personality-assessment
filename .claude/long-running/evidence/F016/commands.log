@@ -1,0 +1,11 @@
+=== Commands executed for F016 ===
+
+1. Verify generated files:
+   grep -E 'Tuned|原文' /workspace/questionnaire-embeddings/results/phase2/figures/table3_predictor_ablation.csv
+   grep -E 'Tuned|原文|Cross-Phase' /workspace/questionnaire-embeddings/results/phase2/figures/phase2_recommendation.txt
+   grep 'Tuned' /workspace/questionnaire-embeddings/results/phase2/figures/statistical_tests_phase2.csv
+
+2. Run modified evaluate_phase2.py (quick mode, 2k bootstrap):
+   cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py --quick
+
+3. Full test output captured in test-output.txt

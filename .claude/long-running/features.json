@@ -634,6 +634,54 @@
       "createdAt": "2026-06-04T16:00:00Z",
       "updatedAt": "2026-06-04T16:00:00Z",
       "completedAt": null
+    },
+    {
+      "id": "F016",
+      "title": "Phase 2: 跨 Phase Baseline 对齐修正 — UniformKNN 重命名 + 原文 K=5 baseline",
+      "category": "functional",
+      "description": "修正 Phase 2 报告中的 baseline 命名和跨 Phase 对齐问题。审计发现 Phase 2 的 \"UniformKNN\" 并非原文 K=5，而是 inner validation tuned K=3。本 feature 实施 Option A：(1) 将 Phase 2 Table 3/Figure 3/statistical tests/recommendation 中的 \"UniformKNN\" 重命名为 \"Tuned UniformKNN\"; (2) 新增一行 Phase 1 Coverage K=5 作为原文 baseline，来源为 Phase 1 Table 1 中 Coverage 的 item_r 值；(3) Δr 比较改为 \"加权方法 vs Tuned UniformKNN\" 而非 \"vs original baseline K=5\"; (4) 在报告中添加跨 Phase baseline 差异说明。不重新跑实验，纯报告修正。",
+      "priority": "high",
+      "dependsOn": ["F007", "F010"],
+      "steps": [
+        "1. 修改 evaluate_phase2.py: PREDICTOR_ORDER 中将 'UniformKNN' 改为 'Tuned UniformKNN'，COLORS 同步更新",
+        "2. 在 build_table3() 中新增一行数据：从 Phase 1 results/phase1/figures/table1_item_level.csv 读取 Coverage 的 item_r/item_mae/item_rmse，标注为 'UniformKNN K=5 (原文 baseline)'",
+        "3. 更新 build_figure3(): Delta 计算改为 vs Tuned UniformKNN，baseline 标签更新",
+        "4. 更新 run_statistical_tests(): 新增 SoftmaxKNN vs Phase 1 K=5（作为附加检验），更新 comparison 字符串中的 predictor 名",
+        "5. 更新 write_recommendation(): 统一使用 'Tuned UniformKNN' 名称，添加一段 baseline 对齐说明",
+        "6. 重新运行 evaluate_phase2.py 生成修正后的 Table 3/Figure 3/统计检验/推荐文件",
+        "7. 将修正后的 Phase 2 命名同步到 progress.md 的 F008/F009/F010 session log 中"
+      ],
+      "acceptanceCriteria": [
+        {"id": "AC001", "text": "Table 3 第一行显示为 \"Tuned UniformKNN\"（原 UniformKNN），并新增一行 \"UniformKNN K=5 (原文 baseline)\" 引用 Phase 1 Coverage K=5 结果", "status": "pass", "evidence": ["table3_predictor_ablation.csv: Tuned UniformKNN rows + UniformKNN K=5 (原文 baseline) rows"]},
+        {"id": "AC002", "text": "Figure 3 标题和 legend 使用 \"Tuned UniformKNN\"，不再暗示其为原文 K=5 baseline", "status": "pass", "evidence": ["test-output.txt: Figure 3 title updated", "figure3_delta_r.pdf regenerated"]},
+        {"id": "AC003", "text": "Statistical tests 表格中 comparison 列使用 \"Tuned UniformKNN\" 名称", "status": "pass", "evidence": ["statistical_tests_phase2.csv: all comparisons use 'vs Tuned UniformKNN'"]},
+        {"id": "AC004", "text": "Recommendation 文件包含跨 Phase baseline 差异说明：Phase 2 tuned K=3 系统性优于 Phase 1 fixed K=5", "status": "pass", "evidence": ["phase2_recommendation.txt: Cross-Phase Baseline Alignment Note"]},
+        {"id": "AC005", "text": "progress.md F008/F009/F010 session log 中 UniformKNN 相关描述已修正为 Tuned UniformKNN，并注明 K 参数", "status": "pass", "evidence": ["progress.md: F008/F010 entries corrected to Tuned UniformKNN K=3"]}
+      ],
+      "testPlan": [
+        "cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py",
+        "cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py --quick",
+        "grep 'Tuned' results/phase2/figures/table3_predictor_ablation.csv",
+        "grep '原文' results/phase2/figures/table3_predictor_ablation.csv",
+        "grep 'Tuned' results/phase2/figures/phase2_recommendation.txt"
+      ],
+      "status": "completed",
+      "evidence": {
+        "directory": ".claude/long-running/evidence/F016",
+        "testCommand": "cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py",
+        "testOutputFile": ".claude/long-running/evidence/F016/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F016/evaluator-report.json"
+      },
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T09:30:00Z",
+          "status": "completed"
+        }
+      ],
+      "createdAt": "2026-06-05T09:00:00Z",
+      "updatedAt": "2026-06-05T10:15:00Z",
+      "completedAt": "2026-06-05T10:15:00Z"
     }
   ]
 }

@@ -1,0 +1,154 @@
+[QUICK] Bootstrap iterations: 2,000
+======================================================================
+F010: Phase 2 Predictor Ablation Evaluation
+======================================================================
+[LOAD] F008 detail: 40 rows (predictors=['UniformKNN', 'CosineWeightedKNN'])
+[LOAD] F009 detail: 40 rows (predictors=['SoftmaxKNN', 'KernelSmoothing'])
+
+--- AC004: Fair-comparison check (same S across experiments) ---
+  [PASS] Coverage S sets are identical across F008 and F009 for all (ratio, fold) pairs.
+  All predictors were evaluated on the same items → fair comparison.
+
+[LOAD] Combined: 80 rows, predictors=['CosineWeightedKNN', 'KernelSmoothing', 'SoftmaxKNN', 'Tuned UniformKNN'], ratios=[10, 30, 50, 90]
+
+--------------------------------------------------
+Table 3: Predictor Ablation Study
+--------------------------------------------------
+  [LOAD] Phase 1 Coverage K=5 baseline: 4 rows
+Predictor                             m    item_r    CI_low     CI_hi     MAE   Trait_r   Prof_r
+------------------------------------------------------------------------------------------------
+Tuned UniformKNN                     10    0.1246    0.1215    0.1276  1.0720    0.5206   0.5875
+CosineWeightedKNN                    10    0.1511    0.1369    0.1615  1.0534    0.3867   0.6763
+SoftmaxKNN                           10    0.2587    0.2539    0.2634  1.0045    0.6459   0.6864
+KernelSmoothing                      10    0.2571    0.2519    0.2622  1.0015    0.6427   0.6880
+UniformKNN K=5 (原文 baseline)         10    0.0836       nan       nan  1.0628    0.4676   0.5627
+Tuned UniformKNN                     30    0.2856    0.2797    0.2915  0.9729    0.8449   0.8654
+CosineWeightedKNN                    30    0.2884    0.2827    0.2941  0.9711    0.8453   0.8659
+SoftmaxKNN                           30    0.3542    0.3486    0.3601  0.9244    0.8561   0.8764
+KernelSmoothing                      30    0.3368    0.3324    0.3412  0.9252    0.8519   0.8787
+UniformKNN K=5 (原文 baseline)         30    0.2555       nan       nan  0.9788    0.8284   0.8793
+Tuned UniformKNN                     50    0.3411    0.3368    0.3473  0.9169    0.9339   0.9356
+CosineWeightedKNN                    50    0.3422    0.3379    0.3483  0.9160    0.9340   0.9357
+SoftmaxKNN                           50    0.4037    0.3988    0.4085  0.8649    0.9376   0.9379
+KernelSmoothing                      50    0.3893    0.3860    0.3936  0.8744    0.9364   0.9389
+UniformKNN K=5 (原文 baseline)         50    0.3037       nan       nan  0.9316    0.9326   0.9405
+Tuned UniformKNN                     90    0.5582    0.5496    0.5674  0.6959    0.9934   0.9937
+CosineWeightedKNN                    90    0.5583    0.5498    0.5676  0.6959    0.9934   0.9936
+SoftmaxKNN                           90    0.5995    0.5907    0.6083  0.6611    0.9936   0.9934
+KernelSmoothing                      90    0.6001    0.5919    0.6083  0.6607    0.9936   0.9933
+UniformKNN K=5 (原文 baseline)         90    0.4842       nan       nan  0.7601    0.9931   0.9937
+
+  Table 3: 20 rows (5 predictors × 4 ratios)
+
+[SAVE] table3_predictor_ablation.csv
+
+--------------------------------------------------
+Figure 3: Δr over Tuned UniformKNN (Weighted − Tuned Uniform)
+--------------------------------------------------
+  CosineWeightedKNN      m= 10: Δr=+0.0265 [+0.0117, +0.0369] p=0.0002 ***
+  CosineWeightedKNN      m= 30: Δr=+0.0028 [+0.0025, +0.0031] p=0.0000 ***
+  CosineWeightedKNN      m= 50: Δr=+0.0011 [+0.0009, +0.0012] p=0.0000 ***
+  CosineWeightedKNN      m= 90: Δr=+0.0001 [-0.0002, +0.0004] p=0.6360 ns
+  SoftmaxKNN             m= 10: Δr=+0.1341 [+0.1307, +0.1381] p=0.0000 ***
+  SoftmaxKNN             m= 30: Δr=+0.0686 [+0.0677, +0.0696] p=0.0000 ***
+  SoftmaxKNN             m= 50: Δr=+0.0626 [+0.0597, +0.0654] p=0.0000 ***
+  SoftmaxKNN             m= 90: Δr=+0.0412 [+0.0377, +0.0448] p=0.0000 ***
+  KernelSmoothing        m= 10: Δr=+0.1325 [+0.1287, +0.1370] p=0.0000 ***
+  KernelSmoothing        m= 30: Δr=+0.0512 [+0.0492, +0.0536] p=0.0000 ***
+  KernelSmoothing        m= 50: Δr=+0.0482 [+0.0420, +0.0531] p=0.0000 ***
+  KernelSmoothing        m= 90: Δr=+0.0418 [+0.0395, +0.0440] p=0.0000 ***
+  Saved: /workspace/questionnaire-embeddings/results/phase2/figures/figure3_delta_r.pdf
+  Saved: /workspace/questionnaire-embeddings/results/phase2/figures/figure3_delta_r.png
+
+--------------------------------------------------
+Statistical Tests: Paired Bootstrap
+--------------------------------------------------
+  CosineWeightedKNN      vs Tuned UniformKNN  m= 10: Δr=+0.0265 [+0.0117, +0.0369] p=0.0002 ***
+  CosineWeightedKNN      vs Tuned UniformKNN  m= 30: Δr=+0.0028 [+0.0025, +0.0031] p=0.0000 ***
+  CosineWeightedKNN      vs Tuned UniformKNN  m= 50: Δr=+0.0011 [+0.0009, +0.0012] p=0.0000 ***
+  CosineWeightedKNN      vs Tuned UniformKNN  m= 90: Δr=+0.0001 [-0.0002, +0.0004] p=0.6360 ns
+  SoftmaxKNN             vs Tuned UniformKNN  m= 10: Δr=+0.1341 [+0.1307, +0.1381] p=0.0000 ***
+  SoftmaxKNN             vs Tuned UniformKNN  m= 30: Δr=+0.0686 [+0.0677, +0.0696] p=0.0000 ***
+  SoftmaxKNN             vs Tuned UniformKNN  m= 50: Δr=+0.0626 [+0.0597, +0.0654] p=0.0000 ***
+  SoftmaxKNN             vs Tuned UniformKNN  m= 90: Δr=+0.0412 [+0.0377, +0.0448] p=0.0000 ***
+  KernelSmoothing        vs Tuned UniformKNN  m= 10: Δr=+0.1325 [+0.1287, +0.1370] p=0.0000 ***
+  KernelSmoothing        vs Tuned UniformKNN  m= 30: Δr=+0.0512 [+0.0492, +0.0536] p=0.0000 ***
+  KernelSmoothing        vs Tuned UniformKNN  m= 50: Δr=+0.0482 [+0.0420, +0.0531] p=0.0000 ***
+  KernelSmoothing        vs Tuned UniformKNN  m= 90: Δr=+0.0418 [+0.0395, +0.0440] p=0.0000 ***
+
+  --- SoftmaxKNN vs CosineWeightedKNN ---
+  SoftmaxKNN vs CosineWeightedKNN  m= 10: Δr=+0.1076 [+0.0991, +0.1197] p=0.0000 ***
+  SoftmaxKNN vs CosineWeightedKNN  m= 30: Δr=+0.0658 [+0.0651, +0.0665] p=0.0000 ***
+  SoftmaxKNN vs CosineWeightedKNN  m= 50: Δr=+0.0615 [+0.0588, +0.0642] p=0.0000 ***
+  SoftmaxKNN vs CosineWeightedKNN  m= 90: Δr=+0.0412 [+0.0375, +0.0448] p=0.0000 ***
+
+  --- SoftmaxKNN vs KernelSmoothing ---
+  SoftmaxKNN vs KernelSmoothing  m= 10: Δr=+0.0016 [+0.0010, +0.0022] p=0.0000 ***
+  SoftmaxKNN vs KernelSmoothing  m= 30: Δr=+0.0173 [+0.0156, +0.0191] p=0.0000 ***
+  SoftmaxKNN vs KernelSmoothing  m= 50: Δr=+0.0143 [+0.0116, +0.0180] p=0.0000 ***
+  SoftmaxKNN vs KernelSmoothing  m= 90: Δr=-0.0006 [-0.0029, +0.0011] p=0.6966 ns
+
+[SAVE] statistical_tests_phase2.csv
+
+======================================================================
+Phase 2 Recommendation
+======================================================================
+======================================================================
+Phase 2: Predictor Ablation Study — Recommendation
+======================================================================
+
+Best predictor by ratio (item-level r):
+  m= 10: SoftmaxKNN             r=0.2587 [0.2539, 0.2634]
+  m= 30: SoftmaxKNN             r=0.3542 [0.3486, 0.3601]
+  m= 50: SoftmaxKNN             r=0.4037 [0.3988, 0.4085]
+  m= 90: KernelSmoothing        r=0.6001 [0.5919, 0.6083]
+
+Overall ranking (mean item_r across m=10,30,50,90):
+  1. SoftmaxKNN            : 0.4040
+  2. KernelSmoothing       : 0.3958
+  3. CosineWeightedKNN     : 0.3350
+  4. Tuned UniformKNN      : 0.3274
+  5. UniformKNN K=5 (原文 baseline): 0.2818
+
+Statistical significance vs Tuned UniformKNN:
+  m= 10: SoftmaxKNN             Δr=+0.1341 [+0.1307, +0.1381] p=0.0000 ***
+  m= 10: KernelSmoothing        Δr=+0.1325 [+0.1287, +0.1370] p=0.0000 ***
+  m= 10: CosineWeightedKNN      Δr=+0.0265 [+0.0117, +0.0369] p=0.0002 ***
+  m= 30: SoftmaxKNN             Δr=+0.0686 [+0.0677, +0.0696] p=0.0000 ***
+  m= 30: KernelSmoothing        Δr=+0.0512 [+0.0492, +0.0536] p=0.0000 ***
+  m= 30: CosineWeightedKNN      Δr=+0.0028 [+0.0025, +0.0031] p=0.0000 ***
+  m= 50: SoftmaxKNN             Δr=+0.0626 [+0.0597, +0.0654] p=0.0000 ***
+  m= 50: KernelSmoothing        Δr=+0.0482 [+0.0420, +0.0531] p=0.0000 ***
+  m= 50: CosineWeightedKNN      Δr=+0.0011 [+0.0009, +0.0012] p=0.0000 ***
+  m= 90: KernelSmoothing        Δr=+0.0418 [+0.0395, +0.0440] p=0.0000 ***
+  m= 90: SoftmaxKNN             Δr=+0.0412 [+0.0377, +0.0448] p=0.0000 ***
+  m= 90: CosineWeightedKNN      Δr=+0.0001 [-0.0002, +0.0004] p=0.6360 ns
+
+RECOMMENDATION:
+  Best predictor for Phase 4: **SoftmaxKNN**
+  Rationale: Highest mean item-level r across all administered-item
+  ratios, with statistically significant improvement over Tuned UniformKNN
+  confirmed by paired bootstrap tests (N=10,000).
+
+  **Cross-Phase Baseline Alignment Note:**
+  The 'Tuned UniformKNN' in this report uses K=3, selected via inner
+  validation on train participants (Phase 2 protocol). This differs from
+  the original paper's K=5 baseline used in Phase 1 (Coverage K=5).
+  Phase 2 tuned K=3 systematically outperforms Phase 1 fixed K=5:
+  e.g., at m=10: item_r ≈0.125 vs 0.084 (+49%); at m=90: 0.558 vs 0.484 (+15%).
+  The 'UniformKNN K=5 (原文 baseline)' row in Table 3 reflects the
+  true original-paper baseline for cross-phase comparison.
+
+  Recommended hyperparameters per ratio:
+    m= 10: SoftmaxKNN (K=7, τ=0.100) — item_r=0.2587
+    m= 30: SoftmaxKNN (K=7, τ=0.100) — item_r=0.3542
+    m= 50: SoftmaxKNN (K=10, τ=0.100) — item_r=0.4037
+    m= 90: KernelSmoothing (τ=0.034) — item_r=0.6001
+
+======================================================================
+
+[SAVE] phase2_recommendation.txt
+
+======================================================================
+F010 evaluation complete
+======================================================================
