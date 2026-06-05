@@ -245,26 +245,32 @@
         "7. 保存结果到 results/phase1/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "corrected item-total correlation 不包含题项自身（无泄漏）", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "Hybrid-C 选出的题目维度分布比纯 TraitPredictiveness 更均衡", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "所有选题决策仅在 train participants 上完成", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "三种 Hybrid 变体可单独运行和比较", "status": "unknown", "evidence": []}
+        {"id": "AC001", "text": "corrected item-total correlation 不包含题项自身（无泄漏）", "status": "pass", "evidence": ["selection.py L499-504: other excludes self; smoke test max|r|=0.7143 < 0.95"]},
+        {"id": "AC002", "text": "Hybrid-C 选出的题目维度分布比纯 TraitPredictiveness 更均衡", "status": "pass", "evidence": ["smoke test: HC m=10 max_dev=1 vs TP max_dev=4; 5-fold CV: HC 1.0-1.4 vs TP 4.0-9.0"]},
+        {"id": "AC003", "text": "所有选题决策仅在 train participants 上完成", "status": "pass", "evidence": ["selectors receive y_train only; test data only used for prediction evaluation"]},
+        {"id": "AC004", "text": "三种 Hybrid 变体可单独运行和比较", "status": "pass", "evidence": ["variant='A'/'B'/'C'; smoke test A≠C confirmed; 12 distinct rows in aggregated.csv"]}
       ],
       "testPlan": [
         "python scripts/run_trait_hybrid_selection.py",
         "python -c \"from selection import HybridSelector; s=HybridSelector(variant='C').select(10); from collections import Counter; print(Counter([trait_id[i] for i in s]))\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F006",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_trait_hybrid_selection.py",
+        "testOutputFile": ".claude/long-running/evidence/F006/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F006/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T05:05:00Z",
+          "status": "completed"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-05T05:25:00Z",
+      "completedAt": "2026-06-05T05:25:00Z"
     },
     {
       "id": "F007",

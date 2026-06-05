@@ -1,17 +1,17 @@
 {
-  "featureId": "F005",
+  "featureId": "F006",
   "phase": "completed",
   "status": "completed",
-  "completedAt": "2026-06-05T04:58:00Z",
-  "startedAt": "2026-06-05T04:31:07Z",
-  "startedFromCommit": "c9167dc",
+  "completedAt": "2026-06-05T05:25:00Z",
+  "startedAt": "2026-06-05T05:05:00Z",
+  "startedFromCommit": "45125b3",
   "dirty": false,
   "changedFiles": [
     "questionnaire-embeddings/scripts/selection.py",
-    "questionnaire-embeddings/scripts/run_semantic_selection.py"
+    "questionnaire-embeddings/scripts/run_trait_hybrid_selection.py"
   ],
-  "evidenceDir": ".claude/long-running/evidence/F005",
+  "evidenceDir": ".claude/long-running/evidence/F006",
   "lastEvaluatorVerdict": "PASS",
-  "handoffPromptFile": ".claude/long-running/evidence/F005/feature-dev-handoff.md",
-  "lastModifiedAt": "2026-06-05T04:58:00+00:00"
+  "handoffPromptFile": ".claude/long-running/evidence/F006/feature-dev-handoff.md",
+  "lastModifiedAt": "2026-06-05T05:25:00Z"
 }

@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: F001, F002, F003, F004, F005 completed — Phase 1 selection strategies complete
-- Last updated: 2026-06-05T04:58:00Z
-- Completed features: 5 / 15
+- Phase: F001–F006 completed — Phase 1 selection strategies complete (8 strategies total)
+- Last updated: 2026-06-05T05:25:00Z
+- Completed features: 6 / 15
 - Active feature: none
 
 ## Completed work
@@ -23,9 +23,19 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F006] Phase 1: 心理测量选题策略 — Trait Predictiveness 与 Hybrid (A/B/C)** — depends on F003 ✓ + F005 ✓, can start now
-- [F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓) — independently parallel
-- F005 semantic strategies completed; Coverage outperforms all baselines. F006 completes the Phase 1 strategy set (8 strategies total).
+- **[F007] Phase 1: 选题策略完整评估 — 指标、表格与图表** — depends on F004 ✓ + F005 ✓ + F006 ✓, can start now
+- [F008] Phase 2: Cosine Weighted KNN 预测器 (depends on F003 ✓) — independently parallel
+- **Phase 1 is now complete (F004–F006 all done).** F007 aggregates all 8 strategies into tables/figures and selects the best strategy for Phase 2.
+
+- **2026-06-05T05:25:00Z F006 completed** — 心理测量选题策略（Trait Predictiveness & Hybrid A/B/C）
+  - Added TraitPredictivenessSelector and HybridSelector to `scripts/selection.py` (+350 lines)
+  - Created `scripts/run_trait_hybrid_selection.py` (320 lines) — full 5-fold CV runner
+  - Hybrid-C dominates at m=10/30/50 (item_r = 0.075/0.228/0.295); Hybrid-A best at m=90 (0.370)
+  - Pure TraitPredictiveness worst performer (0.052/0.123/0.120/0.197) — selects from only 2-3 traits
+  - All F006 strategies underperform F005 Coverage (0.084/0.256/0.304/0.484) — Coverage remains recommended
+  - Evaluator verdict: PASS — all 4 acceptance criteria met (attempt 1)
+  - Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+  - Results: results/phase1/trait_hybrid_selection_{detail,aggregated,summary}.csv
 
 - **2026-06-05T04:30:00Z F004 completed** — 随机选题策略（Random & Balanced Random）
   - Created `scripts/selection.py` (171 lines) — RandomSelector + BalancedRandomSelector

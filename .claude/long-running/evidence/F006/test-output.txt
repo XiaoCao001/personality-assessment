@@ -1,0 +1,85 @@
+============================================================
+F006: Trait & Hybrid Selection Evaluation — FULL
+============================================================
+
+[1/5] Loading data ...
+[OK] Loaded Y:      (2749, 100)  range=[1, 5]
+[OK] Loaded E_old:  (100, 1024)
+[OK] Loaded metadata: 100 items
+[OK] Cosine distance matrix: (100, 100)
+
+[2/5] Strategy overview ...
+    TraitPredictiveness: top-m by |corrected item-total r|
+    Hybrid-A: Coverage + TraitPredictiveness (α=1.0)
+    Hybrid-B: Coverage + TraitPredictiveness − Redundancy (α=1.0, β=1.0)
+    Hybrid-C: Coverage + TraitPredictiveness − Redundancy − ImbalancePenalty (α=1.0, β=1.0, γ=0.5, δ=0.5)
+    All selection on train participants only (AC003)
+
+[3/5] Running 5-fold participant CV ...
+
+--- Fold 1/5 (train=2199, test=550) ---
+  [Fold 1] m=10  best: Hybrid-C (item_r=0.0760)  (3.9s)
+  [Fold 1] m=30  best: Hybrid-C (item_r=0.2313)  (4.4s)
+  [Fold 1] m=50  best: Hybrid-C (item_r=0.3056)  (4.9s)
+  [Fold 1] m=90  best: Hybrid-A (item_r=0.3656)  (5.6s)
+
+--- Fold 2/5 (train=2199, test=550) ---
+  [Fold 2] m=10  best: Hybrid-B (item_r=0.0794)  (3.9s)
+  [Fold 2] m=30  best: Hybrid-C (item_r=0.2449)  (4.4s)
+  [Fold 2] m=50  best: Hybrid-B (item_r=0.2869)  (5.0s)
+  [Fold 2] m=90  best: Hybrid-C (item_r=0.3732)  (5.6s)
+
+--- Fold 3/5 (train=2199, test=550) ---
+  [Fold 3] m=10  best: Hybrid-C (item_r=0.0796)  (3.9s)
+  [Fold 3] m=30  best: Hybrid-C (item_r=0.2160)  (4.4s)
+  [Fold 3] m=50  best: Hybrid-C (item_r=0.2935)  (4.9s)
+  [Fold 3] m=90  best: Hybrid-A (item_r=0.3789)  (5.5s)
+
+--- Fold 4/5 (train=2199, test=550) ---
+  [Fold 4] m=10  best: Hybrid-C (item_r=0.0748)  (3.9s)
+  [Fold 4] m=30  best: Hybrid-C (item_r=0.2230)  (4.4s)
+  [Fold 4] m=50  best: Hybrid-C (item_r=0.2989)  (4.9s)
+  [Fold 4] m=90  best: Hybrid-A (item_r=0.3693)  (5.4s)
+
+--- Fold 5/5 (train=2200, test=549) ---
+  [Fold 5] m=10  best: Hybrid-B (item_r=0.0767)  (3.8s)
+  [Fold 5] m=30  best: Hybrid-A (item_r=0.2277)  (4.3s)
+  [Fold 5] m=50  best: Hybrid-C (item_r=0.3006)  (4.7s)
+  [Fold 5] m=90  best: Hybrid-B (item_r=0.3879)  (5.5s)
+
+[4/5] Aggregating results ...
+
+--- Per-strategy × ratio (averaged across folds) ---
+Strategy                   m    item_r    big5_r  coverage   trait_dev   dir_imb
+--------------------------------------------------------------------------------
+Hybrid-A                  10    0.0649    0.4506    0.8037        2.00    0.0000
+Hybrid-A                  30    0.1997    0.7966    0.8761        4.00    0.0800
+Hybrid-A                  50    0.2858    0.9125    0.9209        4.80    0.0040
+Hybrid-A                  90    0.3701    0.9908    0.9877        3.20    0.0200
+Hybrid-B                  10    0.0712    0.4284    0.7972        2.00    0.0000
+Hybrid-B                  30    0.2135    0.8115    0.8751        2.80    0.1067
+Hybrid-B                  50    0.2853    0.9283    0.9235        2.80    0.0680
+Hybrid-B                  90    0.3350    0.9922    0.9881        1.40    0.0222
+Hybrid-C                  10    0.0748    0.4932    0.7960        1.00    0.0000
+Hybrid-C                  30    0.2283    0.8370    0.8752        1.00    0.0133
+Hybrid-C                  50    0.2945    0.9297    0.9233        1.40    0.0040
+Hybrid-C                  90    0.3353    0.9924    0.9889        1.00    0.0044
+TraitPredictiveness       10    0.0519    0.3594       nan        4.00    0.3000
+TraitPredictiveness       30    0.1227    0.6501       nan        6.00    0.1467
+TraitPredictiveness       50    0.1196    0.7745       nan        9.00    0.0080
+TraitPredictiveness       90    0.1970    0.9805       nan        6.00    0.0333
+
+--- Per-trait r at m=30 ---
+  Hybrid-A                 O=0.7093 C=0.8189 E=0.9570 A=0.6745 N=0.8232
+  Hybrid-B                 O=0.7120 C=0.8756 E=0.9442 A=0.7037 N=0.8220
+  Hybrid-C                 O=0.7562 C=0.8634 E=0.9014 A=0.7951 N=0.8689
+  TraitPredictiveness      O=0.1029 C=0.8690 E=0.9654 A=0.4032 N=0.9102
+
+[5/5] Saving results ...
+[OK] Detail results (80 rows) → /workspace/questionnaire-embeddings/results/phase1/trait_hybrid_selection_detail.csv
+[OK] Aggregated results (16 rows) → /workspace/questionnaire-embeddings/results/phase1/trait_hybrid_selection_aggregated.csv
+[OK] Summary (16 rows) → /workspace/questionnaire-embeddings/results/phase1/trait_hybrid_selection_summary.csv
+
+============================================================
+F006 COMPLETE.
+============================================================

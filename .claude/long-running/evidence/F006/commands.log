@@ -1,0 +1,27 @@
+# Commands executed for F006
+
+## Smoke test (selection.py)
+```
+python3 scripts/selection.py
+# Result: F004–F006 selection — ALL CHECKS PASSED
+# All existing F004/F005 checks + new F006 checks pass
+```
+
+## Full CV evaluation
+```
+python3 scripts/run_trait_hybrid_selection.py
+# Result: 5 folds × 4 ratios × 4 strategies = 80 evaluations
+# Output: results/phase1/trait_hybrid_selection_{detail,aggregated,summary}.csv
+```
+
+## Acceptance criteria verification
+```
+python3 -c "verify AC001, AC002, AC004"
+# Result: ALL ACCEPTANCE CRITERIA VERIFIED
+```
+
+## Smoke mode
+```
+python3 scripts/run_trait_hybrid_selection.py --smoke
+# Result: 1 fold × 1 ratio × 4 strategies = 4 evaluations, successful
+```

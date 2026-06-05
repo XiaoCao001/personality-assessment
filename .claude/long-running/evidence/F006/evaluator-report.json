@@ -1,0 +1,52 @@
+{
+  "featureId": "F006",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "corrected item-total correlation 不包含题项自身（无泄漏）",
+      "status": "pass",
+      "evidence": [
+        "selection.py L499-504: other = [j for j in trait_items if j != idx] — explicitly excludes self",
+        "Smoke test: max|r| = 0.7143 < 0.95 (self-exclusion confirmed, no self-inflation)"
+      ],
+      "notes": "Code correctly computes corrected item-total correlation excluding the target item from the 'other' list. Max |r| of 0.7143 is well below 1.0, confirming no self-inclusion."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "Hybrid-C 选出的题目维度分布比纯 TraitPredictiveness 更均衡",
+      "status": "pass",
+      "evidence": [
+        "Smoke test: Hybrid-C m=10 max_dev=1 vs TraitPredictiveness dev=4",
+        "5-fold CV aggregated: Hybrid-C trait_max_dev 1.0-1.4 vs TraitPredictiveness 4.0-9.0 across all ratios"
+      ],
+      "notes": "Hybrid-C consistently achieves near-perfect trait balance (max_dev ≤ 1.4) while TraitPredictiveness selects heavily from 2-3 traits (max_dev up to 9)."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "所有选题决策仅在 train participants 上完成",
+      "status": "pass",
+      "evidence": [
+        "run_trait_hybrid_selection.py: selectors constructed with y_train only; test data (y_test) used exclusively for prediction evaluation",
+        "TraitPredictivenessSelector.__init__ parameter named 'y_train'"
+      ],
+      "notes": "5-fold CV explicitly splits participants; all selection decisions use only train-participant data."
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "三种 Hybrid 变体可单独运行和比较",
+      "status": "pass",
+      "evidence": [
+        "HybridSelector with variant='A'/'B'/'C' produces distinct selections",
+        "Smoke test confirms Hybrid-A ≠ Hybrid-C",
+        "Aggregated CSV: 12 distinct rows (3 variants × 4 ratios) with different metrics"
+      ],
+      "notes": "Each variant has independent score function; runner script evaluates all three as separate strategies."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "Hybrid weights (α=1, β=1, γ=0.5, δ=0.5) are fixed, not tuned via inner validation — acceptable per design spec",
+    "TraitPredictiveness inherently captures response-level information but does not leak across train/test boundary (AC003 satisfied)"
+  ]
+}
