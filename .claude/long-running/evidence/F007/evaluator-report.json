@@ -1,0 +1,51 @@
+{
+  "featureId": "F007",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "Table 1 contains all 8×4=32 cells with item-level r and 95% CI",
+      "status": "pass",
+      "evidence": [
+        "results/phase1/figures/table1_item_level.csv (32 rows, 8 strategies × 4 ratios)",
+        "test-output.txt"
+      ],
+      "notes": "All cells contain item_r, ci_lower, ci_upper. Bootstrap percentile CI with 10,000 resamples."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "Table 2 has separate Short-form/Imputed/Held-out personality score panels",
+      "status": "pass",
+      "evidence": [
+        "results/phase1/figures/table2_shortform.csv (32 rows)",
+        "results/phase1/figures/table2_imputed.csv (32 rows, per-trait)",
+        "results/phase1/figures/table2_heldout.csv (32 rows)"
+      ],
+      "notes": "Three separate sub-tables with trait_r_mean and CI. Imputed panel includes per-trait r for all 5 OCEAN traits."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "Figure 1 learning curve clearly shows strategy differences across ratios",
+      "status": "pass",
+      "evidence": [
+        "results/phase1/figures/figure1_learning_curve.pdf",
+        "results/phase1/figures/figure1_learning_curve.png"
+      ],
+      "notes": "All 8 strategies plotted with distinct colors/line-styles. Coverage highlighted (red, bold). Error bands shown."
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "Statistical test conclusions clear: whether best strategy significantly outperforms random baseline",
+      "status": "pass",
+      "evidence": [
+        "results/phase1/figures/statistical_tests.csv (32 tests)",
+        "results/phase1/figures/phase1_recommendation.txt"
+      ],
+      "notes": "Coverage significantly better than Random at all ratios (p<0.001, paired bootstrap). Clear recommendation: Coverage for Phase 2."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "Figure styling uses basic matplotlib defaults; may need refinement for publication."
+  ]
+}

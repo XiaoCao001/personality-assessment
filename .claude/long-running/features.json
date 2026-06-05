@@ -299,17 +299,23 @@
         "python scripts/evaluate_phase1.py --all",
         "ls results/phase1/figures/table1.csv results/phase1/figures/figure1.pdf"
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F007",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/evaluate_phase1.py",
+        "testOutputFile": ".claude/long-running/evidence/F007/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F007/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T06:00:00Z",
+          "status": "completed"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-05T06:05:00Z",
+      "completedAt": "2026-06-05T06:10:00Z"
     },
     {
       "id": "F008",

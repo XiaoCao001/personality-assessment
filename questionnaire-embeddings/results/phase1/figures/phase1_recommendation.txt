@@ -1,0 +1,63 @@
+======================================================================
+Phase 1: Item Selection Strategy Recommendation
+======================================================================
+
+Best strategy by ratio (item-level r):
+  m= 10: Coverage             r=0.0836 [0.0764, 0.0911]
+  m= 30: Coverage             r=0.2555 [0.2493, 0.2617]
+  m= 50: Coverage             r=0.3037 [0.2967, 0.3109]
+  m= 90: Coverage             r=0.4842 [0.4709, 0.4973]
+
+Overall ranking (mean item_r across m=10,30,50,90):
+  1. Coverage            : 0.2818
+  2. Coverage+Div        : 0.2620
+  3. Hybrid-C            : 0.2332
+  4. Hybrid-A            : 0.2301
+  5. BalancedRandom      : 0.2294
+  6. Hybrid-B            : 0.2262
+  7. Random              : 0.2163
+  8. TraitPredictiveness : 0.1228
+
+Statistical significance (vs Random baseline):
+  m= 10: Coverage             Δr=+0.0152 p=0.0000 ***
+  m= 10: Coverage+Div         Δr=+0.0105 p=0.0000 ***
+  m= 10: BalancedRandom       Δr=+0.0066 p=0.0008 ***
+  m= 10: Hybrid-C             Δr=+0.0063 p=0.0462 *
+  m= 10: Hybrid-B             Δr=+0.0028 p=0.2390 ns
+  m= 10: Hybrid-A             Δr=-0.0035 p=0.2432 ns
+  m= 10: TraitPredictiveness  Δr=-0.0166 p=0.0000 ***
+  m= 30: Coverage             Δr=+0.0571 p=0.0000 ***
+  m= 30: Hybrid-C             Δr=+0.0299 p=0.0000 ***
+  m= 30: Coverage+Div         Δr=+0.0244 p=0.0000 ***
+  m= 30: BalancedRandom       Δr=+0.0152 p=0.0000 ***
+  m= 30: Hybrid-B             Δr=+0.0150 p=0.0008 ***
+  m= 30: Hybrid-A             Δr=+0.0013 p=0.8102 ns
+  m= 30: TraitPredictiveness  Δr=-0.0757 p=0.0000 ***
+  m= 50: Coverage             Δr=+0.0270 p=0.0000 ***
+  m= 50: Hybrid-C             Δr=+0.0177 p=0.0000 ***
+  m= 50: Coverage+Div         Δr=+0.0173 p=0.0000 ***
+  m= 50: Hybrid-A             Δr=+0.0090 p=0.0000 ***
+  m= 50: Hybrid-B             Δr=+0.0085 p=0.0322 *
+  m= 50: BalancedRandom       Δr=+0.0085 p=0.0070 **
+  m= 50: TraitPredictiveness  Δr=-0.1571 p=0.0000 ***
+  m= 90: Coverage             Δr=+0.1628 p=0.0000 ***
+  m= 90: Coverage+Div         Δr=+0.1444 p=0.0000 ***
+  m= 90: Hybrid-A             Δr=+0.0486 p=0.0000 ***
+  m= 90: BalancedRandom       Δr=+0.0222 p=0.0000 ***
+  m= 90: Hybrid-C             Δr=+0.0139 p=0.2692 ns
+  m= 90: Hybrid-B             Δr=+0.0135 p=0.3720 ns
+  m= 90: TraitPredictiveness  Δr=-0.1244 p=0.0000 ***
+
+RECOMMENDATION:
+  Best strategy for Phase 2: **Coverage**
+  Rationale: Highest mean item-level r across all ratios, with statistically significant
+  improvement over the Random baseline, proven via paired bootstrap tests.
+  Expected performance at m=30 (30%): item_r = 0.2555 [0.2493, 0.2617]
+
+  Imputed trait-level performance:
+    m= 10: trait_r_mean = 0.4676
+    m= 30: trait_r_mean = 0.8284
+    m= 50: trait_r_mean = 0.9326
+    m= 90: trait_r_mean = 0.9931
+
+======================================================================

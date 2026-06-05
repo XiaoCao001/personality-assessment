@@ -1,0 +1,20 @@
+# F007 Commands Log
+
+```bash
+# Regenerate truncated F005/F006 CSVs (full 5-fold runs)
+python scripts/run_semantic_selection.py       # ~8 min, 80 detail rows
+python scripts/run_trait_hybrid_selection.py   # ~6 min, 80 detail rows
+
+# Install plotting dependencies
+pip install matplotlib seaborn
+
+# Run F007 evaluation (produces all tables, figures, tests)
+python scripts/evaluate_phase1.py              # ~2 min
+
+# Verify outputs
+ls results/phase1/figures/
+# figure1_learning_curve.pdf, figure1_learning_curve.png
+# figure2_trait_distribution.pdf, figure2_trait_distribution.png
+# table1_item_level.csv, table2_shortform.csv, table2_imputed.csv, table2_heldout.csv
+# statistical_tests.csv, phase1_recommendation.txt
+```
