@@ -6,7 +6,7 @@
 ## Current status
 - Phase: Phase 1 全部完成 (F001–F007)，Phase 2 推进中
 - Last updated: 2026-06-05T08:15:00Z
-- Completed features: 9 / 15
+- Completed features: 10 / 15
 - Active feature: none
 
 ## Completed work
@@ -127,8 +127,7 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F010] Phase 2: 预测器消融评估 — 表格与图表** — continues Phase 2 (depends on F007 ✓, F008 ✓, F009 ✓)
-- [F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓) — independently parallel
+- **[F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓)** — Phase 2 已完成（F010），Phase 3 可独立并行推进
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization
@@ -219,3 +218,19 @@
 - 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - 输出: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
 - 建议: Phase 4 所有比例使用 SoftmaxKNN（低题量 K=7 τ=0.1；高题量 K=3 τ≈0.035）
+
+### 2026-06-05T08:35:00Z F010 Implementation — Phase 2 预测器消融评估
+- Created `scripts/evaluate_phase2.py`（340 行）— Phase 2 predictor ablation evaluation
+- 读取已有 F008/F009 detail CSV，不重新跑实验
+- 生成 Table 3（4 个预测器 × 4 种比例，item_r ± 95% CI, item_mae, trait_r_mean, profile_r）
+- 生成 Figure 3（Δr bar chart，加权方法 vs UniformKNN，分比例展示 95% CI）
+- AC004 验证通过：F008/F009 使用相同 Coverage S 集合，公平对照
+- 20 个 paired bootstrap tests（N=10,000），含 3 组比较
+- **Phase 2 最终结论：SoftmaxKNN 为最佳预测器**（mean item_r = 0.4040）
+- Predictor ranking: SoftmaxKNN (0.4040) > KernelSmoothing (0.3958) > CosineWeightedKNN (0.3350) > UniformKNN (0.3274)
+- SoftmaxKNN 在所有比例上显著优于 UniformKNN（p<0.001），CI 均不跨 0
+- m=90 时 KernelSmoothing 略优于 SoftmaxKNN（0.6001 vs 0.5995, ns）
+- Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
+- 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+- 输出: results/phase2/figures/{table3_predictor_ablation.csv, figure3_delta_r.{pdf,png}, statistical_tests_phase2.csv, phase2_recommendation.txt}
+- **建议: Phase 4 使用 SoftmaxKNN（低题量 K=7 τ=0.1；中间题量 K=10 τ=0.1；高题量 KernelSmoothing τ≈0.034）**

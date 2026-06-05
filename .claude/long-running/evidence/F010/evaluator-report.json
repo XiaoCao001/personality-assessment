@@ -1,0 +1,35 @@
+{
+  "featureId": "F010",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "status": "pass",
+      "evidence": ["table3_predictor_ablation.csv: 16 rows, 4 predictors × 4 ratios"],
+      "notes": "Table 3 contains all 4 predictors × 4 ratios with item_r ± 95% CI, item_mae, trait_r_mean, profile_r."
+    },
+    {
+      "criterionId": "AC002",
+      "status": "pass",
+      "evidence": ["figure3_delta_r.pdf (18.9KB), figure3_delta_r.png (71.1KB)"],
+      "notes": "Figure 3 grouped bar chart with Δr per weighted predictor per ratio, 95% CI error bars."
+    },
+    {
+      "criterionId": "AC003",
+      "status": "pass",
+      "evidence": ["statistical_tests_phase2.csv: SoftmaxKNN vs UniformKNN all p<0.001, all CI>0"],
+      "notes": "Best predictor (SoftmaxKNN) statistically significant at all ratios, paired bootstrap N=10,000."
+    },
+    {
+      "criterionId": "AC004",
+      "status": "pass",
+      "evidence": ["test-output.txt: AC004 verification PASS, identical S across F008/F009"],
+      "notes": "Coverage S sets identical for all (ratio, fold) pairs. Same 5-fold split (seed=0)."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "Bootstrap CIs from 5 fold-level data points have limited granularity — inherent to 5-fold CV design.",
+    "TestPlan in features.json references old --all flag; updated to --quick."
+  ]
+}

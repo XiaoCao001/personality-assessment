@@ -1,0 +1,4 @@
+ .claude/long-running/active-feature.json | 23 +++++++++++------------
+ .claude/long-running/features.json       | 12 +++++++++---
+ 2 files changed, 20 insertions(+), 15 deletions(-)
+---FULL DIFF---

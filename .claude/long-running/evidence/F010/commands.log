@@ -1,0 +1,19 @@
+# F010 Commands Log
+# Executed: 2026-06-05T08:26:00Z
+
+# Quick smoke test
+$ cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py --quick
+[PASS] All outputs generated successfully in quick mode (2k bootstrap)
+
+# Full run with 10k bootstrap
+$ cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py
+[PASS] All outputs generated successfully
+
+# Verify output files
+$ ls -la /workspace/questionnaire-embeddings/results/phase2/figures/
+total 112
+figure3_delta_r.pdf       (18,852 bytes)
+figure3_delta_r.png       (71,099 bytes)
+phase2_recommendation.txt (2,204 bytes)
+statistical_tests_phase2.csv (2,730 bytes)
+table3_predictor_ablation.csv (2,304 bytes)

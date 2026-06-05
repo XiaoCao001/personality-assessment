@@ -1,16 +1,15 @@
 {
-  "featureId": "F009",
+  "featureId": "F010",
   "phase": "completed",
   "status": "completed",
-  "startedAt": "2026-06-05T08:00:00Z",
-  "completedAt": "2026-06-05T08:15:00Z",
-  "startedFromCommit": "841ca1c",
+  "startedAt": "2026-06-05T08:30:00Z",
+  "completedAt": "2026-06-05T08:35:00Z",
+  "startedFromCommit": "689e489",
   "dirty": false,
   "changedFiles": [
-    "scripts/predictors.py",
-    "scripts/run_softmax_kernel.py"
+    "questionnaire-embeddings/scripts/evaluate_phase2.py"
   ],
-  "evidenceDir": ".claude/long-running/evidence/F009",
+  "evidenceDir": ".claude/long-running/evidence/F010",
   "lastEvaluatorVerdict": "PASS",
-  "handoffPromptFile": ".claude/long-running/evidence/F009/feature-dev-handoff.md"
+  "handoffPromptFile": ".claude/long-running/evidence/F010/feature-dev-handoff.md"
 }
