@@ -1,0 +1,35 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Python
+*.py text diff=python
+*.ipynb text diff=python
+
+# Jupyter notebook outputs — treat as binary to avoid merge conflicts
+*.ipynb binary
+
+# Shell scripts
+*.sh text eol=lf
+
+# Markdown
+*.md text diff=markdown
+
+# Data files
+*.csv text
+*.tsv text
+*.json text
+*.yaml text
+*.yml text
+
+# Images & binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.svg binary
+*.tiff binary
+*.pkl binary
+*.npy binary
+*.parquet binary
+*.xlsx binary
+*.docx binary
