@@ -34,3 +34,7 @@ Thumbs.db
 # Harness runtime noise
 .claude/long-running/active-feature.json
 fix-dsclaude-nvm.sh
+
+# Local config and npm binaries
+.claude/settings.local.json
+.npm-global/
