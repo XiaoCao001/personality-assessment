@@ -75,6 +75,20 @@
 - Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - Outputs: results/phase1/figures/{table1,table2_*.csv,figure1/2.pdf,statistical_tests.csv,recommendation.txt}
 
+### F008 — Phase 2: Cosine Weighted KNN 预测器 (completed 2026-06-05T07:25:00Z)
+- Created `scripts/predictors.py`（298 行）— 统一的向量化 KNN 预测模块：UniformKNN + CosineWeightedKNN
+- Created `scripts/run_weighted_knn.py`（480 行）— 5-fold CV + Coverage 选题 + inner validation K 调优
+- CosineWeightedKNN 权重公式：w_ij = sim+(i,j) = (cos(e_i,e_j)+1)/2
+- K 调优范围 {3,5,7,10,15}，per predictor/per fold/ratio，在 train-inner 80/20 上选择
+- 关键结果：m=10 时 CosineWeightedKNN 显著优于 UniformKNN（Δr=+0.0265, p=0.022, +21%）
+- m=30（Δr=+0.0028, p<0.001）、m=50（Δr=+0.0011, p<0.001）也有统计显著优势
+- m=90 差距可忽略（Δr=+0.0001, p=0.678）— 题量充足时加权无额外收益
+- 最佳 K：CosineWeightedKNN 在 m=10 用 K=10（权重使更多邻居可行），更高比例用 K=3；UniformKNN 始终 K=3
+- Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
+- Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
+- Outputs: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
+- 建议：Phase 4 低题量场景（m≤30）使用 CosineWeightedKNN
+
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
 2. **Coverage+Div** (F005): 0.2620
@@ -170,17 +184,3 @@
 - 证据: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
 - 输出: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
 - 建议: Phase 4 低题量场景使用 CosineWeightedKNN
-
-### F008 — Phase 2: Cosine Weighted KNN 预测器 (completed 2026-06-05T07:25:00Z)
-- Created `scripts/predictors.py` (298 lines) — UniformKNN + CosineWeightedKNN with shared vectorised prediction pipeline
-- Created `scripts/run_weighted_knn.py` (480 lines) — 5-fold CV with Coverage selection, inner validation K tuning
-- K tuned per predictor per fold/ratio: K∈{3,5,7,10,15}, best K via 80/20 train-inner/valid-inner split
-- **Key result: CosineWeightedKNN significantly outperforms UniformKNN at m=10 (Δ=+0.0265, p=0.022, +21%)**
-- Also statistically significant at m=30 (Δ=+0.0028, p<0.001) and m=50 (Δ=+0.0011, p<0.001)
-- At m=90, difference negligible (Δ=+0.0001, p=0.678) — sufficient info, weighting doesn't help
-- Best K: CosineWeightedKNN uses K=10 at m=10 (more neighbours via similarity weighting), K=3 at higher ratios
-- UniformKNN always picks K=3 (fewer neighbours, less noise)
-- Evaluator verdict: PASS — all 4 acceptance criteria met (attempt 1)
-- Evidence: evaluator-report.json, test-output.txt, feature-dev-summary.md, commands.log, git-diff.patch
-- Results: results/phase2/weighted_knn_{detail,aggregated,summary}.csv
-- Recommendation: Weighted KNN should be used for Phase 4, especially at low item counts (m≤30)
