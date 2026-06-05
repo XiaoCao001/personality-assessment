@@ -1,15 +1,16 @@
 {
-  "featureId": "F007",
-  "phase": "delegated_to_feature_dev",
-  "status": "in_progress",
-  "startedAt": "2026-06-05T06:00:00Z",
-  "startedFromCommit": "d68f791",
-  "dirty": true,
+  "featureId": "F008",
+  "phase": "completed",
+  "status": "completed",
+  "startedAt": "2026-06-05T06:30:00Z",
+  "completedAt": "2026-06-05T07:25:00Z",
+  "startedFromCommit": "198ff76",
+  "dirty": false,
   "changedFiles": [
-    "questionnaire-embeddings/scripts/evaluate_phase1.py"
+    "questionnaire-embeddings/scripts/predictors.py",
+    "questionnaire-embeddings/scripts/run_weighted_knn.py"
   ],
-  "evidenceDir": ".claude/long-running/evidence/F007",
-  "lastEvaluatorVerdict": null,
-  "handoffPromptFile": ".claude/long-running/evidence/F007/feature-dev-handoff.md",
-  "lastModifiedAt": "2026-06-05T05:57:45+00:00"
+  "evidenceDir": ".claude/long-running/evidence/F008",
+  "lastEvaluatorVerdict": "PASS",
+  "handoffPromptFile": ".claude/long-running/evidence/F008/feature-dev-handoff.md"
 }

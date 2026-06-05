@@ -290,10 +290,10 @@
         "8. 保存所有图表到 results/phase1/figures/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Table 1 包含所有 8×4=32 个 cell 的 item-level r 和 CI", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "Table 2 分 Short-form/Imputed/Held-out 三种人格分数面板", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "Figure 1 learning curve 清楚展示策略间差异", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "统计检验结论明确：最佳策略是否显著优于 random baseline", "status": "unknown", "evidence": []}
+        {"id": "AC001", "text": "Table 1 包含所有 8×4=32 个 cell 的 item-level r 和 CI", "status": "pass", "evidence": ["results/phase1/figures/table1_item_level.csv — 32 rows, 8 strategies × 4 ratios with item_r, ci_lower, ci_upper"]},
+        {"id": "AC002", "text": "Table 2 分 Short-form/Imputed/Held-out 三种人格分数面板", "status": "pass", "evidence": ["results/phase1/figures/table2_shortform.csv (32 rows)", "results/phase1/figures/table2_imputed.csv (32 rows, per-trait)", "results/phase1/figures/table2_heldout.csv (32 rows)"]},
+        {"id": "AC003", "text": "Figure 1 learning curve 清楚展示策略间差异", "status": "pass", "evidence": ["results/phase1/figures/figure1_learning_curve.pdf — all 8 strategies, distinct colors/styles, error bands"]},
+        {"id": "AC004", "text": "统计检验结论明确：最佳策略是否显著优于 random baseline", "status": "pass", "evidence": ["results/phase1/figures/statistical_tests.csv — 32 paired bootstrap tests", "Coverage p<0.001 vs Random at all ratios", "results/phase1/figures/phase1_recommendation.txt"]}
       ],
       "testPlan": [
         "python scripts/evaluate_phase1.py --all",
@@ -333,26 +333,32 @@
         "6. 保存结果到 results/phase2/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Weighted KNN 在至少一个比例上 item-level r 显著高于原文 KNN (paired test)", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "K 调优完全在 train participants 内完成", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "当 |S|<K 时自动使用 K'=min(K,|S|)", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "预测值范围在 [1,5] 内（或接近）", "status": "unknown", "evidence": []}
+        {"id": "AC001", "text": "Weighted KNN 在至少一个比例上 item-level r 显著高于原文 KNN (paired test)", "status": "pass", "evidence": ["Paired t-test: m=10 p=0.022 (Δ=+0.0265), m=30 p<0.001 (Δ=+0.0028), m=50 p<0.001 (Δ=+0.0011); verified by evaluator via independent scipy.stats.ttest_rel"]},
+        {"id": "AC002", "text": "K 调优完全在 train participants 内完成", "status": "pass", "evidence": ["run_weighted_knn.py:195-258: inner_validation_split on y_train only; K tuning loop uses y_train_inner/y_valid_inner; test data untouched until final eval"]},
+        {"id": "AC003", "text": "当 |S|<K 时自动使用 K'=min(K,|S|)", "status": "pass", "evidence": ["predictors.py:108: k_eff = min(self.K, len(S)); smoke test confirms K=10 > |S|=4 → K_eff=4"]},
+        {"id": "AC004", "text": "预测值范围在 [1,5] 内（或接近）", "status": "pass", "evidence": ["predictors.py:148-149: np.round + np.clip to [1,5]; real data tests show preds range [2,5]"]}
       ],
       "testPlan": [
         "python scripts/run_weighted_knn.py",
         "python -c \"from predictors import CosineWeightedKNN; import numpy as np; pred=CosineWeightedKNN(K=5); print('OK')\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F008",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_weighted_knn.py",
+        "testOutputFile": ".claude/long-running/evidence/F008/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F008/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-05T06:30:00Z",
+          "status": "completed"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-05T07:25:00Z",
+      "completedAt": "2026-06-05T07:25:00Z"
     },
     {
       "id": "F009",

@@ -1,0 +1,155 @@
+============================================================
+F008: Weighted KNN Evaluation — FULL
+============================================================
+
+[1/5] Loading data ...
+[OK] Loaded Y:      (2749, 100)  range=[1, 5]
+[OK] Loaded E_old:  (100, 1024)
+[OK] Loaded metadata: 100 items
+
+[2/5] Computing cosine similarity matrix ...
+[OK] sim shape: (100, 100)  range=[-0.1621, 1.0000]
+
+[3/5] Predictors: UniformKNN, CosineWeightedKNN
+      K candidates: [3, 5, 7, 10, 15]
+      Ratios: [10, 30, 50, 90]
+
+[4/5] Running participant CV ...
+--- Fold 1/5 (train=2199, test=550) ---
+  [1] ratio m=10: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.1191)
+    [CosineWeightedKNN] inner val: best K=10 (item_r=0.1255)
+    [UniformKNN] test: K=3  item_r=0.1300 [0.1204, 0.1395]  big5_r=0.5381
+    [CosineWeightedKNN] test: K=10  item_r=0.1653 [0.1408, 0.1898]  big5_r=0.4147
+  [1] ratio m=30: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.2814)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.2844)
+    [UniformKNN] test: K=3  item_r=0.2935 [0.2816, 0.3054]  big5_r=0.8517
+    [CosineWeightedKNN] test: K=3  item_r=0.2959 [0.2840, 0.3078]  big5_r=0.8519
+  [1] ratio m=50: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.3433)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.3442)
+    [UniformKNN] test: K=3  item_r=0.3420 [0.3278, 0.3562]  big5_r=0.9351
+    [CosineWeightedKNN] test: K=3  item_r=0.3433 [0.3291, 0.3576]  big5_r=0.9353
+  [1] ratio m=90: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.5557)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.5567)
+    [UniformKNN] test: K=3  item_r=0.5572 [0.5312, 0.5832]  big5_r=0.9939
+    [CosineWeightedKNN] test: K=3  item_r=0.5568 [0.5307, 0.5828]  big5_r=0.9939
+
+--- Fold 2/5 (train=2199, test=550) ---
+  [2] ratio m=10: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.1232)
+    [CosineWeightedKNN] inner val: best K=10 (item_r=0.1511)
+    [UniformKNN] test: K=3  item_r=0.1238 [0.1136, 0.1340]  big5_r=0.4819
+    [CosineWeightedKNN] test: K=10  item_r=0.1230 [0.0958, 0.1503]  big5_r=0.3479
+  [2] ratio m=30: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.2891)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.2918)
+    [UniformKNN] test: K=3  item_r=0.2818 [0.2691, 0.2945]  big5_r=0.8276
+    [CosineWeightedKNN] test: K=3  item_r=0.2844 [0.2717, 0.2971]  big5_r=0.8280
+  [2] ratio m=50: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.3435)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.3446)
+    [UniformKNN] test: K=3  item_r=0.3363 [0.3223, 0.3504]  big5_r=0.9247
+    [CosineWeightedKNN] test: K=3  item_r=0.3375 [0.3235, 0.3516]  big5_r=0.9249
+  [2] ratio m=90: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.5532)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.5530)
+    [UniformKNN] test: K=3  item_r=0.5738 [0.5491, 0.5984]  big5_r=0.9932
+    [CosineWeightedKNN] test: K=3  item_r=0.5738 [0.5491, 0.5984]  big5_r=0.9932
+
+--- Fold 3/5 (train=2199, test=550) ---
+  [3] ratio m=10: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.1219)
+    [CosineWeightedKNN] inner val: best K=10 (item_r=0.1309)
+    [UniformKNN] test: K=3  item_r=0.1192 [0.1089, 0.1295]  big5_r=0.5282
+    [CosineWeightedKNN] test: K=10  item_r=0.1569 [0.1271, 0.1866]  big5_r=0.3986
+  [3] ratio m=30: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.2873)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.2901)
+    [UniformKNN] test: K=3  item_r=0.2792 [0.2677, 0.2907]  big5_r=0.8503
+    [CosineWeightedKNN] test: K=3  item_r=0.2821 [0.2706, 0.2936]  big5_r=0.8508
+  [3] ratio m=50: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.3393)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.3400)
+    [UniformKNN] test: K=3  item_r=0.3374 [0.3244, 0.3504]  big5_r=0.9390
+    [CosineWeightedKNN] test: K=3  item_r=0.3385 [0.3256, 0.3515]  big5_r=0.9390
+  [3] ratio m=90: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.5791)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.5791)
+    [UniformKNN] test: K=3  item_r=0.5511 [0.5254, 0.5769]  big5_r=0.9934
+    [CosineWeightedKNN] test: K=3  item_r=0.5518 [0.5260, 0.5775]  big5_r=0.9933
+
+--- Fold 4/5 (train=2199, test=550) ---
+  [4] ratio m=10: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.1175)
+    [CosineWeightedKNN] inner val: best K=10 (item_r=0.1505)
+    [UniformKNN] test: K=3  item_r=0.1270 [0.1168, 0.1371]  big5_r=0.5213
+    [CosineWeightedKNN] test: K=10  item_r=0.1501 [0.1234, 0.1769]  big5_r=0.3763
+  [4] ratio m=30: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.2814)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.2846)
+    [UniformKNN] test: K=3  item_r=0.2793 [0.2669, 0.2916]  big5_r=0.8476
+    [CosineWeightedKNN] test: K=3  item_r=0.2825 [0.2702, 0.2949]  big5_r=0.8480
+  [4] ratio m=50: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.3363)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.3375)
+    [UniformKNN] test: K=3  item_r=0.3371 [0.3236, 0.3506]  big5_r=0.9344
+    [CosineWeightedKNN] test: K=3  item_r=0.3379 [0.3244, 0.3514]  big5_r=0.9345
+  [4] ratio m=90: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.5597)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.5595)
+    [UniformKNN] test: K=3  item_r=0.5444 [0.5173, 0.5715]  big5_r=0.9932
+    [CosineWeightedKNN] test: K=3  item_r=0.5442 [0.5171, 0.5713]  big5_r=0.9932
+
+--- Fold 5/5 (train=2200, test=549) ---
+  [5] ratio m=10: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.1345)
+    [CosineWeightedKNN] inner val: best K=10 (item_r=0.1481)
+    [UniformKNN] test: K=3  item_r=0.1232 [0.1129, 0.1335]  big5_r=0.5335
+    [CosineWeightedKNN] test: K=10  item_r=0.1600 [0.1319, 0.1881]  big5_r=0.3962
+  [5] ratio m=30: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.2916)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.2941)
+    [UniformKNN] test: K=3  item_r=0.2944 [0.2828, 0.3059]  big5_r=0.8474
+    [CosineWeightedKNN] test: K=3  item_r=0.2970 [0.2855, 0.3086]  big5_r=0.8477
+  [5] ratio m=50: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.3491)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.3505)
+    [UniformKNN] test: K=3  item_r=0.3527 [0.3399, 0.3654]  big5_r=0.9364
+    [CosineWeightedKNN] test: K=3  item_r=0.3535 [0.3407, 0.3662]  big5_r=0.9364
+  [5] ratio m=90: selecting items via Coverage ...
+    [UniformKNN] inner val: best K=3 (item_r=0.5682)
+    [CosineWeightedKNN] inner val: best K=3 (item_r=0.5682)
+    [UniformKNN] test: K=3  item_r=0.5648 [0.5381, 0.5915]  big5_r=0.9936
+    [CosineWeightedKNN] test: K=3  item_r=0.5651 [0.5385, 0.5917]  big5_r=0.9936
+
+[OK] CV completed in 310.3s (40 rows)
+
+[5/5] Aggregating and saving results ...
+[OK] Detail results (40 rows) → /workspace/questionnaire-embeddings/results/phase2/weighted_knn_detail.csv
+[OK] Aggregated results (8 rows) → /workspace/questionnaire-embeddings/results/phase2/weighted_knn_aggregated.csv
+[OK] Summary results → /workspace/questionnaire-embeddings/results/phase2/weighted_knn_summary.csv
+
+--- Per-predictor × ratio (averaged across folds) ---
+Predictor                m    item_r    big5_r  best_K
+------------------------------------------------------
+CosineWeightedKNN       10    0.1511    0.3867      10
+CosineWeightedKNN       30    0.2884    0.8453       3
+CosineWeightedKNN       50    0.3422    0.9340       3
+CosineWeightedKNN       90    0.5583    0.9934       3
+UniformKNN              10    0.1246    0.5206       3
+UniformKNN              30    0.2856    0.8449       3
+UniformKNN              50    0.3411    0.9339       3
+UniformKNN              90    0.5582    0.9934       3
+
+--- Weighted KNN vs Uniform KNN (Δ item_r) ---
+  m= 10: Δr = +0.0265
+  m= 30: Δr = +0.0028
+  m= 50: Δr = +0.0011
+  m= 90: Δr = +0.0001
+
+============================================================
+F008 COMPLETE.
+============================================================

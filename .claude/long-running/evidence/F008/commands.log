@@ -1,0 +1,27 @@
+## F008 Commands Executed
+
+### Smoke tests
+```bash
+$ python scripts/predictors.py
+  [OK] UniformKNN(K=3): 5×10, |S|=4, |T|=6
+  [OK] CosineWeightedKNN(K=3): 5×10, |S|=4, |T|=6
+  [OK] AC003: K=10 > |S|=4 → K_eff=4, predictions valid
+  [OK] AC004: All predictions in [1,5]
+  [OK] Weighted ≠ Uniform (different predictions)
+  [OK] UniformKNN on real data: preds range [2, 5]
+  [OK] CosineWeightedKNN on real data: preds range [2, 5]
+
+$ python scripts/run_weighted_knn.py --smoke
+  PASSED (1 fold, 1 ratio, ~13.5s)
+
+### Full run
+$ python scripts/run_weighted_knn.py
+  5-fold CV completed in ~310s (40 rows)
+
+### Statistical test (paired t-test)
+$ python3 -c "..."
+  m=10: Δr=+0.0264 p=0.0224 *
+  m=30: Δr=+0.0027 p=0.0000 ***
+  m=50: Δr=+0.0010 p=0.0005 ***
+  m=90: Δr=+0.0001 p=0.7003 ns
+  Pooled: Δr=+0.0076 p=0.0212 *

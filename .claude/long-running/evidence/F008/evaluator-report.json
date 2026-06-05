@@ -1,0 +1,53 @@
+{
+  "featureId": "F008",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "status": "pass",
+      "evidence": [
+        "results/phase2/weighted_knn_detail.csv (per-fold item_r values)",
+        "results/phase2/weighted_knn_aggregated.csv (CosineWeightedKNN 0.1511 vs UniformKNN 0.1246 at m=10)",
+        "test-output.txt lines 135-152 (per-predictor x ratio table and delta-r)",
+        "commands.log (paired t-test: m=10 p=0.022, m=30 p<0.001, m=50 p<0.001)",
+        "Independent verification via scipy.stats.ttest_rel: m=10 p=0.022250, m=30 p=0.000050, m=50 p=0.000450"
+      ],
+      "notes": "Weighted KNN significantly outperforms Uniform KNN at m=10 (Δ=+0.0265, p=0.022), m=30 (Δ=+0.0028, p<0.001), and m=50 (Δ=+0.0011, p<0.001). At m=90 the difference is negligible (p=0.678). Criterion requires 'at least one ratio' — satisfied at three ratios."
+    },
+    {
+      "criterionId": "AC002",
+      "status": "pass",
+      "evidence": [
+        "scripts/run_weighted_knn.py lines 195-258 (inner_validation_split + K tuning loop on y_train_inner/y_valid_inner only)",
+        "scripts/cv_framework.py lines 87-116 (inner_validation_split implementation)",
+        "test-output.txt (inner validation scores printed per K)"
+      ],
+      "notes": "inner_validation_split(np.arange(n_train), val_ratio=0.2) produces train_inner/valid_inner from training subjects only. Test subjects never used during K tuning."
+    },
+    {
+      "criterionId": "AC003",
+      "status": "pass",
+      "evidence": [
+        "scripts/predictors.py line 108: k_eff = min(self.K, len(S))",
+        "scripts/predictors.py lines 249-254 (smoke test with K=10, |S|=4)",
+        "commands.log: '[OK] AC003: K=10 > |S|=4 → K_eff=4, predictions valid'"
+      ],
+      "notes": "Explicit k_eff = min(K, |S|) in base class. Smoke test confirms fallback works correctly."
+    },
+    {
+      "criterionId": "AC004",
+      "status": "pass",
+      "evidence": [
+        "scripts/predictors.py lines 148-149: np.round(preds); np.clip(preds, 1.0, 5.0)",
+        "commands.log: '[OK] UniformKNN on real data: preds range [2, 5]', '[OK] CosineWeightedKNN on real data: preds range [2, 5]'"
+      ],
+      "notes": "Round-then-clip applied at end of predict(). Smoke test and real data tests confirm range [1,5]."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "Paired t-test uses only 5 folds (4 df); p-values confirmed correct via independent verification.",
+    "UniformKNN inner_val_K_scores NaN at K>=|S| (handled correctly by tuner, which picks K=3).",
+    "At m=90, weighted vs uniform difference is negligible (Δ=+0.0001, p=0.678) — as expected when nearly all items are observed."
+  ]
+}
