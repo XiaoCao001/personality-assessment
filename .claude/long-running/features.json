@@ -3,7 +3,7 @@
   "description": "基于原论文 questionnaire-embeddings 项目的改进研究：验证语义覆盖选题策略、加权 KNN 预测器、新 embedding 模型，并增加人格总分预测维度。主实验数据集为 NEO-PI-R（2,749 被试 × 100 题项 × Big Five 五维度）。",
   "version": "1.0.0",
   "createdAt": "2026-06-04T16:00:00Z",
-  "updatedAt": "2026-06-04T16:00:00Z",
+  "updatedAt": "2026-06-12T08:00:00Z",
   "features": [
     {
       "id": "F001",
@@ -929,9 +929,9 @@
     },
     {
       "id": "F013",
-      "title": "Phase 4: Embedding 对比实验 — 版本 A（固定原选题）",
+      "title": "Phase 4: Embedding 对比实验 — 版本 A1/A2（固定原选题）",
       "category": "functional",
-      "description": "版本 A：固定原 SBERT embedding 选出的题目集合 S，只换预测阶段的 embedding。这回答了'新 embedding 是否让邻居关系和预测更好'。使用 Phase 1 最佳选题策略确定的 S（但固定不变），Phase 2 最佳预测器，比较所有 embedding 在预测阶段的表现。",
+      "description": "版本 A 固定原 SBERT Coverage 选出的题目集合 S_old，只替换预测阶段 embedding，分成两个预注册子版本：A1 = 固定 S_old + 固定 Phase 2 推荐 SoftmaxKNN 超参数，用作主分析，纯测试 embedding 邻居几何是否更好；A2 = 固定 S_old + 每个 embedding 在 train-inner 上重新调 K/τ，用作补充分析，估计 embedding 在合理校准后的预测上限。主分析使用 continuous prediction（只 clip 到 [1,5]，不 round），rounded accuracy/rounded MAE 仅作为补充。",
       "priority": "high",
       "dependsOn": [
         "F007",
@@ -939,36 +939,58 @@
         "F011"
       ],
       "steps": [
-        "1. 加载 Phase 1 最佳策略选出的 S（原 SBERT 空间确定）",
-        "2. 对每个新 embedding，用相同的 S 和最佳预测器在 test participants 上预测",
-        "3. 注意：topic S 不变，但 KNN 邻居关系使用新 embedding 空间的距离",
-        "4. 评估所有比例 (10/30/50/90) 的 item-level 和 trait-level 指标",
-        "5. 生成版本 A 结果表：embedding×比例 → 各项指标",
-        "6. 与原 SBERT embedding 对比，计算 Δ 和 95% CI"
+        "1. 加载 Phase 1 原 SBERT Coverage 选出的 S_old，并在所有 embedding/version 中固定相同 fold、ratio、test participants 和 S_old。",
+        "2. 实现 Version A1：固定 S_old + 固定 Phase 2 推荐 SoftmaxKNN 超参数（低题量 K=7, τ=0.1；m=50 K=10, τ=0.1；m=90 K=3, τ≈0.035 或 Phase 2 recommendation 中记录的固定值），不做 embedding-specific tuning。",
+        "3. 实现 Version A2：固定 S_old + 每个 embedding/fold/ratio 在 train-inner 上重新调 K/τ，test participants 只用于最终评估。",
+        "4. 对 5 个 embedding（SBERT original、MiniLM、MPNet、E5、BGE）和 m∈{10,30,50,90} 运行 A1/A2。",
+        "5. 主指标预注册为 item-level Pearson r；关键次指标为 trait_r_mean、profile_r、MAE；所有主分析预测采用 continuous clip-only，不 round。",
+        "6. 输出 per-participant predictions、selected_items_by_fold_ratio_embedding.json、hyperparameters_by_fold_ratio_embedding.csv、versionA_results.csv/versionA_summary.csv。",
+        "7. 对每个新 embedding vs SBERT original 计算 paired bootstrap over participants 的 Δ、95% CI 和 p 值，保持同一 outer fold 配对，并对 embedding×ratio 比较做 Holm 或 Benjamini-Hochberg 多重比较校正。",
+        "8. 额外输出 rounded accuracy / rounded MAE 作为补充分析，不作为主结论依据。"
       ],
       "acceptanceCriteria": [
         {
           "id": "AC001",
-          "text": "所有 5 个 embedding 在同一批 S 和 test participants 上评估",
+          "text": "A1/A2 中所有 5 个 embedding 均在同一批 S_old、outer folds 和 test participants 上评估，固定原选题的可比性可由 selected_items_by_fold_ratio_embedding.json 验证。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC002",
-          "text": "版本 A 结果表包含所有 embedding×比例的 item-level r 和 trait-level r",
+          "text": "Version A1 使用固定 Phase 2 推荐超参数，不进行 embedding-specific K/τ 调参；输出 hyperparameters 文件可验证固定设置。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC003",
-          "text": "清楚展示哪些 embedding 在邻居关系层面优于原 SBERT",
+          "text": "Version A2 的 K/τ 调优完全在 train-inner 内完成，test participants 不参与调参。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC004",
+          "text": "版本 A 结果表包含 embedding×ratio×version 的 item-level Pearson r（主指标）、MAE、trait_r_mean、profile_r，并保存 per-participant predictions。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC005",
+          "text": "新 embedding vs SBERT original 的主比较使用 paired bootstrap over participants，报告 Δ、95% CI、原始 p 值和 Holm/BH 校正后的 p 值。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC006",
+          "text": "主分析预测为 continuous clip-only（不 round）；rounded accuracy/rounded MAE 仅作为补充输出。",
           "status": "unknown",
           "evidence": []
         }
       ],
       "testPlan": [
-        "python scripts/run_phase4_versionA.py",
-        "ls results/phase4/versionA_results.csv"
+        "python scripts/run_phase4_versionA.py --all",
+        "python scripts/run_phase4_versionA.py --quick",
+        "ls results/phase4/versionA_results.csv results/phase4/versionA_summary.csv results/phase4/selected_items_by_fold_ratio_embedding.json results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+        "python -c \"import pandas as pd; df=pd.read_csv('results/phase4/versionA_results.csv'); assert {'A1_fixed_hyperparams','A2_tuned_hyperparams'} <= set(df['version']); assert df['rounded'].eq(False).any()\""
       ],
       "status": "pending",
       "evidence": {
@@ -984,51 +1006,66 @@
     },
     {
       "id": "F014",
-      "title": "Phase 4: Embedding 对比实验 — 版本 B（重新选题）与完整对比",
+      "title": "Phase 4: Embedding 对比实验 — 版本 B1/B2（重新选题）与完整对比",
       "category": "functional",
-      "description": "版本 B：每个 embedding 重新运行完整的选题策略。这回答了'新 embedding 是否能同时改善选题和预测'。对每个 embedding，在 train participants 上重新选题（使用 Phase 1 最佳策略），调优预测器参数（Phase 2 最佳预测器类型），在 test participants 上评估。与版本 A 对比，分离选题贡献和预测贡献。",
+      "description": "版本 B 对每个 embedding 重新运行 Coverage 选题，测试新 embedding 是否同时改善选题和预测。为避免混淆，拆成 B1 = S_new + 固定 Phase 2 超参数，B2 = S_new + embedding-specific train-inner tuning。报告同一 embedding 下 B−A 的 Δ_selection = performance(S_new, E_new) − performance(S_old, E_new)，并报告 S_new 与 SBERT S_old 的 Jaccard overlap，严格分离选题贡献和预测空间贡献。",
       "priority": "high",
       "dependsOn": [
         "F013"
       ],
       "steps": [
-        "1. 对每个 embedding，在 train participants 上用最佳选题策略重新确定 S",
-        "2. 在 inner validation 上为每个 embedding 重新调优预测器超参数",
-        "3. 在 test participants 上评估所有比例",
-        "4. 生成版本 B 结果表",
-        "5. 绘制版本 A vs 版本 B 对比图（分离选题贡献 vs 预测贡献）",
-        "6. 生成 Table 4: embedding×比例最终表现表",
-        "7. 绘制 Figure 4: embedding 模型 learning curve"
+        "1. 对每个 embedding/fold/ratio，在 train participants 上用 Coverage 重新确定 S_new；不得使用 test participants。",
+        "2. 实现 Version B1：S_new + 固定 Phase 2 推荐 SoftmaxKNN 超参数，与 A1 配对比较。",
+        "3. 实现 Version B2：S_new + 每个 embedding/fold/ratio 在 train-inner 上重新调 K/τ，与 A2 配对比较。",
+        "4. 对每个 embedding/fold/ratio 计算 S_new 与 SBERT S_old 的 Jaccard overlap，并保存 selected_items_by_fold_ratio_embedding.json。",
+        "5. 输出 versionB_results.csv/versionB_summary.csv、per-participant predictions、hyperparameters_by_fold_ratio_embedding.csv。",
+        "6. 计算同一 embedding 和同一 tuning regime 下的 Δ_selection：B1−A1、B2−A2，并用 paired bootstrap over participants 报告 CI/p 值。",
+        "7. 生成 Table 4：embedding×ratio×version 的主指标和关键次指标；生成 Figure 4：embedding learning curve，并标注 A/B 和固定/调参版本。",
+        "8. 主分析继续使用 continuous clip-only prediction；rounded 指标仅作补充。"
       ],
       "acceptanceCriteria": [
         {
           "id": "AC001",
-          "text": "换 embedding 后确实重新选题（S 因 embedding 而异）",
+          "text": "换 embedding 后确实重新选题：selected_items_by_fold_ratio_embedding.json 记录每个 embedding/fold/ratio 的 S_new，且至少部分 embedding 与 SBERT S_old 不同。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC002",
-          "text": "版本 B 如果优于版本 A，能清楚归因于选题改善",
+          "text": "每个 embedding 与 SBERT 原选题 S_old 的 Jaccard overlap 已按 fold/ratio 输出，用于解释重新选题幅度。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC003",
-          "text": "Table 4 包含所有 embedding×比例的主指标",
+          "text": "重新选题净贡献以同一 embedding 内 B−A 定义：Δ_selection = performance(S_new,E_new) − performance(S_old,E_new)，分别报告 B1−A1 与 B2−A2。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC004",
-          "text": "Figure 4 展示各 embedding 的 learning curve",
+          "text": "B1 使用固定 Phase 2 超参数，B2 的 K/τ 调优完全在 train-inner 内完成，并由 hyperparameters 输出验证。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC005",
+          "text": "Table 4 包含所有 embedding×ratio×version 的 item-level Pearson r、MAE、trait_r_mean、profile_r，以及 vs SBERT 和 B−A 的 bootstrap CI/校正 p 值。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC006",
+          "text": "Figure 4 展示各 embedding 的 learning curve，并能区分固定 S/重新选题与固定超参数/重新调参版本。",
           "status": "unknown",
           "evidence": []
         }
       ],
       "testPlan": [
-        "python scripts/run_phase4_versionB.py",
-        "ls results/phase4/versionB_results.csv results/phase4/figures/table4.csv results/phase4/figures/figure4.pdf"
+        "python scripts/run_phase4_versionB.py --all",
+        "python scripts/run_phase4_versionB.py --quick",
+        "ls results/phase4/versionB_results.csv results/phase4/selection_contribution.csv results/phase4/selected_items_by_fold_ratio_embedding.json results/phase4/figures/table4.csv results/phase4/figures/figure4.pdf",
+        "python -c \"import pandas as pd; df=pd.read_csv('results/phase4/selection_contribution.csv'); assert {'B1_minus_A1','B2_minus_A2'} <= set(df['comparison'])\""
       ],
       "status": "pending",
       "evidence": {
@@ -1046,7 +1083,7 @@
       "id": "F015",
       "title": "Phase 4: 最终综合分析 — 完整结果汇总与论文级输出",
       "category": "functional",
-      "description": "汇总全部四个阶段的实验结果，生成最终综合分析报告。包含：(1) 三层次贡献总结（选题策略、预测算法、测量效度）；(2) 所有 Table 和 Figure 的最终版本；(3) 统计检验汇总表；(4) 方法推荐（最佳 pipeline = 最佳 embedding + 最佳选题策略 + 最佳预测器 + 推荐比例）；(5) 结果可复现性说明。输出到 results/final_report/。",
+      "description": "汇总全部四个阶段的实验结果，生成最终综合分析报告。包含：(1) 三层次贡献总结（选题策略、预测算法、测量效度）；(2) A1/A2/B1/B2 的 embedding 对比和选题贡献归因；(3) 所有 Table 和 Figure 的最终版本；(4) 统计检验汇总表，明确主指标、关键次指标和多重比较校正；(5) 最佳 pipeline 推荐；(6) 可复现性说明；(7) 若未完成跨问卷泛化实验，明确将结论限定为 NEO-PI-R 并列为 limitation。",
       "priority": "medium",
       "dependsOn": [
         "F007",
@@ -1054,36 +1091,49 @@
         "F014"
       ],
       "steps": [
-        "1. 汇总 Phase 1-4 所有关键指标到 final_summary.csv",
-        "2. 撰写三层次贡献总结（选题、算法、效度）",
-        "3. 生成最终版本的所有 Table 和 Figure（统一风格、高分辨率）",
-        "4. 制作统计检验汇总表（所有关键 pairwise comparison 的 p 值和 CI）",
-        "5. 给出最佳 pipeline 推荐及其在 10/30/50/90% 下的预期表现",
-        "6. 编写可复现性说明（随机种子、数据版本、包版本）",
-        "7. 保存完整报告到 results/final_report/"
+        "1. 汇总 Phase 1-4 所有关键指标到 final_summary.csv，明确主指标为 item-level Pearson r，关键次指标为 trait_r_mean、profile_r、MAE。",
+        "2. 撰写三层次贡献总结（选题、算法、效度），并分别解释 A1/A2/B1/B2 的归因含义。",
+        "3. 生成最终版本的所有 Table 和 Figure（统一风格、高分辨率），包括 Phase 4 Table 4/Figure 4 和选择贡献/Jaccard overlap 汇总。",
+        "4. 制作统计检验汇总表：每个新 embedding vs SBERT original、B−A 选择贡献，包含 paired bootstrap Δ/CI、原始 p 值和 Holm/BH 校正 p 值。",
+        "5. 给出最佳 pipeline 推荐及其在 10/30/50/90% 下的预期表现，明确超参数来自固定推荐还是 embedding-specific tuning。",
+        "6. 编写可复现性说明（随机种子、outer fold、inner validation、bootstrap、embedding manifest、是否 continuous clip-only）。",
+        "7. 如时间允许，添加一个小型跨问卷泛化实验（例如 IPIP 或另一个 Big Five 数据集，30%/50% 两个比例）；如不执行，最终报告必须明确写为 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。",
+        "8. 保存完整报告到 results/final_report/。"
       ],
       "acceptanceCriteria": [
         {
           "id": "AC001",
-          "text": "最终报告包含三层次贡献的清晰论述",
+          "text": "最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC002",
-          "text": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook）",
+          "text": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC003",
-          "text": "最佳 pipeline 有明确的超参数和预期性能",
+          "text": "最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。",
           "status": "unknown",
           "evidence": []
         },
         {
           "id": "AC004",
-          "text": "可复现性说明覆盖所有关键随机因素",
+          "text": "统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC005",
+          "text": "可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC006",
+          "text": "最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。",
           "status": "unknown",
           "evidence": []
         }

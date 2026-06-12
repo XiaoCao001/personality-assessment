@@ -36,16 +36,30 @@
 **Rationale:** Short-form 回答"这组题本身能不能当短量表"；Imputed full 是核心应用场景；Held-out 避免高比例条件下虚高。Profile Correlation 捕捉五维画像恢复质量。
 **Impact:** 所有阶段都需要同时报告 item-level 和 trait-level 指标，增加了评估代码复杂度但大幅提升论证力。
 
-## Decision 6: 新 embedding 必须重新选题
-**Date:** 2026-06-04
-**Context:** Phase 4 需要比较不同 embedding 的完整 pipeline 表现。
-**Decision:** 做两个版本：版本 A 固定原 SBERT 选出的 S（只换预测 embedding），版本 B 每个 embedding 重新选题。
-**Rationale:** 版本 A vs B 的差异可以分离"embedding 改善邻居关系"和"embedding 改善选题"两个贡献来源。
-**Impact:** Phase 4 计算量加倍，但分析更透彻。
+## Decision 6: Phase 4 拆分 A1/A2/B1/B2 以分离 embedding、调参和选题贡献
+**Date:** 2026-06-12
+**Context:** Phase 4 同时涉及 embedding 空间、SoftmaxKNN 超参数 K/τ、以及 Coverage 重新选题。若只做一个版本，性能差异可能被“新 embedding 本身”“重新调参”和“重新选题”混淆。
+**Decision:** 将 Phase 4 拆为四个预注册版本：A1 = 固定 SBERT-Coverage S_old + 固定 Phase 2 推荐超参数；A2 = 固定 S_old + embedding-specific train-inner tuning；B1 = 每个 embedding 重新 Coverage 选题 + 固定 Phase 2 推荐超参数；B2 = 重新选题 + embedding-specific train-inner tuning。A1 作为主分析，A2/B1/B2 作为补充和归因分析。
+**Rationale:** A1 最接近“纯 embedding 邻居几何”检验；A2 估计校准后预测上限；B−A 在同一 embedding 和同一 tuning regime 下定义重新选题净贡献。
+**Impact:** Phase 4 输出必须记录 selected items、hyperparameters、per-participant predictions、Jaccard overlap 和 Δ_selection，避免后验混合解释。
 
-## Decision 7: 主指标固定，辅助指标不做过多样本检验
-**Date:** 2026-06-04
-**Context:** 多指标 + 多比例 + 多策略会导致大量统计检验，增加 Type I error 风险。
-**Decision:** 主指标固定两个：(1) item-level per-person Pearson r，(2) mean Big Five Pearson r for imputed full score。其他 MAE/RMSE/Profile Correlation 作为辅助。
-**Rationale:** 减少多重比较问题，让论文叙述聚焦。主指标对应原文（item-level r）和新贡献（trait-level r）。
-**Impact:** 统计检验只对主指标做 paired bootstrap test，辅助指标仅报告均值和 CI。
+## Decision 7: Phase 4 预先固定主指标与多重比较校正
+**Date:** 2026-06-12
+**Context:** Phase 4 有 embedding × ratio × version 多个比较，若事后挑选指标或不做校正，会增加偶然显著结果风险。
+**Decision:** Phase 4 主指标固定为 item-level Pearson r。关键次指标为 trait_r_mean、profile_r、MAE。主比较为每个新 embedding vs SBERT original，以及同一 embedding 下 B−A 的重新选题净贡献。统计检验使用 paired bootstrap over participants，保持同一 outer fold 配对，并报告 Holm 或 Benjamini-Hochberg 校正后的 p 值。
+**Rationale:** item-level r 与原论文主评估一致；trait/profile/MAE 保留测量效度解释但不替代主结论；配对 bootstrap 与 fold 配对能减少方差并避免泄漏。
+**Impact:** Phase 4/F015 的结果表必须同时包含 Δ、95% CI、原始 p 值和校正 p 值，并在报告中标注主/次指标。
+
+## Decision 8: Phase 4 主分析使用 continuous clip-only prediction
+**Date:** 2026-06-12
+**Context:** Phase 2 predictors historically used round + clip to [1,5]. 对 SoftmaxKNN/KernelSmoothing 这类连续加权模型，rounding 会损失连续预测信息，并可能影响 Pearson r 与 MAE。
+**Decision:** Phase 4 主分析使用连续预测值，仅 clip 到 [1,5]，不 round。Rounded accuracy / rounded MAE 作为补充分析输出，不作为主结论依据。
+**Rationale:** 连续预测更公平地反映加权模型输出，也更适合作为 Pearson r/MAE 主分析输入；补充 rounded 指标仍能回应 Likert 离散作答解释。
+**Impact:** Phase 4 实现若复用 Phase 2 predictor，需要新增或启用 no-round/continuous 模式，并在 hyperparameters/results 中记录 prediction_mode。
+
+## Decision 9: 跨问卷泛化作为最终报告 limitation 或小型补充实验
+**Date:** 2026-06-12
+**Context:** 当前改进实验主要围绕 NEO-PI-R，但原仓库还包含 IPIP/IPIP2/RIASEC/HSQ/16PF 等问卷。
+**Decision:** F015 最终报告前若时间允许，添加一个小型跨问卷泛化实验（优先 IPIP 或另一个 Big Five 数据集，30%/50% 两个比例）。若不执行，则必须明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
+**Rationale:** 避免将 NEO-PI-R 单数据集结论过度推广；即使没有额外实验，也应在论文级输出中清楚界定外推范围。
+**Impact:** F015 acceptance criteria 包含跨问卷泛化结果或 limitation 文本二选一。

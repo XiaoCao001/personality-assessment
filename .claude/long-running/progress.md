@@ -5,7 +5,7 @@
 
 ## Current status
 - Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 待做 (F013–F015)
-- Last updated: 2026-06-12T07:10:13Z
+- Last updated: 2026-06-12T08:00:00Z
 - Completed features: 13 / 16
 - Active feature: none
 
@@ -154,8 +154,9 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F013] Phase 4: Embedding 对比实验 — 版本 A（固定原选题） (depends on F007/F010/F011 ✓)** — 固定原 SBERT 选出的题目集合 S，只替换预测阶段 embedding，比较 5 个 embedding 的邻居关系/预测表现
-- F012 已完成：已生成 5 个 embedding 空间的 Coverage/Redundancy/within-between trait similarity 诊断和 Figure 5，可作为 Phase 4 结果解释依据
+- **[F013] Phase 4: Embedding 对比实验 — 版本 A1/A2（固定原选题） (depends on F007/F010/F011 ✓)** — A1 固定 SBERT-Coverage S_old + 固定 Phase 2 推荐超参数，用作主分析；A2 固定 S_old + embedding-specific train-inner K/τ tuning，用作补充分析。
+- **[F014] Phase 4: 版本 B1/B2（重新选题）** — B1/B2 分别对应固定超参数/重新调参；必须输出 S_new vs S_old Jaccard overlap，以及同一 embedding 下 B−A 的 Δ_selection。
+- Phase 4 主指标预注册为 item-level Pearson r；关键次指标为 trait_r_mean、profile_r、MAE；主分析使用 continuous clip-only prediction，不 round；新 embedding vs SBERT 和 B−A 比较使用 paired bootstrap + Holm/BH 校正。
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization
@@ -320,3 +321,13 @@
 - 验证：`python scripts/diagnose_embeddings.py --all` 通过；产物检查确认 20 行已选题集合结果、5 行全局结果、必需指标列和非空图表/文字输出均存在。
 - 说明：与第一阶段历史 CSV 对比时，SBERT 在 m=30/50 的 selected_S 和 Redundancy 有非阻塞轻微漂移，可能来自贪心选择并列项或数值差异；F012 独立验收确认该问题不影响本功能验收。
 - 独立验收结论：通过（3/3 条验收标准，第 1 次尝试）。
+
+
+### 2026-06-12T08:00:00Z Phase 4 Design Revision — A1/A2/B1/B2 and analysis preregistration
+- 根据用户反馈，在进入 F013 前修订 Phase 4 设计，避免 embedding 空间、K/τ 重新调参和重新选题贡献混淆。
+- F013 从单一 Version A 改为：A1 固定 SBERT-Coverage S_old + 固定 Phase 2 推荐 SoftmaxKNN 超参数（主分析）；A2 固定 S_old + 每个 embedding 在 train-inner 上重新调 K/τ（补充上限分析）。
+- F014 从单一 Version B 改为：B1 每个 embedding 重新 Coverage 选题 + 固定超参数；B2 重新选题 + embedding-specific train-inner tuning。
+- 新增归因输出要求：每个 embedding/fold/ratio 的 selected_items JSON、hyperparameters CSV、per-participant predictions、S_new vs S_old Jaccard overlap，以及同一 embedding 下的 B−A selection contribution。
+- 统计分析预注册：主指标 item-level Pearson r；关键次指标 trait_r_mean、profile_r、MAE；新 embedding vs SBERT original 和 B−A 使用 paired bootstrap over participants，并报告 Holm/BH 多重比较校正。
+- Phase 4 主分析预测改为 continuous clip-only（只裁剪到 [1,5]，不 round）；rounded accuracy/rounded MAE 仅作为补充分析。
+- F015 最终报告新增要求：若不做 IPIP/其他问卷的小型泛化实验，必须明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
