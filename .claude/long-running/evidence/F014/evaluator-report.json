@@ -1,0 +1,81 @@
+{
+  "featureId": "F014",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "换 embedding 后确实重新选题：versionB_selected_items_by_fold_ratio_embedding.json 记录每个 embedding/fold/ratio 的 S_new，且至少部分 embedding 与 SBERT S_old 不同。",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_selected_items_by_fold_ratio_embedding.json",
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_selection_overlap.csv",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py:562-622",
+        "/workspace/.claude/long-running/evidence/F014/test-output.txt"
+      ],
+      "notes": "versionB_selected_items_by_fold_ratio_embedding.json contains 200 records covering B1/B2 across 5 embeddings x 4 ratios x 5 folds; the unique embedding-ratio-fold combinations are 100, so every embedding/fold/ratio has a recorded S_new. The overlap artifact shows multiple non-SBERT embeddings differ from S_old (for example MiniLM ratio 10 has Jaccard 0.111, MPNet ratio 10 has 0.176, BGE ratio 10 has 0.250), confirming real re-selection."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "每个 embedding 与 SBERT 原选题 S_old 的 Jaccard overlap 已按 fold/ratio 输出到 versionB_selection_overlap.csv，用于解释重新选题幅度。",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_selection_overlap.csv",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py:274-312",
+        "/workspace/.claude/long-running/evidence/F014/artifact-checks.txt"
+      ],
+      "notes": "versionB_selection_overlap.csv has 100 rows, matching 5 embeddings x 4 ratios x 5 folds. Each row includes fold, ratio, jaccard_overlap, intersection_n, union_n, and item-level diffs, so the re-selection magnitude is explicitly audited by fold and ratio."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "重新选题净贡献以同一 embedding 内 B−A 定义：Δ_selection = performance(S_new,E_new) − performance(S_old,E_new)，分别报告 B1−A1 与 B2−A2。",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_selection_contribution.csv",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py:354-423",
+        "/workspace/questionnaire-embeddings/results/phase4/figures/table4.csv"
+      ],
+      "notes": "The implementation groups Version B participant metrics by embedding_key and ratio, merges them with the matching Version A rows on subject_id and outer_fold, and reports B1_minus_A1 and B2_minus_A2. The output CSV has 40 bootstrap rows with comparison, delta_mean, CI bounds, raw p, Holm, and BH values, so Δ_selection is computed within the same embedding and tuning regime."
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "B1 使用固定 Phase 2 超参数，B2 的 K/τ 调优完全在 train-inner 内完成，并由 versionB_hyperparameters_by_fold_ratio_embedding.csv 输出验证。",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py:701-787",
+        "/workspace/.claude/long-running/evidence/F014/test-output.txt",
+        "/workspace/.claude/long-running/evidence/F014/artifact-checks.txt"
+      ],
+      "notes": "All B1 rows use hyperparam_source=phase2_fixed_preregistered_softmax, is_tuned=False, and train_inner_n=0/valid_inner_n=0, which matches fixed Phase 2 hyperparameters. All B2 rows use hyperparam_source=train_inner_tuned_nested, is_tuned=True, and have nonzero train_inner_n and valid_inner_n."
+    },
+    {
+      "criterionId": "AC005",
+      "criterion": "Table 4 包含所有 embedding×ratio×version 的 item-level Pearson r、MAE、trait_r_mean、profile_r，以及 vs SBERT 和 B−A 的 bootstrap CI/校正 p 值。",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase4/figures/table4.csv",
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_statistical_tests.csv",
+        "/workspace/questionnaire-embeddings/results/phase4/versionB_selection_contribution.csv",
+        "/workspace/.claude/long-running/evidence/F014/artifact-checks.txt"
+      ],
+      "notes": "table4.csv has 80 rows, matching 4 versions x 5 embeddings x 4 ratios. It includes item_r_mean, item_mae_mean, trait_r_mean, profile_r_mean, vs-SBERT bootstrap CI/corrected p-values, and B−A selection-contribution CI/corrected p-values."
+    },
+    {
+      "criterionId": "AC006",
+      "criterion": "Figure 4 展示各 embedding 的 learning curve，并能区分固定 S/重新选题与固定超参数/重新调参版本。",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase4/figures/figure4.png",
+        "/workspace/questionnaire-embeddings/results/phase4/figures/figure4.pdf",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py:498-559",
+        "/workspace/.claude/long-running/evidence/F014/artifact-checks.txt"
+      ],
+      "notes": "Visual inspection of figure4.png shows fixed-params and tuned-params panels, embedding-specific color series, and on-canvas annotation: Dashed/circle = Version A fixed S_old; solid/square = Version B re-selected S_new. The legend distinguishes embeddings."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "The full run emitted expected ConstantInputWarning, NearConstantInputWarning, and Mean of empty slice warnings. Artifact validation passed.",
+    "SBERT recomputation does not perfectly reproduce historical S_old at ratios 30 and 50 (Jaccard 0.935 and 0.923), so downstream interpretation should keep the documented tie/numerical-drift caveat in mind."
+  ]
+}

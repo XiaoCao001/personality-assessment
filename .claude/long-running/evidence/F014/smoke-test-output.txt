@@ -1,0 +1,90 @@
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+==============================================================================
+F013 Phase 4 Version A — QUICK
+==============================================================================
+Folds: [0]; ratios: (10, 30); embeddings: ('sbert_original', 'minilm_l6_v2', 'mpnet_base_v2', 'e5_base_v2', 'bge_base_en_v15'); versions: ('A1_fixed', 'A2_tuned')
+Primary scoring: continuous clip-only predictions on held-out/unselected items only
+
+--- Fold 0 train=2199 test=550 ---
+  m=10: S_old hash=92745849571d4031 (10 items)
+    A1_fixed sbert_original   K= 7 tau=0.100 subjects=550
+    A2_tuned sbert_original   K=10 tau=0.100 subjects=550
+    A1_fixed minilm_l6_v2     K= 7 tau=0.100 subjects=550
+    A2_tuned minilm_l6_v2     K= 3 tau=0.100 subjects=550
+    A1_fixed mpnet_base_v2    K= 7 tau=0.100 subjects=550
+    A2_tuned mpnet_base_v2    K=10 tau=0.100 subjects=550
+    A1_fixed e5_base_v2       K= 7 tau=0.100 subjects=550
+    A2_tuned e5_base_v2       K=10 tau=0.030 subjects=550
+    A1_fixed bge_base_en_v15  K= 7 tau=0.100 subjects=550
+    A2_tuned bge_base_en_v15  K=10 tau=0.050 subjects=550
+  m=30: S_old hash=62099f7a34f67aa9 (30 items)
+    A1_fixed sbert_original   K= 7 tau=0.100 subjects=550
+    A2_tuned sbert_original   K= 7 tau=0.200 subjects=550
+    A1_fixed minilm_l6_v2     K= 7 tau=0.100 subjects=550
+    A2_tuned minilm_l6_v2     K=10 tau=0.100 subjects=550
+    A1_fixed mpnet_base_v2    K= 7 tau=0.100 subjects=550
+    A2_tuned mpnet_base_v2    K= 3 tau=0.100 subjects=550
+    A1_fixed e5_base_v2       K= 7 tau=0.100 subjects=550
+    A2_tuned e5_base_v2       K= 7 tau=0.030 subjects=550
+    A1_fixed bge_base_en_v15  K= 7 tau=0.100 subjects=550
+    A2_tuned bge_base_en_v15  K=15 tau=0.100 subjects=550
+
+[SAVE] Phase 4 Version A outputs
+  predictions          /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/versionA_predictions.parquet
+  participant_metrics  /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/versionA_participant_metrics.csv
+  results              /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/versionA_results.csv
+  summary              /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/versionA_summary.csv
+  selected_items       /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/selected_items_by_fold_ratio_embedding.json
+  hyperparameters      /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/hyperparameters_by_fold_ratio_embedding.csv
+  stats                /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/versionA_statistical_tests.csv
+  folds                /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2/outer_folds_subject_ids.json
+
+[OK] F013 Version A QUICK completed in 229.6s
+Participant rows: 11000; fold rows: 20; hyper rows: 20
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+==============================================================================
+F014 Phase 4 Version B — SMOKE
+==============================================================================
+Folds: [0]; ratios: (10,); embeddings: ('sbert_original',); versions: ('B1_fixed', 'B2_tuned')
+Primary scoring: continuous clip-only predictions on held-out/unselected items only
+Version A comparison artifacts: /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_A_2
+
+--- Fold 0 train=2199 test=550 ---
+  m=10 sbert_original  : S_new=92745849571d4031 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+
+[SAVE] Phase 4 Version B outputs
+  predictions              /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_predictions.parquet
+  participant_metrics      /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_participant_metrics.csv
+  results                  /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_results.csv
+  aggregate_metrics        /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_aggregate_metrics.csv
+  summary                  /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_summary.csv
+  hyperparameters          /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_hyperparameters_by_fold_ratio_embedding.csv
+  selected_items           /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_selected_items_by_fold_ratio_embedding.json
+  stats                    /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_statistical_tests.csv
+  selection_contribution   /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_selection_contribution.csv
+  selection_overlap        /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_selection_overlap.csv
+  folds                    /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/versionB_outer_folds_subject_ids.json
+  table4                   /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/figures/table4.csv
+  figure4_pdf              /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/figures/figure4.pdf
+  figure4_png              /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/figures/figure4.png
+  selection_contribution_alias /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/selection_contribution.csv
+  selection_overlap_alias  /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/selection_overlap.csv
+  selected_items_alias     /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/selected_items_by_fold_ratio_embedding.json
+  hyperparameters_alias    /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/hyperparameters_by_fold_ratio_embedding.csv
+  folds_alias              /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3/outer_folds_subject_ids.json
+
+[OK] F014 Version B SMOKE completed in 24.3s
+Participant rows: 1100; fold rows: 2; hyper rows: 2
+F014 smoke checks passed: /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_3

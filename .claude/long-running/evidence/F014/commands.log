@@ -1,0 +1,62 @@
+# F014 command log
+
+All commands run from `/workspace/questionnaire-embeddings` unless noted.
+
+## Implementation discovery / review
+- Launched feature-dev code-explorer agents for F013 Phase 4 A, Coverage selection patterns, and reporting/statistical-test patterns.
+- Launched feature-dev code-architect agents for minimal and robust F014 implementation blueprints.
+- Launched feature-dev code-reviewer agents for correctness, quality, and acceptance review.
+
+## Smoke / quick / full runs
+1. `python /workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py --smoke --output-dir /workspace/questionnaire-embeddings/results/phase4_versionB_smoke_run1 --version-a-dir /workspace/questionnaire-embeddings/results/phase4`
+   - Outcome: PASS; produced 1,100 participant rows, 2 fold rows, 2 hyperparameter rows.
+
+2. `python /workspace/questionnaire-embeddings/scripts/run_phase4_versionB.py --quick --output-dir /workspace/questionnaire-embeddings/results/phase4_versionB_quick_run1 --version-a-dir /workspace/questionnaire-embeddings/results/phase4`
+   - Outcome: PASS; produced 11,000 participant rows, 20 fold rows, 20 hyperparameter rows.
+
+3. `python scripts/test_phase4_versionB.py`
+   - Initial attempt was blocked by permission classifier because the smoke test deleted a pre-existing smoke directory.
+   - Smoke test was revised to allocate a fresh output directory without deleting previous artifacts.
+   - Later smoke was made hermetic by running a Version A quick fixture before Version B smoke.
+   - Final outcome: PASS; output saved to `.claude/long-running/evidence/F014/smoke-test-output.txt`.
+
+4. `python scripts/run_phase4_versionB.py --all`
+   - Outcome: PASS; output saved to `.claude/long-running/evidence/F014/test-output.txt`.
+   - Full run produced:
+     - 109,960 participant/prediction rows
+     - 200 fold-level rows
+     - 200 hyperparameter rows
+     - 40 Version B summary rows
+     - 32 vs-SBERT bootstrap comparisons
+     - 40 B−A selection contribution bootstrap comparisons
+     - 100 embedding×ratio×fold Jaccard overlap rows
+
+## Artifact checks
+5. Python artifact validation script saved to `.claude/long-running/evidence/F014/artifact-checks.txt`.
+   - Outcome: PASS for row counts, schemas, Jaccard bounds, B1/B2 hyperparameter behavior, B−A comparisons, Table 4/Figure 4, prediction vector alignment, and finite clipped continuous predictions.
+
+## Evidence capture
+6. `cp /tmp/claude-0/-workspace/0a770af0-7cc9-45ab-9a8f-c6658153fa04/tasks/bs3m22eua.output /workspace/.claude/long-running/evidence/F014/test-output.txt`
+   - Outcome: PASS.
+
+7. `git diff HEAD > /workspace/.claude/long-running/evidence/F014/git-diff.patch`
+   - Outcome: PASS.
+
+## Notes
+- Full run emitted expected SciPy `ConstantInputWarning`, `NearConstantInputWarning`, and NumPy `Mean of empty slice` warnings for degenerate subject/item or trait-profile cases. These warnings also occurred in F013 and did not prevent successful artifact validation.
+- Recomputed SBERT Coverage exactly matched historical S_old for ratios 10 and 90, but differed for ratios 30 and 50 (Jaccard 0.935 and 0.923 respectively). This is recorded in `versionB_selection_overlap.csv` and reflects the previously documented tie/numerical drift caveat from F012/F014 planning.
+
+8. Independent evaluator pass 1
+   - Outcome: NEEDS_WORK only on AC001/AC006 naming/figure issues during review cycle.
+   - User authorized F014 canonical artifact names to be versionB_* and F013 generic artifacts to remain intact.
+
+9. Figure 4 AC006 fix
+   - Updated `scripts/run_phase4_versionB.py` plotting so the embedding legend and A/B line semantics are on-canvas.
+   - Regenerated `results/phase4/figures/figure4.pdf` and `figure4.png`.
+   - Appended visual non-white-area check to `artifact-checks.txt`.
+
+10. Independent evaluator pass 2
+   - Outcome: PASS, all 6 acceptance criteria satisfied.
+
+11. `python3 /workspace/.claude/hooks/validate_features.py`
+   - Outcome: PASS.

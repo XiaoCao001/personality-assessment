@@ -3,7 +3,7 @@
   "description": "基于原论文 questionnaire-embeddings 项目的改进研究：验证语义覆盖选题策略、加权 KNN 预测器、新 embedding 模型，并增加人格总分预测维度。主实验数据集为 NEO-PI-R（2,749 被试 × 100 题项 × Big Five 五维度）。",
   "version": "1.0.0",
   "createdAt": "2026-06-04T16:00:00Z",
-  "updatedAt": "2026-06-12T09:45:00Z",
+  "updatedAt": "2026-06-12T16:39:22Z",
   "features": [
     {
       "id": "F001",
@@ -1069,58 +1069,88 @@
       "acceptanceCriteria": [
         {
           "id": "AC001",
-          "text": "换 embedding 后确实重新选题：selected_items_by_fold_ratio_embedding.json 记录每个 embedding/fold/ratio 的 S_new，且至少部分 embedding 与 SBERT S_old 不同。",
-          "status": "unknown",
-          "evidence": []
+          "text": "换 embedding 后确实重新选题：versionB_selected_items_by_fold_ratio_embedding.json 记录每个 embedding/fold/ratio 的 S_new，且至少部分 embedding 与 SBERT S_old 不同。",
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase4/versionB_selected_items_by_fold_ratio_embedding.json",
+            "questionnaire-embeddings/results/phase4/versionB_selection_overlap.csv",
+            ".claude/long-running/evidence/F014/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC002",
-          "text": "每个 embedding 与 SBERT 原选题 S_old 的 Jaccard overlap 已按 fold/ratio 输出，用于解释重新选题幅度。",
-          "status": "unknown",
-          "evidence": []
+          "text": "每个 embedding 与 SBERT 原选题 S_old 的 Jaccard overlap 已按 fold/ratio 输出到 versionB_selection_overlap.csv，用于解释重新选题幅度。",
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase4/versionB_selection_overlap.csv",
+            ".claude/long-running/evidence/F014/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC003",
           "text": "重新选题净贡献以同一 embedding 内 B−A 定义：Δ_selection = performance(S_new,E_new) − performance(S_old,E_new)，分别报告 B1−A1 与 B2−A2。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase4/versionB_selection_contribution.csv",
+            "questionnaire-embeddings/results/phase4/figures/table4.csv",
+            ".claude/long-running/evidence/F014/evaluator-report.json"
+          ]
         },
         {
           "id": "AC004",
-          "text": "B1 使用固定 Phase 2 超参数，B2 的 K/τ 调优完全在 train-inner 内完成，并由 hyperparameters 输出验证。",
-          "status": "unknown",
-          "evidence": []
+          "text": "B1 使用固定 Phase 2 超参数，B2 的 K/τ 调优完全在 train-inner 内完成，并由 versionB_hyperparameters_by_fold_ratio_embedding.csv 输出验证。",
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv",
+            "questionnaire-embeddings/scripts/run_phase4_versionB.py",
+            ".claude/long-running/evidence/F014/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC005",
           "text": "Table 4 包含所有 embedding×ratio×version 的 item-level Pearson r、MAE、trait_r_mean、profile_r，以及 vs SBERT 和 B−A 的 bootstrap CI/校正 p 值。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase4/figures/table4.csv",
+            "questionnaire-embeddings/results/phase4/versionB_statistical_tests.csv",
+            "questionnaire-embeddings/results/phase4/versionB_selection_contribution.csv"
+          ]
         },
         {
           "id": "AC006",
           "text": "Figure 4 展示各 embedding 的 learning curve，并能区分固定 S/重新选题与固定超参数/重新调参版本。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase4/figures/figure4.pdf",
+            "questionnaire-embeddings/results/phase4/figures/figure4.png",
+            ".claude/long-running/evidence/F014/artifact-checks.txt"
+          ]
         }
       ],
       "testPlan": [
         "python scripts/run_phase4_versionB.py --all",
-        "python scripts/run_phase4_versionB.py --quick",
-        "ls results/phase4/versionB_results.csv results/phase4/selection_contribution.csv results/phase4/selected_items_by_fold_ratio_embedding.json results/phase4/figures/table4.csv results/phase4/figures/figure4.pdf",
-        "python -c \"import pandas as pd; df=pd.read_csv('results/phase4/selection_contribution.csv'); assert {'B1_minus_A1','B2_minus_A2'} <= set(df['comparison'])\""
+        "python scripts/test_phase4_versionB.py",
+        "ls results/phase4/versionB_results.csv results/phase4/versionB_selection_contribution.csv results/phase4/versionB_selection_overlap.csv results/phase4/versionB_selected_items_by_fold_ratio_embedding.json results/phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv results/phase4/figures/table4.csv results/phase4/figures/figure4.pdf",
+        "python -c \"import pandas as pd; df=pd.read_csv('results/phase4/versionB_selection_contribution.csv'); assert {'B1_minus_A1','B2_minus_A2'} <= set(df['comparison'])\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F014",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_phase4_versionB.py --all",
+        "testOutputFile": ".claude/long-running/evidence/F014/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F014/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-12T13:08:39Z",
+          "status": "completed",
+          "completedAt": "2026-06-12T16:39:22Z"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-12T16:39:22Z",
+      "completedAt": "2026-06-12T16:39:22Z"
     },
     {
       "id": "F015",

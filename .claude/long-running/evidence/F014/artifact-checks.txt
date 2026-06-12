@@ -1,0 +1,39 @@
+SBERT Jaccard by ratio:
+            min       max      mean
+ratio                              
+10     1.000000  1.000000  1.000000
+30     0.935484  0.935484  0.935484
+50     0.923077  0.923077  0.923077
+90     1.000000  1.000000  1.000000
+
+Checks:
+PASS — versionB_results.csv has 200 rows (2 versions × 5 embeddings × 4 ratios × 5 folds)
+PASS — versionB_summary.csv has 40 rows (2 versions × 5 embeddings × 4 ratios)
+PASS — versionB_aggregate_metrics.csv has 40 aggregate rows
+PASS — versionB_hyperparameters has 200 rows
+PASS — versionB_participant_metrics has 109,960 rows
+PASS — versionB_predictions parquet has 109,960 rows
+PASS — versionB_statistical_tests has 32 vs-SBERT rows
+PASS — versionB_selection_contribution has 40 B−A rows
+PASS — versionB_selection_overlap has 100 embedding×ratio×fold rows
+PASS — selected-items JSON has 200 records
+PASS — table4.csv has 80 A/B summary rows
+PASS — figure4.pdf exists and is non-empty
+PASS — figure4.png exists and is non-empty
+PASS — results include B1_fixed and B2_tuned only
+PASS — all Version B primary result rows are continuous/non-rounded
+PASS — all rows use held-out-only Phase 2 scoring convention
+PASS — B1 hyperparameters are fixed and not tuned
+PASS — B2 hyperparameters are train-inner tuned
+PASS — selection contribution contains B1_minus_A1 and B2_minus_A2
+PASS — all Jaccard overlap values are in [0,1]
+PASS — at least some non-SBERT embeddings re-select different items than S_old
+PASS — table4 includes A1/A2/B1/B2
+PASS — vs-SBERT stats include raw/Holm/BH p-values
+PASS — B−A stats include raw/Holm/BH p-values
+PASS — all prediction rows have aligned vectors and finite [1,5] continuous predictions
+
+Figure 4 visual check after AC006 fix:
+PASS — figure4.png size=2762x990, file_bytes=281070
+PASS — bottom_nonwhite_fraction=0.0460 confirms on-canvas legend/semantics text
+PASS — right_nonwhite_fraction=0.0612

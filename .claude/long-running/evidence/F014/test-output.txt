@@ -1,0 +1,714 @@
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/phase4_common.py:262: NearConstantInputWarning: An input array is nearly constant; the computed correlation coefficient may be inaccurate.
+  return float(sp_stats.pearsonr(av, bv)[0])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: NearConstantInputWarning: An input array is nearly constant; the computed correlation coefficient may be inaccurate.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/phase4_common.py:262: NearConstantInputWarning: An input array is nearly constant; the computed correlation coefficient may be inaccurate.
+  return float(sp_stats.pearsonr(av, bv)[0])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: NearConstantInputWarning: An input array is nearly constant; the computed correlation coefficient may be inaccurate.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+==============================================================================
+F014 Phase 4 Version B — FULL
+==============================================================================
+Folds: [0, 1, 2, 3, 4]; ratios: (10, 30, 50, 90); embeddings: ('sbert_original', 'minilm_l6_v2', 'mpnet_base_v2', 'e5_base_v2', 'bge_base_en_v15'); versions: ('B1_fixed', 'B2_tuned')
+Primary scoring: continuous clip-only predictions on held-out/unselected items only
+Version A comparison artifacts: /workspace/questionnaire-embeddings/results/phase4
+[WARN] Recomputed SBERT Coverage S_new differs from historical S_old for 10 fold×ratio rows. This is documented as possible due to tie-breaking/numerical drift; see versionB_selection_overlap.csv.
+
+--- Fold 0 train=2199 test=550 ---
+  m=10 sbert_original  : S_new=92745849571d4031 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=10 minilm_l6_v2    : S_new=6a6a2a502b884a35 Jaccard(S_new,S_old)=0.111
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 mpnet_base_v2   : S_new=fbaa37d42ee998f8 Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 e5_base_v2      : S_new=ddb8a8dc4781b07a Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.030 subjects=550
+  m=10 bge_base_en_v15 : S_new=ec0db881349d9b77 Jaccard(S_new,S_old)=0.250
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 sbert_original  : S_new=1ce15da48f8052fb Jaccard(S_new,S_old)=0.935
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=30 minilm_l6_v2    : S_new=bad524b73607dd87 Jaccard(S_new,S_old)=0.200
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=30 mpnet_base_v2   : S_new=e516e4a7976f9b63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=30 e5_base_v2      : S_new=7ceffde4e4dcacff Jaccard(S_new,S_old)=0.224
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 bge_base_en_v15 : S_new=d4ab89ba5be2ea63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=50 sbert_original  : S_new=6e6167ebfe199350 Jaccard(S_new,S_old)=0.923
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=50 minilm_l6_v2    : S_new=61a3f94b6fb57ce0 Jaccard(S_new,S_old)=0.333
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 mpnet_base_v2   : S_new=45bb1bb1246fbfc6 Jaccard(S_new,S_old)=0.408
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 e5_base_v2      : S_new=5ae9976a061dca51 Jaccard(S_new,S_old)=0.449
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.050 subjects=550
+  m=50 bge_base_en_v15 : S_new=6eea9f717fd92763 Jaccard(S_new,S_old)=0.515
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 sbert_original  : S_new=e4aca0f6b9e84075 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 3 tau=0.200 subjects=550
+  m=90 minilm_l6_v2    : S_new=4554bd3645a8b3db Jaccard(S_new,S_old)=0.856
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=90 mpnet_base_v2   : S_new=e89eefa9a454e390 Jaccard(S_new,S_old)=0.875
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=90 e5_base_v2      : S_new=4ab1827017a9d4a9 Jaccard(S_new,S_old)=0.818
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 bge_base_en_v15 : S_new=d1c9629104d4613e Jaccard(S_new,S_old)=0.895
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.100 subjects=550
+
+--- Fold 1 train=2199 test=550 ---
+  m=10 sbert_original  : S_new=92745849571d4031 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=10 minilm_l6_v2    : S_new=6a6a2a502b884a35 Jaccard(S_new,S_old)=0.111
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 mpnet_base_v2   : S_new=fbaa37d42ee998f8 Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 e5_base_v2      : S_new=ddb8a8dc4781b07a Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.030 subjects=550
+  m=10 bge_base_en_v15 : S_new=ec0db881349d9b77 Jaccard(S_new,S_old)=0.250
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 sbert_original  : S_new=1ce15da48f8052fb Jaccard(S_new,S_old)=0.935
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=30 minilm_l6_v2    : S_new=bad524b73607dd87 Jaccard(S_new,S_old)=0.200
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 mpnet_base_v2   : S_new=e516e4a7976f9b63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=30 e5_base_v2      : S_new=7ceffde4e4dcacff Jaccard(S_new,S_old)=0.224
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.050 subjects=550
+  m=30 bge_base_en_v15 : S_new=d4ab89ba5be2ea63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=50 sbert_original  : S_new=6e6167ebfe199350 Jaccard(S_new,S_old)=0.923
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=50 minilm_l6_v2    : S_new=61a3f94b6fb57ce0 Jaccard(S_new,S_old)=0.333
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 mpnet_base_v2   : S_new=45bb1bb1246fbfc6 Jaccard(S_new,S_old)=0.408
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 e5_base_v2      : S_new=5ae9976a061dca51 Jaccard(S_new,S_old)=0.449
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.050 subjects=550
+  m=50 bge_base_en_v15 : S_new=6eea9f717fd92763 Jaccard(S_new,S_old)=0.515
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 sbert_original  : S_new=e4aca0f6b9e84075 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 3 tau=0.200 subjects=550
+  m=90 minilm_l6_v2    : S_new=4554bd3645a8b3db Jaccard(S_new,S_old)=0.856
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=90 mpnet_base_v2   : S_new=e89eefa9a454e390 Jaccard(S_new,S_old)=0.875
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=90 e5_base_v2      : S_new=4ab1827017a9d4a9 Jaccard(S_new,S_old)=0.818
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.050 subjects=550
+  m=90 bge_base_en_v15 : S_new=d1c9629104d4613e Jaccard(S_new,S_old)=0.895
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.100 subjects=550
+
+--- Fold 2 train=2199 test=550 ---
+  m=10 sbert_original  : S_new=92745849571d4031 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=10 minilm_l6_v2    : S_new=6a6a2a502b884a35 Jaccard(S_new,S_old)=0.111
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 mpnet_base_v2   : S_new=fbaa37d42ee998f8 Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 e5_base_v2      : S_new=ddb8a8dc4781b07a Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.030 subjects=550
+  m=10 bge_base_en_v15 : S_new=ec0db881349d9b77 Jaccard(S_new,S_old)=0.250
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 sbert_original  : S_new=1ce15da48f8052fb Jaccard(S_new,S_old)=0.935
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=30 minilm_l6_v2    : S_new=bad524b73607dd87 Jaccard(S_new,S_old)=0.200
+    B1_fixed K= 7 tau=0.100 subjects=550
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: NearConstantInputWarning: An input array is nearly constant; the computed correlation coefficient may be inaccurate.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 mpnet_base_v2   : S_new=e516e4a7976f9b63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=30 e5_base_v2      : S_new=7ceffde4e4dcacff Jaccard(S_new,S_old)=0.224
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 bge_base_en_v15 : S_new=d4ab89ba5be2ea63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=50 sbert_original  : S_new=6e6167ebfe199350 Jaccard(S_new,S_old)=0.923
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=50 minilm_l6_v2    : S_new=61a3f94b6fb57ce0 Jaccard(S_new,S_old)=0.333
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=50 mpnet_base_v2   : S_new=45bb1bb1246fbfc6 Jaccard(S_new,S_old)=0.408
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 e5_base_v2      : S_new=5ae9976a061dca51 Jaccard(S_new,S_old)=0.449
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.050 subjects=550
+  m=50 bge_base_en_v15 : S_new=6eea9f717fd92763 Jaccard(S_new,S_old)=0.515
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 sbert_original  : S_new=e4aca0f6b9e84075 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 3 tau=0.200 subjects=550
+  m=90 minilm_l6_v2    : S_new=4554bd3645a8b3db Jaccard(S_new,S_old)=0.856
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.200 subjects=550
+  m=90 mpnet_base_v2   : S_new=e89eefa9a454e390 Jaccard(S_new,S_old)=0.875
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=90 e5_base_v2      : S_new=4ab1827017a9d4a9 Jaccard(S_new,S_old)=0.818
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 bge_base_en_v15 : S_new=d1c9629104d4613e Jaccard(S_new,S_old)=0.895
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.100 subjects=550
+
+--- Fold 3 train=2199 test=550 ---
+  m=10 sbert_original  : S_new=92745849571d4031 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=10 minilm_l6_v2    : S_new=6a6a2a502b884a35 Jaccard(S_new,S_old)=0.111
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 mpnet_base_v2   : S_new=fbaa37d42ee998f8 Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=10 e5_base_v2      : S_new=ddb8a8dc4781b07a Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.030 subjects=550
+  m=10 bge_base_en_v15 : S_new=ec0db881349d9b77 Jaccard(S_new,S_old)=0.250
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 sbert_original  : S_new=1ce15da48f8052fb Jaccard(S_new,S_old)=0.935
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.200 subjects=550
+  m=30 minilm_l6_v2    : S_new=bad524b73607dd87 Jaccard(S_new,S_old)=0.200
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=30 mpnet_base_v2   : S_new=e516e4a7976f9b63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=30 e5_base_v2      : S_new=7ceffde4e4dcacff Jaccard(S_new,S_old)=0.224
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.100 subjects=550
+  m=30 bge_base_en_v15 : S_new=d4ab89ba5be2ea63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=50 sbert_original  : S_new=6e6167ebfe199350 Jaccard(S_new,S_old)=0.923
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=50 minilm_l6_v2    : S_new=61a3f94b6fb57ce0 Jaccard(S_new,S_old)=0.333
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 mpnet_base_v2   : S_new=45bb1bb1246fbfc6 Jaccard(S_new,S_old)=0.408
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 5 tau=0.200 subjects=550
+  m=50 e5_base_v2      : S_new=5ae9976a061dca51 Jaccard(S_new,S_old)=0.449
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K= 7 tau=0.100 subjects=550
+  m=50 bge_base_en_v15 : S_new=6eea9f717fd92763 Jaccard(S_new,S_old)=0.515
+    B1_fixed K=10 tau=0.100 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 sbert_original  : S_new=e4aca0f6b9e84075 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K= 3 tau=0.200 subjects=550
+  m=90 minilm_l6_v2    : S_new=4554bd3645a8b3db Jaccard(S_new,S_old)=0.856
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.200 subjects=550
+  m=90 mpnet_base_v2   : S_new=e89eefa9a454e390 Jaccard(S_new,S_old)=0.875
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=10 tau=0.200 subjects=550
+  m=90 e5_base_v2      : S_new=4ab1827017a9d4a9 Jaccard(S_new,S_old)=0.818
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=10 tau=0.100 subjects=550
+  m=90 bge_base_en_v15 : S_new=d1c9629104d4613e Jaccard(S_new,S_old)=0.895
+    B1_fixed K= 3 tau=0.030 subjects=550
+    B2_tuned K=15 tau=0.100 subjects=550
+
+--- Fold 4 train=2200 test=549 ---
+  m=10 sbert_original  : S_new=92745849571d4031 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K=10 tau=0.100 subjects=549
+  m=10 minilm_l6_v2    : S_new=6a6a2a502b884a35 Jaccard(S_new,S_old)=0.111
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 7 tau=0.100 subjects=549
+  m=10 mpnet_base_v2   : S_new=fbaa37d42ee998f8 Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 7 tau=0.100 subjects=549
+  m=10 e5_base_v2      : S_new=ddb8a8dc4781b07a Jaccard(S_new,S_old)=0.176
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.030 subjects=549
+  m=10 bge_base_en_v15 : S_new=ec0db881349d9b77 Jaccard(S_new,S_old)=0.250
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.100 subjects=549
+  m=30 sbert_original  : S_new=1ce15da48f8052fb Jaccard(S_new,S_old)=0.935
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 7 tau=0.200 subjects=549
+  m=30 minilm_l6_v2    : S_new=bad524b73607dd87 Jaccard(S_new,S_old)=0.200
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.100 subjects=549
+  m=30 mpnet_base_v2   : S_new=e516e4a7976f9b63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.200 subjects=549
+  m=30 e5_base_v2      : S_new=7ceffde4e4dcacff Jaccard(S_new,S_old)=0.224
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.100 subjects=549
+  m=30 bge_base_en_v15 : S_new=d4ab89ba5be2ea63 Jaccard(S_new,S_old)=0.304
+    B1_fixed K= 7 tau=0.100 subjects=549
+    B2_tuned K=10 tau=0.100 subjects=549
+  m=50 sbert_original  : S_new=6e6167ebfe199350 Jaccard(S_new,S_old)=0.923
+    B1_fixed K=10 tau=0.100 subjects=549
+    B2_tuned K=10 tau=0.200 subjects=549
+  m=50 minilm_l6_v2    : S_new=61a3f94b6fb57ce0 Jaccard(S_new,S_old)=0.333
+    B1_fixed K=10 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.200 subjects=549
+  m=50 mpnet_base_v2   : S_new=45bb1bb1246fbfc6 Jaccard(S_new,S_old)=0.408
+    B1_fixed K=10 tau=0.100 subjects=549
+    B2_tuned K= 5 tau=0.200 subjects=549
+  m=50 e5_base_v2      : S_new=5ae9976a061dca51 Jaccard(S_new,S_old)=0.449
+    B1_fixed K=10 tau=0.100 subjects=549
+    B2_tuned K= 7 tau=0.100 subjects=549
+  m=50 bge_base_en_v15 : S_new=6eea9f717fd92763 Jaccard(S_new,S_old)=0.515
+    B1_fixed K=10 tau=0.100 subjects=549
+    B2_tuned K=10 tau=0.100 subjects=549
+  m=90 sbert_original  : S_new=e4aca0f6b9e84075 Jaccard(S_new,S_old)=1.000
+    B1_fixed K= 3 tau=0.030 subjects=549
+    B2_tuned K= 3 tau=0.200 subjects=549
+  m=90 minilm_l6_v2    : S_new=4554bd3645a8b3db Jaccard(S_new,S_old)=0.856
+    B1_fixed K= 3 tau=0.030 subjects=549
+    B2_tuned K=15 tau=0.200 subjects=549
+  m=90 mpnet_base_v2   : S_new=e89eefa9a454e390 Jaccard(S_new,S_old)=0.875
+    B1_fixed K= 3 tau=0.030 subjects=549
+    B2_tuned K=10 tau=0.200 subjects=549
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:199: RuntimeWarning: Mean of empty slice
+  scores[:, col] = np.nanmean(responses[:, mask], axis=1)
+  m=90 e5_base_v2      : S_new=4ab1827017a9d4a9 Jaccard(S_new,S_old)=0.818
+    B1_fixed K= 3 tau=0.030 subjects=549
+    B2_tuned K=15 tau=0.100 subjects=549
+  m=90 bge_base_en_v15 : S_new=d1c9629104d4613e Jaccard(S_new,S_old)=0.895
+    B1_fixed K= 3 tau=0.030 subjects=549
+    B2_tuned K=15 tau=0.100 subjects=549
+
+[SAVE] Phase 4 Version B outputs
+  predictions              /workspace/questionnaire-embeddings/results/phase4/versionB_predictions.parquet
+  participant_metrics      /workspace/questionnaire-embeddings/results/phase4/versionB_participant_metrics.csv
+  results                  /workspace/questionnaire-embeddings/results/phase4/versionB_results.csv
+  aggregate_metrics        /workspace/questionnaire-embeddings/results/phase4/versionB_aggregate_metrics.csv
+  summary                  /workspace/questionnaire-embeddings/results/phase4/versionB_summary.csv
+  hyperparameters          /workspace/questionnaire-embeddings/results/phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv
+  selected_items           /workspace/questionnaire-embeddings/results/phase4/versionB_selected_items_by_fold_ratio_embedding.json
+  stats                    /workspace/questionnaire-embeddings/results/phase4/versionB_statistical_tests.csv
+  selection_contribution   /workspace/questionnaire-embeddings/results/phase4/versionB_selection_contribution.csv
+  selection_overlap        /workspace/questionnaire-embeddings/results/phase4/versionB_selection_overlap.csv
+  folds                    /workspace/questionnaire-embeddings/results/phase4/versionB_outer_folds_subject_ids.json
+  table4                   /workspace/questionnaire-embeddings/results/phase4/figures/table4.csv
+  figure4_pdf              /workspace/questionnaire-embeddings/results/phase4/figures/figure4.pdf
+  figure4_png              /workspace/questionnaire-embeddings/results/phase4/figures/figure4.png
+  selection_contribution_alias /workspace/questionnaire-embeddings/results/phase4/selection_contribution.csv
+  selection_overlap_alias  /workspace/questionnaire-embeddings/results/phase4/selection_overlap.csv
+
+[OK] F014 Version B FULL completed in 2331.5s
+Participant rows: 109960; fold rows: 200; hyper rows: 200

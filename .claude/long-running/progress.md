@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013 完成，F014–F015 待做
-- Last updated: 2026-06-12T09:45:00Z
-- Completed features: 14 / 16
+- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013–F014 完成，F015 待做
+- Last updated: 2026-06-12T16:39:22Z
+- Completed features: 15 / 16
 - Active feature: none
 
 ## Completed work
@@ -128,6 +128,17 @@
 - 关键诊断假设：E5-base-v2 在已选题集合 Coverage 上最高；MPNet-base-v2 的同维度减跨维度原始余弦差值最大；第四阶段版本 A/B 需要进一步验证这些空间结构差异是否能转化为预测性能收益。
 - 独立验收结论：通过；3 条验收标准全部满足（第 1 次尝试）。
 - 证据文件：evaluator-report.json、test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
+
+### F014 — 第四阶段：Embedding 对比实验版本 B1/B2（重新选题）（2026-06-12T16:39:22Z 完成）
+- 新增 `scripts/run_phase4_versionB.py`：对 5 个 embedding 分别用 `CoverageSelector` 重新选题 `S_new`，并在与 F013 相同的 outer folds 和 held-out-only continuous clip-only 评分约定下运行 B1/B2。
+- B1 使用固定 Phase 2 SoftmaxKNN 参数；B2 在每个 embedding/fold/ratio 内仅用 outer-train 的 train-inner/valid-inner 调 K/τ。
+- 新增 `scripts/test_phase4_versionB.py`：hermetic smoke test，先生成 Version A quick fixture，再运行 Version B smoke，验证预测向量、Jaccard、B−A join、B1/B2 hyperparameter flags 和 Figure 4/Table 4。
+- F014 canonical artifacts 使用 `versionB_*` 命名，避免覆盖 F013 generic audit artifacts：`versionB_predictions.parquet`、`versionB_participant_metrics.csv`、`versionB_results.csv`、`versionB_summary.csv`、`versionB_hyperparameters_by_fold_ratio_embedding.csv`、`versionB_selected_items_by_fold_ratio_embedding.json`、`versionB_statistical_tests.csv`、`versionB_selection_contribution.csv`、`versionB_selection_overlap.csv`。
+- Full run 成功完成：109,960 prediction/participant rows，200 fold rows，200 hyperparameter rows，40 summary rows，32 vs-SBERT bootstrap tests，40 B−A selection contribution tests，100 Jaccard overlap rows。
+- `versionB_selection_overlap.csv` 显示新 embedding 的 `S_new` 与 `S_old` 明显不同（例如低题量 Jaccard 约 0.11–0.25）；SBERT 在 m=30/50 与历史 S_old 有轻微 tie/numerical drift（Jaccard 0.935/0.923），已记录为解释 caveat。
+- `figures/table4.csv` 汇总 A1/A2/B1/B2 × embedding × ratio 的主指标、关键次指标、vs-SBERT bootstrap 和 B−A selection contribution；`figures/figure4.pdf/png` 以 fixed/tuned 两面板展示 A/B learning curve，并用 on-canvas legend/annotation 区分 embedding 与 A 固定 S_old / B 重新选题。
+- 独立验收结论：PASS（6/6 条验收标准）。
+- 证据文件：evaluator-report.json、test-output.txt、smoke-test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
 
 ### F013 — 第四阶段：Embedding 对比实验版本 A1/A2（固定原选题）（2026-06-12T09:45:00Z 完成）
 - 新增 `scripts/phase4_common.py`：集中管理 Phase 4 数据加载、F011/F012 风格 embedding registry、按 fold×ratio 读取 Phase 1 Coverage `S_old`、participant-level paired bootstrap、Holm/BH p 值校正和输出路径。
