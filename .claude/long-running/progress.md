@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3-4 待做 (F011–F015)
-- Last updated: 2026-06-05T10:00:00Z
-- Completed features: 11 / 16
+- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011 完成，Phase 3-4 待做 (F012–F015)
+- Last updated: 2026-06-12T06:20:00Z
+- Completed features: 12 / 16
 - Active feature: none
 
 ## Completed work
@@ -106,6 +106,19 @@
 - Outputs: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
 - **建议：Phase 4 所有比例使用 SoftmaxKNN（低题量 K=7, τ=0.1；高题量 K=3, τ≈0.035）**
 
+### F011 — Phase 3: 新 Embedding 模型生成 (completed 2026-06-12T06:20:00Z)
+- Created `scripts/generate_embeddings.py` — self-contained SentenceTransformer embedding generation + pure local validation CLI
+- Generated four L2-normalized matrices under `embeddings/`:
+  - `neo_minilm_l6_v2.npy` — all-MiniLM-L6-v2, shape (100,384)
+  - `neo_mpnet_base_v2.npy` — all-mpnet-base-v2, shape (100,768)
+  - `neo_e5_base_v2.npy` — intfloat/e5-base-v2, shape (100,768), with `query: ` prefix
+  - `neo_bge_base_en_v15.npy` — BAAI/bge-base-en-v1.5, shape (100,768)
+- Added combined manifest `embeddings/neo_embeddings_metadata.json` with model names, dimensions, pooling, package versions, device, file hashes, and canonical item id/text provenance hashes
+- `--validate` is pure local validation: no SentenceTransformer/model loading and no Hugging Face downloads; offline validation (`HF_HUB_OFFLINE=1`) passes
+- Updated `questionnaire.yaml` with F011 dependencies: pyarrow, sentence-transformers, torch
+- Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
+- Evidence: evaluator-report.json, generation-output.txt, test-output.txt, offline-validate-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log
+
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
 2. **Coverage+Div** (F005): 0.2620
@@ -131,8 +144,8 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F011] Phase 3: 新 Embedding 模型生成 (depends on F001 ✓)** — 在本地 T4 GPU 上为 NEO-PI-R 100 题生成 MiniLM/MPNet/E5/BGE embedding
-- F016 已完成：Phase 2 baseline 命名已修正，推荐继续推进 Phase 3
+- **[F012] Phase 3: Embedding 空间质量诊断 (depends on F011 ✓)** — 对原 SBERT + 新 MiniLM/MPNet/E5/BGE embedding 计算 Coverage/Redundancy/within-between trait similarity 并生成 Figure 5
+- F011 已完成：四个新 embedding 矩阵与 combined metadata manifest 已生成并通过 evaluator PASS
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization
@@ -273,3 +286,17 @@
 - progress.md F008/F009/F010 session log 已完成 UniformKNN → Tuned UniformKNN K=3 修正
 - Phase 2 predictor ranking 新增 UniformKNN K=5 (原文 baseline) 行及说明注释
 - Evaluator verdict: pending
+
+### 2026-06-12T06:20:00Z F011 Implementation — 新 Embedding 模型生成
+- Created `scripts/generate_embeddings.py` with model registry, auto device selection (`cuda` on Tesla T4, CPU fallback), `--models`, `--overwrite`, and pure-local `--validate` mode
+- Generated and validated MiniLM/MPNet/E5/BGE embeddings for the canonical 100 NEO-PI-R items from `data/processed/metadata.parquet`
+- Output artifacts:
+  - `embeddings/neo_minilm_l6_v2.npy` (100×384)
+  - `embeddings/neo_mpnet_base_v2.npy` (100×768)
+  - `embeddings/neo_e5_base_v2.npy` (100×768, E5 `query: ` prefix)
+  - `embeddings/neo_bge_base_en_v15.npy` (100×768)
+  - `embeddings/neo_embeddings_metadata.json`
+- Metadata includes stable hashes for ordered `question_id`, ordered `item_text`, paired canonical item id/text provenance, model metadata, package versions, device info, and file SHA256 values
+- Validation results: all matrices float32, expected shape, row L2 norms within 1e-5; metadata source order matches `metadata.parquet`; offline validation passes with `HF_HUB_OFFLINE=1`
+- Updated `questionnaire.yaml` to include pyarrow, sentence-transformers, and torch
+- Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）

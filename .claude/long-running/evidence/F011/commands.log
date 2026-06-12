@@ -1,0 +1,30 @@
+# F011 commands log
+
+Working directory for project commands: `/workspace/questionnaire-embeddings`.
+
+1. `python3 -m py_compile scripts/generate_embeddings.py`
+   - Outcome: PASS.
+2. `python3 scripts/generate_embeddings.py --validate`
+   - Outcome before generation: expected FAIL because artifacts did not exist yet.
+3. `python3 scripts/generate_embeddings.py --all`
+   - Outcome: PASS; generated all four `.npy` files and `embeddings/neo_embeddings_metadata.json` using auto-selected CUDA/Tesla T4.
+4. `python3 scripts/generate_embeddings.py --validate`
+   - Outcome: PASS; local validation succeeded.
+5. `HF_HUB_OFFLINE=1 python3 scripts/generate_embeddings.py --validate`
+   - Outcome: PASS; offline/local validation succeeded without model loading/downloads.
+6. Shape/norm/order Python assertion script
+   - Outcome: PASS; all matrices have expected shapes and L2 norms; metadata order matches `data/processed/metadata.parquet`.
+7. `python3 scripts/generate_embeddings.py --models minilm_l6_v2`
+   - Outcome: expected FAIL without `--overwrite`, confirming no-overwrite guard.
+8. `python3 -m py_compile scripts/generate_embeddings.py && python3 scripts/generate_embeddings.py --all --overwrite`
+   - Outcome: PASS after review fixes; regenerated all four artifacts and post-save validation passed.
+9. `python3 scripts/generate_embeddings.py --all --overwrite > .claude/long-running/evidence/F011/generation-output.txt 2>&1`
+   - Outcome: PASS; saved generation evidence.
+10. `python3 scripts/generate_embeddings.py --validate > .claude/long-running/evidence/F011/test-output.txt 2>&1`
+   - Outcome: PASS; saved primary validation evidence.
+11. `HF_HUB_OFFLINE=1 python3 scripts/generate_embeddings.py --validate > .claude/long-running/evidence/F011/offline-validate-output.txt 2>&1`
+   - Outcome: PASS; saved no-download validation evidence.
+12. `git diff > .claude/long-running/evidence/F011/git-diff.patch`
+   - Outcome: PASS; saved code/config diff evidence.
+13. Artifact shape/norm/order assertion script > `.claude/long-running/evidence/F011/artifact-checks.txt`
+   - Outcome: PASS.

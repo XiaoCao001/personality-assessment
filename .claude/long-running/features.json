@@ -22,10 +22,38 @@
         "7. 生成数据报告：维度形状、各维度题数分布、正向/反向题比例"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Y 矩阵形状为 (2749, 100)，值域 [1,5]，无缺失值", "status": "pass", "evidence": ["data/processed/Y.npy shape (2749,100), range [1,5], no NaN"]},
-        {"id": "AC002", "text": "E_old 矩阵形状为 (100, d)，d≥384，已 L2 normalize", "status": "pass", "evidence": ["data/processed/E_old.npy shape (100,1024), L2 norms within 1e-5 of 1.0"]},
-        {"id": "AC003", "text": "trait_id 包含 5 个维度各 20 题，reverse_id 正反比合理", "status": "pass", "evidence": ["metadata.parquet: O/C/E/A/N each 20 items; 50 forward, 50 reverse"]},
-        {"id": "AC004", "text": "所有输出文件可通过 numpy.load / pandas.read_parquet 读取", "status": "pass", "evidence": ["Y.npy, E_old.npy loadable; metadata.parquet loadable; subject_ids.txt loadable"]}
+        {
+          "id": "AC001",
+          "text": "Y 矩阵形状为 (2749, 100)，值域 [1,5]，无缺失值",
+          "status": "pass",
+          "evidence": [
+            "data/processed/Y.npy shape (2749,100), range [1,5], no NaN"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "E_old 矩阵形状为 (100, d)，d≥384，已 L2 normalize",
+          "status": "pass",
+          "evidence": [
+            "data/processed/E_old.npy shape (100,1024), L2 norms within 1e-5 of 1.0"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "trait_id 包含 5 个维度各 20 题，reverse_id 正反比合理",
+          "status": "pass",
+          "evidence": [
+            "metadata.parquet: O/C/E/A/N each 20 items; 50 forward, 50 reverse"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "所有输出文件可通过 numpy.load / pandas.read_parquet 读取",
+          "status": "pass",
+          "evidence": [
+            "Y.npy, E_old.npy loadable; metadata.parquet loadable; subject_ids.txt loadable"
+          ]
+        }
       ],
       "testPlan": [
         "python -c \"import numpy as np; y=np.load('data/processed/Y.npy'); assert y.shape==(2749,100); assert y.min()>=1 and y.max()<=5\"",
@@ -56,7 +84,9 @@
       "category": "technical",
       "description": "用原 SBERT embedding + KNN K=5，严格复现原文的 per-participant 10-fold item CV。目标不是精确复现到小数点，而是确认平均题项预测 Pearson r 接近原文 ~.45 水平。如果偏差过大，优先排查 item 顺序、embedding 对应、反向计分时机、KNN 距离度量等问题。输出 original_baseline_results.csv。",
       "priority": "high",
-      "dependsOn": ["F001"],
+      "dependsOn": [
+        "F001"
+      ],
       "steps": [
         "1. 实现 per-participant item-level 10-fold CV（对每个被试的 100 题随机分 10 折，9 折训练 1 折预测）",
         "2. KNN regression K=5，使用 cosine 距离在 embedding 空间找最近邻",
@@ -66,10 +96,38 @@
         "6. 保存结果到 results/baseline/original_10fold_itemcv_results.csv"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "10-fold item CV 运行无错误，覆盖全部 2749 名被试", "status": "pass", "evidence": ["scripts/run_baseline.py runs all 10 folds for all 2749 subjects; 2749 rows in output CSV"]},
-        {"id": "AC002", "text": "Mean item-level Pearson r 在 .40–.50 范围内（或偏差有合理解释）", "status": "pass", "evidence": ["test-output.txt: Mean r = 0.4628, 95% CI [0.4571, 0.4686]; original paper r=0.453 [0.447, 0.458]"]},
-        {"id": "AC003", "text": "结果保存到 results/baseline/original_10fold_itemcv_results.csv", "status": "pass", "evidence": ["results/baseline/original_10fold_itemcv_results.csv exists with 2749 rows"]},
-        {"id": "AC004", "text": "输出包含 per-participant r 值和汇总统计量", "status": "pass", "evidence": ["CSV columns: subject_id, pearson_r, p_value, mae; summary: mean, 95% CI, t-stat, p-value, MAE"]}
+        {
+          "id": "AC001",
+          "text": "10-fold item CV 运行无错误，覆盖全部 2749 名被试",
+          "status": "pass",
+          "evidence": [
+            "scripts/run_baseline.py runs all 10 folds for all 2749 subjects; 2749 rows in output CSV"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Mean item-level Pearson r 在 .40–.50 范围内（或偏差有合理解释）",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt: Mean r = 0.4628, 95% CI [0.4571, 0.4686]; original paper r=0.453 [0.447, 0.458]"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "结果保存到 results/baseline/original_10fold_itemcv_results.csv",
+          "status": "pass",
+          "evidence": [
+            "results/baseline/original_10fold_itemcv_results.csv exists with 2749 rows"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "输出包含 per-participant r 值和汇总统计量",
+          "status": "pass",
+          "evidence": [
+            "CSV columns: subject_id, pearson_r, p_value, mae; summary: mean, 95% CI, t-stat, p-value, MAE"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/run_baseline.py",
@@ -99,7 +157,9 @@
       "category": "technical",
       "description": "实现 5-fold participant-level CV 框架。将 2,749 名被试分成 5 折，每折 train(80%)/test(20%)。在 train participants 上确定题目集合 S 和调参，在 test participants 上模拟真实作答并评估。同时实现 inner validation 机制用于超参数选择。包含人格总分计算的完整 pipeline（反向计分→维度分数→profile correlation）。",
       "priority": "high",
-      "dependsOn": ["F001"],
+      "dependsOn": [
+        "F001"
+      ],
       "steps": [
         "1. 实现 5-fold participant-level split（stratified by 性别或随机，记录 fold 分配）",
         "2. 实现 inner validation split（train participants 内再 80/20 分 train-inner/valid-inner）",
@@ -109,10 +169,42 @@
         "6. 单元测试覆盖 split 比例、分数计算正确性"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "5-fold split 每折 train:test ≈ 80:20，被试不跨折泄漏", "status": "pass", "evidence": ["cv_framework.py:participant_cv_split uses KFold(shuffle=True, seed=0)", "test_cv_framework.py: 25 checks — all fold ratios 0.7999-0.8003, zero overlap, 2749 subjects covered exactly once"]},
-        {"id": "AC002", "text": "反向计分正确：正向题 score=y，反向题 score=6-y", "status": "pass", "evidence": ["cv_framework.py:154 — scored[:, rev_mask] = 6.0 - scored[:, rev_mask]", "test_cv_framework.py: 8 checks — forward unchanged, reverse=6-y, double-reverse=identity, real data verified"]},
-        {"id": "AC003", "text": "维度分数 = 该维度所有题项 score 的均值", "status": "pass", "evidence": ["cv_framework.py:190-201 — np.nanmean(responses[:, mask], axis=1)", "test_cv_framework.py: 11 checks — multi-item means correct, real data (2749,5), no NaN, scores in [1,5]"]},
-        {"id": "AC004", "text": "评估指标输出格式统一，可通过脚本批量调用", "status": "pass", "evidence": ["cv_framework.py:260-405 — evaluate_predictions returns {item_level, trait_level, profile_correlation}", "test_cv_framework.py: 35 format checks — all keys, shapes, tuple formats verified"]}
+        {
+          "id": "AC001",
+          "text": "5-fold split 每折 train:test ≈ 80:20，被试不跨折泄漏",
+          "status": "pass",
+          "evidence": [
+            "cv_framework.py:participant_cv_split uses KFold(shuffle=True, seed=0)",
+            "test_cv_framework.py: 25 checks — all fold ratios 0.7999-0.8003, zero overlap, 2749 subjects covered exactly once"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "反向计分正确：正向题 score=y，反向题 score=6-y",
+          "status": "pass",
+          "evidence": [
+            "cv_framework.py:154 — scored[:, rev_mask] = 6.0 - scored[:, rev_mask]",
+            "test_cv_framework.py: 8 checks — forward unchanged, reverse=6-y, double-reverse=identity, real data verified"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "维度分数 = 该维度所有题项 score 的均值",
+          "status": "pass",
+          "evidence": [
+            "cv_framework.py:190-201 — np.nanmean(responses[:, mask], axis=1)",
+            "test_cv_framework.py: 11 checks — multi-item means correct, real data (2749,5), no NaN, scores in [1,5]"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "评估指标输出格式统一，可通过脚本批量调用",
+          "status": "pass",
+          "evidence": [
+            "cv_framework.py:260-405 — evaluate_predictions returns {item_level, trait_level, profile_correlation}",
+            "test_cv_framework.py: 35 format checks — all keys, shapes, tuple formats verified"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/test_cv_framework.py",
@@ -142,7 +234,9 @@
       "category": "functional",
       "description": "实现两种随机基线选题策略。(1) Random: 每个比例随机选题，每个 outer fold 内重复 50 次取平均。(2) Balanced Random: 按 Big Five 维度均衡随机（10%=每维2题, 30%=每维6题, 50%=每维10题, 90%=每维18题）。Random baseline 是证明策略有效的关键对照。",
       "priority": "high",
-      "dependsOn": ["F003"],
+      "dependsOn": [
+        "F003"
+      ],
       "steps": [
         "1. 实现 RandomSelector：给定 target_m，随机从 100 题中选 m 题，支持 n_repeats=50",
         "2. 实现 BalancedRandomSelector：每个维度选 m//5 题（余数随机分配给维度）",
@@ -152,10 +246,42 @@
         "6. 保存各 fold/repeat 的选题结果和评估指标到 results/phase1/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Random 选题在 50 次重复间题目集合不同（验证随机性）", "status": "pass", "evidence": ["selection-smoke-test.txt: 50/50 unique sets", "selection.py L219-227: assert len(unique_sets) >= 40"]},
-        {"id": "AC002", "text": "Balanced Random 每维度题数偏差 ≤1", "status": "pass", "evidence": ["selection-smoke-test.txt: all ratios max deviation=0", "selection.py L246: assert max_dev <= 1"]},
-        {"id": "AC003", "text": "两种方法均覆盖 10/30/50/90 四种比例", "status": "pass", "evidence": ["test-output.txt: both strategies at all 4 ratios × 5 folds", "results/phase1/random_baseline_summary.csv: 8 rows"]},
-        {"id": "AC004", "text": "评估指标包含 item-level r 和 trait-level r（至少 Big Five mean）", "status": "pass", "evidence": ["test-output.txt: item_r + big5_r printed per evaluation", "random_baseline_summary.csv: item_r, trait_r_mean, trait_r_O/C/E/A/N columns"]}
+        {
+          "id": "AC001",
+          "text": "Random 选题在 50 次重复间题目集合不同（验证随机性）",
+          "status": "pass",
+          "evidence": [
+            "selection-smoke-test.txt: 50/50 unique sets",
+            "selection.py L219-227: assert len(unique_sets) >= 40"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Balanced Random 每维度题数偏差 ≤1",
+          "status": "pass",
+          "evidence": [
+            "selection-smoke-test.txt: all ratios max deviation=0",
+            "selection.py L246: assert max_dev <= 1"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "两种方法均覆盖 10/30/50/90 四种比例",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt: both strategies at all 4 ratios × 5 folds",
+            "results/phase1/random_baseline_summary.csv: 8 rows"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "评估指标包含 item-level r 和 trait-level r（至少 Big Five mean）",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt: item_r + big5_r printed per evaluation",
+            "random_baseline_summary.csv: item_r, trait_r_mean, trait_r_O/C/E/A/N columns"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/run_selection_baselines.py",
@@ -185,7 +311,9 @@
       "category": "functional",
       "description": "实现基于语义 embedding 的选题策略。(1) Semantic Coverage: greedy facility-location，每次加入使 Coverage(S) 最大的题。(2) Coverage+Diversity: 在 Coverage 基础上减去 Redundancy 惩罚项，λ∈{0.25,0.5,1.0}。两个策略都只使用 embedding 空间信息，不使用被试作答数据。",
       "priority": "high",
-      "dependsOn": ["F003"],
+      "dependsOn": [
+        "F003"
+      ],
       "steps": [
         "1. 实现 sim+(i,j) = (cos(e_i,e_j)+1)/2 语义相似度矩阵",
         "2. 实现 Coverage(S) = mean_j max_{i∈S} sim+(i,j)",
@@ -196,10 +324,38 @@
         "7. 对所有比例运行评估，保存结果"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Coverage 贪心选择的题目集合 Coverage 值 ≥ 随机选择的 95% 上限", "status": "pass", "evidence": ["selection.py smoke test: greedy ≥ random_95% for all ratios (10/30/50/90)"]},
-        {"id": "AC002", "text": "Coverage+Diversity 相比纯 Coverage 降低 Redundancy ≥ 10%", "status": "pass", "evidence": ["selection.py smoke test: λ=1.0, m=10 reduces redundancy by 10.2%"]},
-        {"id": "AC003", "text": "λ 选择过程完全在 train participants 内完成", "status": "pass", "evidence": ["run_semantic_selection.py: inner_validation_split on y_train only"]},
-        {"id": "AC004", "text": "所有比例和 λ 值的结果可复现（固定 random seed）", "status": "pass", "evidence": ["RANDOM_STATE=0 used consistently throughout"]}
+        {
+          "id": "AC001",
+          "text": "Coverage 贪心选择的题目集合 Coverage 值 ≥ 随机选择的 95% 上限",
+          "status": "pass",
+          "evidence": [
+            "selection.py smoke test: greedy ≥ random_95% for all ratios (10/30/50/90)"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Coverage+Diversity 相比纯 Coverage 降低 Redundancy ≥ 10%",
+          "status": "pass",
+          "evidence": [
+            "selection.py smoke test: λ=1.0, m=10 reduces redundancy by 10.2%"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "λ 选择过程完全在 train participants 内完成",
+          "status": "pass",
+          "evidence": [
+            "run_semantic_selection.py: inner_validation_split on y_train only"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "所有比例和 λ 值的结果可复现（固定 random seed）",
+          "status": "pass",
+          "evidence": [
+            "RANDOM_STATE=0 used consistently throughout"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/run_semantic_selection.py",
@@ -234,7 +390,10 @@
       "category": "functional",
       "description": "实现使用被试作答数据的选题策略。(1) Trait Predictiveness: 计算 corrected item-total correlation r_i，选 |r_i| 最大的题。(2) Hybrid-A: Coverage + TraitPredictiveness。(3) Hybrid-B: Coverage + TraitPredictiveness - Redundancy。(4) Hybrid-C: 全部四项组合（Coverage + TraitPredictiveness - Redundancy - ImbalancePenalty），含维度均衡和正反向均衡惩罚。所有指标 z-score 标准化后组合。",
       "priority": "high",
-      "dependsOn": ["F003", "F005"],
+      "dependsOn": [
+        "F003",
+        "F005"
+      ],
       "steps": [
         "1. 实现 corrected item-total correlation 计算（排除题 i 自身后的维度总分相关）",
         "2. 实现 TraitPredictivenessSelector：选 |r_i| 最大的前 m 题",
@@ -245,10 +404,38 @@
         "7. 保存结果到 results/phase1/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "corrected item-total correlation 不包含题项自身（无泄漏）", "status": "pass", "evidence": ["selection.py L499-504: other excludes self; smoke test max|r|=0.7143 < 0.95"]},
-        {"id": "AC002", "text": "Hybrid-C 选出的题目维度分布比纯 TraitPredictiveness 更均衡", "status": "pass", "evidence": ["smoke test: HC m=10 max_dev=1 vs TP max_dev=4; 5-fold CV: HC 1.0-1.4 vs TP 4.0-9.0"]},
-        {"id": "AC003", "text": "所有选题决策仅在 train participants 上完成", "status": "pass", "evidence": ["selectors receive y_train only; test data only used for prediction evaluation"]},
-        {"id": "AC004", "text": "三种 Hybrid 变体可单独运行和比较", "status": "pass", "evidence": ["variant='A'/'B'/'C'; smoke test A≠C confirmed; 12 distinct rows in aggregated.csv"]}
+        {
+          "id": "AC001",
+          "text": "corrected item-total correlation 不包含题项自身（无泄漏）",
+          "status": "pass",
+          "evidence": [
+            "selection.py L499-504: other excludes self; smoke test max|r|=0.7143 < 0.95"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Hybrid-C 选出的题目维度分布比纯 TraitPredictiveness 更均衡",
+          "status": "pass",
+          "evidence": [
+            "smoke test: HC m=10 max_dev=1 vs TP max_dev=4; 5-fold CV: HC 1.0-1.4 vs TP 4.0-9.0"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "所有选题决策仅在 train participants 上完成",
+          "status": "pass",
+          "evidence": [
+            "selectors receive y_train only; test data only used for prediction evaluation"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "三种 Hybrid 变体可单独运行和比较",
+          "status": "pass",
+          "evidence": [
+            "variant='A'/'B'/'C'; smoke test A≠C confirmed; 12 distinct rows in aggregated.csv"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/run_trait_hybrid_selection.py",
@@ -278,7 +465,11 @@
       "category": "functional",
       "description": "汇总所有 8 种选题策略（Random, Balanced Random, Coverage, Coverage+Diversity, TraitPredictiveness, Hybrid-A/B/C）× 4 种比例（10/30/50/90%）的完整评估。生成 Table 1（题项预测表现）、Table 2（人格总分预测表现）、Figure 1（learning curve）、Figure 2（选中题项维度分布）。报告 95% CI 和 paired comparison 统计检验。确定 Phase 2 使用的最佳选题策略。",
       "priority": "high",
-      "dependsOn": ["F004", "F005", "F006"],
+      "dependsOn": [
+        "F004",
+        "F005",
+        "F006"
+      ],
       "steps": [
         "1. 汇总所有策略×比例的评估指标到统一 DataFrame",
         "2. 生成 Table 1: 选题策略×作答比例 → item-level r ± 95% CI",
@@ -290,10 +481,42 @@
         "8. 保存所有图表到 results/phase1/figures/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Table 1 包含所有 8×4=32 个 cell 的 item-level r 和 CI", "status": "pass", "evidence": ["results/phase1/figures/table1_item_level.csv — 32 rows, 8 strategies × 4 ratios with item_r, ci_lower, ci_upper"]},
-        {"id": "AC002", "text": "Table 2 分 Short-form/Imputed/Held-out 三种人格分数面板", "status": "pass", "evidence": ["results/phase1/figures/table2_shortform.csv (32 rows)", "results/phase1/figures/table2_imputed.csv (32 rows, per-trait)", "results/phase1/figures/table2_heldout.csv (32 rows)"]},
-        {"id": "AC003", "text": "Figure 1 learning curve 清楚展示策略间差异", "status": "pass", "evidence": ["results/phase1/figures/figure1_learning_curve.pdf — all 8 strategies, distinct colors/styles, error bands"]},
-        {"id": "AC004", "text": "统计检验结论明确：最佳策略是否显著优于 random baseline", "status": "pass", "evidence": ["results/phase1/figures/statistical_tests.csv — 32 paired bootstrap tests", "Coverage p<0.001 vs Random at all ratios", "results/phase1/figures/phase1_recommendation.txt"]}
+        {
+          "id": "AC001",
+          "text": "Table 1 包含所有 8×4=32 个 cell 的 item-level r 和 CI",
+          "status": "pass",
+          "evidence": [
+            "results/phase1/figures/table1_item_level.csv — 32 rows, 8 strategies × 4 ratios with item_r, ci_lower, ci_upper"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Table 2 分 Short-form/Imputed/Held-out 三种人格分数面板",
+          "status": "pass",
+          "evidence": [
+            "results/phase1/figures/table2_shortform.csv (32 rows)",
+            "results/phase1/figures/table2_imputed.csv (32 rows, per-trait)",
+            "results/phase1/figures/table2_heldout.csv (32 rows)"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "Figure 1 learning curve 清楚展示策略间差异",
+          "status": "pass",
+          "evidence": [
+            "results/phase1/figures/figure1_learning_curve.pdf — all 8 strategies, distinct colors/styles, error bands"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "统计检验结论明确：最佳策略是否显著优于 random baseline",
+          "status": "pass",
+          "evidence": [
+            "results/phase1/figures/statistical_tests.csv — 32 paired bootstrap tests",
+            "Coverage p<0.001 vs Random at all ratios",
+            "results/phase1/figures/phase1_recommendation.txt"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/evaluate_phase1.py --all",
@@ -323,7 +546,9 @@
       "category": "functional",
       "description": "实现 cosine weighted KNN 预测器。用 sim+(i,j) 作为权重对 K 个最近邻的作答加权平均。在 train participants 上用 inner validation 调优 K∈{3,5,7,10,15}。与原文 KNN K=5 在相同的 outer folds 和题目集合 S 上做公平比较。",
       "priority": "high",
-      "dependsOn": ["F003"],
+      "dependsOn": [
+        "F003"
+      ],
       "steps": [
         "1. 实现 CosineWeightedKNN: ŷ = Σ(w_ij × y_i) / Σ(w_ij), w_ij = sim+(i,j)",
         "2. 实现原文 KNN baseline（uniform weight）作为对照",
@@ -333,10 +558,38 @@
         "6. 保存结果到 results/phase2/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Weighted KNN 在至少一个比例上 item-level r 显著高于原文 KNN (paired test)", "status": "pass", "evidence": ["Paired t-test: m=10 p=0.022 (Δ=+0.0265), m=30 p<0.001 (Δ=+0.0028), m=50 p<0.001 (Δ=+0.0011); verified by evaluator via independent scipy.stats.ttest_rel"]},
-        {"id": "AC002", "text": "K 调优完全在 train participants 内完成", "status": "pass", "evidence": ["run_weighted_knn.py:195-258: inner_validation_split on y_train only; K tuning loop uses y_train_inner/y_valid_inner; test data untouched until final eval"]},
-        {"id": "AC003", "text": "当 |S|<K 时自动使用 K'=min(K,|S|)", "status": "pass", "evidence": ["predictors.py:108: k_eff = min(self.K, len(S)); smoke test confirms K=10 > |S|=4 → K_eff=4"]},
-        {"id": "AC004", "text": "预测值范围在 [1,5] 内（或接近）", "status": "pass", "evidence": ["predictors.py:148-149: np.round + np.clip to [1,5]; real data tests show preds range [2,5]"]}
+        {
+          "id": "AC001",
+          "text": "Weighted KNN 在至少一个比例上 item-level r 显著高于原文 KNN (paired test)",
+          "status": "pass",
+          "evidence": [
+            "Paired t-test: m=10 p=0.022 (Δ=+0.0265), m=30 p<0.001 (Δ=+0.0028), m=50 p<0.001 (Δ=+0.0011); verified by evaluator via independent scipy.stats.ttest_rel"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "K 调优完全在 train participants 内完成",
+          "status": "pass",
+          "evidence": [
+            "run_weighted_knn.py:195-258: inner_validation_split on y_train only; K tuning loop uses y_train_inner/y_valid_inner; test data untouched until final eval"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "当 |S|<K 时自动使用 K'=min(K,|S|)",
+          "status": "pass",
+          "evidence": [
+            "predictors.py:108: k_eff = min(self.K, len(S)); smoke test confirms K=10 > |S|=4 → K_eff=4"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "预测值范围在 [1,5] 内（或接近）",
+          "status": "pass",
+          "evidence": [
+            "predictors.py:148-149: np.round + np.clip to [1,5]; real data tests show preds range [2,5]"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/run_weighted_knn.py",
@@ -366,7 +619,9 @@
       "category": "functional",
       "description": "实现两个更灵活的预测器。(1) Softmax Weighted KNN: w_ij = exp(sim(i,j)/τ) / Σexp(sim/τ)，网格 K∈{3,5,7,10,15} × τ∈{0.03,0.05,0.1,0.2,0.5}。(2) Kernel Smoothing: 所有已作答题参与预测，w_ij = exp(sim(i,j)/τ)，网格 τ∈{0.03,0.05,0.1,0.2,0.5}。参数在 train participants inner validation 上选择。",
       "priority": "high",
-      "dependsOn": ["F003"],
+      "dependsOn": [
+        "F003"
+      ],
       "steps": [
         "1. 实现 SoftmaxWeightedKNN: softmax 归一化权重后加权平均",
         "2. 实现 KernelSmoothing: 所有 S 中题目参与预测，exp 衰减权重",
@@ -376,10 +631,41 @@
         "6. 保存结果到 results/phase2/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Softmax KNN 在低题量（10%, 30%）时 τ 参数敏感度合理", "status": "pass", "evidence": ["test-output.txt: τ sensitivity table, τ=0.1 peaks at m=10/30, bell-shaped curve", "softmax_kernel_sensitivity.csv: 150 rows K×τ grid"]},
-        {"id": "AC002", "text": "Kernel Smoothing 正确使用所有 |S| 个已作答题（不限于 K 个邻居）", "status": "pass", "evidence": ["predictors.py L365: nn_items = np.tile(S[:, None], (1, n_T))", "KernelSmoothing has no K parameter, uses all |S| items"]},
-        {"id": "AC003", "text": "网格搜索不涉及 test participants", "status": "pass", "evidence": ["run_softmax_kernel.py L208-282: inner_validation_split on train indices only"]},
-        {"id": "AC004", "text": "所有预测器输出与 F008 格式一致，可直接比较", "status": "pass", "evidence": ["test-output.txt L178-201: side-by-side F008 comparison", "softmax_kernel_detail.csv: same schema + best_tau"]}
+        {
+          "id": "AC001",
+          "text": "Softmax KNN 在低题量（10%, 30%）时 τ 参数敏感度合理",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt: τ sensitivity table, τ=0.1 peaks at m=10/30, bell-shaped curve",
+            "softmax_kernel_sensitivity.csv: 150 rows K×τ grid"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Kernel Smoothing 正确使用所有 |S| 个已作答题（不限于 K 个邻居）",
+          "status": "pass",
+          "evidence": [
+            "predictors.py L365: nn_items = np.tile(S[:, None], (1, n_T))",
+            "KernelSmoothing has no K parameter, uses all |S| items"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "网格搜索不涉及 test participants",
+          "status": "pass",
+          "evidence": [
+            "run_softmax_kernel.py L208-282: inner_validation_split on train indices only"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "所有预测器输出与 F008 格式一致，可直接比较",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt L178-201: side-by-side F008 comparison",
+            "softmax_kernel_detail.csv: same schema + best_tau"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/run_softmax_kernel.py",
@@ -409,7 +695,11 @@
       "category": "functional",
       "description": "固定最佳选题策略（来自 Phase 1），固定原 SBERT embedding，比较所有 5 种预测器。生成 Table 3（预测器×比例消融表，含 item-level r, item MAE, mean Big Five r, profile correlation）、Figure 3（weighted KNN 相对原文 KNN 的提升量 Δr，分比例展示）。通过 paired comparison 确定最佳预测器，用于 Phase 4。",
       "priority": "high",
-      "dependsOn": ["F007", "F008", "F009"],
+      "dependsOn": [
+        "F007",
+        "F008",
+        "F009"
+      ],
       "steps": [
         "1. 用 Phase 1 最佳策略的题目集合 S，统一评估所有预测器",
         "2. 生成 Table 3: 预测器×比例 → 四项主指标",
@@ -420,10 +710,38 @@
         "7. 保存结果到 results/phase2/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Table 3 包含所有 4 种预测器 × 4 种比例的完整指标", "status": "pass", "evidence": ["table3_predictor_ablation.csv: 16 rows, 4 predictors × 4 ratios with item_r ± 95% CI, item_mae, trait_r_mean, profile_r"]},
-        {"id": "AC002", "text": "Figure 3 清楚展示加权方法在不同比例下的提升幅度", "status": "pass", "evidence": ["figure3_delta_r.pdf (18.9KB), figure3_delta_r.png (71.1KB): grouped bar chart with Δr, 95% CI error bars"]},
-        {"id": "AC003", "text": "最佳预测器有统计显著的提升证据（95% CI 不跨 0）", "status": "pass", "evidence": ["statistical_tests_phase2.csv: SoftmaxKNN vs UniformKNN all p<0.001, all CI>0, N=10,000 bootstrap"]},
-        {"id": "AC004", "text": "所有预测器在同一批 S 和 test participants 上比较（公平对照）", "status": "pass", "evidence": ["test-output.txt: AC004 PASS — identical Coverage S across F008/F009 for all (ratio, fold) pairs, same 5-fold split seed=0"]}
+        {
+          "id": "AC001",
+          "text": "Table 3 包含所有 4 种预测器 × 4 种比例的完整指标",
+          "status": "pass",
+          "evidence": [
+            "table3_predictor_ablation.csv: 16 rows, 4 predictors × 4 ratios with item_r ± 95% CI, item_mae, trait_r_mean, profile_r"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Figure 3 清楚展示加权方法在不同比例下的提升幅度",
+          "status": "pass",
+          "evidence": [
+            "figure3_delta_r.pdf (18.9KB), figure3_delta_r.png (71.1KB): grouped bar chart with Δr, 95% CI error bars"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "最佳预测器有统计显著的提升证据（95% CI 不跨 0）",
+          "status": "pass",
+          "evidence": [
+            "statistical_tests_phase2.csv: SoftmaxKNN vs UniformKNN all p<0.001, all CI>0, N=10,000 bootstrap"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "所有预测器在同一批 S 和 test participants 上比较（公平对照）",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt: AC004 PASS — identical Coverage S across F008/F009 for all (ratio, fold) pairs, same 5-fold split seed=0"
+          ]
+        }
       ],
       "testPlan": [
         "cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py",
@@ -454,7 +772,9 @@
       "category": "technical",
       "description": "使用 sentence-transformers 在本地 T4 GPU 上为 NEO-PI-R 100 道题项生成新 embedding。模型列表：all-MiniLM-L6-v2, all-mpnet-base-v2, intfloat/e5-base-v2, BAAI/bge-base-en-v1.5。统一后处理：L2 normalize，保存为 .npy。记录 metadata（模型名、维度、pooling 方式、日期、包版本）。E5 模型使用 'query: ' prefix。",
       "priority": "high",
-      "dependsOn": ["F001"],
+      "dependsOn": [
+        "F001"
+      ],
       "steps": [
         "1. 安装依赖：sentence-transformers, torch（确认 T4 GPU 可用）",
         "2. 实现统一的 embedding 生成 pipeline（输入 item_text list → 输出 [100, d] L2 normalized 矩阵）",
@@ -466,26 +786,74 @@
         "8. 保存到 embeddings/neo_minilm_l6_v2.npy 等，附带 metadata JSON"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "所有 4 个模型的 embedding 均已生成并保存", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "每个 embedding 矩阵形状为 (100, d)，已 L2 normalize", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "embedding 与 item_text 顺序一致（第 i 行对应第 i 题）", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "metadata JSON 包含所有要求字段", "status": "unknown", "evidence": []}
+        {
+          "id": "AC001",
+          "text": "所有 4 个模型的 embedding 均已生成并保存",
+          "status": "pass",
+          "evidence": [
+            ".claude/long-running/evidence/F011/generation-output.txt",
+            ".claude/long-running/evidence/F011/test-output.txt",
+            "questionnaire-embeddings/embeddings/neo_minilm_l6_v2.npy",
+            "questionnaire-embeddings/embeddings/neo_mpnet_base_v2.npy",
+            "questionnaire-embeddings/embeddings/neo_e5_base_v2.npy",
+            "questionnaire-embeddings/embeddings/neo_bge_base_en_v15.npy",
+            "questionnaire-embeddings/embeddings/neo_embeddings_metadata.json"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "每个 embedding 矩阵形状为 (100, d)，已 L2 normalize",
+          "status": "pass",
+          "evidence": [
+            ".claude/long-running/evidence/F011/test-output.txt",
+            ".claude/long-running/evidence/F011/artifact-checks.txt",
+            "questionnaire-embeddings/embeddings/neo_embeddings_metadata.json"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "embedding 与 item_text 顺序一致（第 i 行对应第 i 题）",
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/scripts/generate_embeddings.py",
+            "questionnaire-embeddings/embeddings/neo_embeddings_metadata.json",
+            ".claude/long-running/evidence/F011/artifact-checks.txt",
+            ".claude/long-running/evidence/F011/test-output.txt"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "metadata JSON 包含所有要求字段",
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/embeddings/neo_embeddings_metadata.json",
+            "questionnaire-embeddings/scripts/generate_embeddings.py",
+            ".claude/long-running/evidence/F011/test-output.txt"
+          ]
+        }
       ],
       "testPlan": [
         "python scripts/generate_embeddings.py --all",
         "python -c \"import numpy as np; [print(f'{m}: {np.load(chr(39)+f'embeddings/neo_{m}.npy'+chr(39)).shape}') for m in ['minilm_l6_v2','mpnet_base_v2','e5_base_v2','bge_base_en_v15']]\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F011",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python3 scripts/generate_embeddings.py --validate",
+        "testOutputFile": ".claude/long-running/evidence/F011/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F011/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-12T05:35:01Z",
+          "status": "completed",
+          "completedAt": "2026-06-12T06:20:40Z"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-12T06:20:40Z",
+      "completedAt": "2026-06-12T06:20:40Z"
     },
     {
       "id": "F012",
@@ -493,7 +861,9 @@
       "category": "technical",
       "description": "对各 embedding 模型进行质量诊断分析。计算：Coverage of selected S、Redundancy of selected S、within-trait similarity（同维度题项平均相似度）、between-trait similarity（跨维度题项平均相似度）。生成 Figure 5（embedding 质量诊断对比图）。为 Phase 4 的 embedding 性能差异提供解释基础。",
       "priority": "medium",
-      "dependsOn": ["F011"],
+      "dependsOn": [
+        "F011"
+      ],
       "steps": [
         "1. 实现 Coverage 和 Redundancy 计算（对完整 100 题和选定 S）",
         "2. 实现 within-trait similarity：每个维度内题项对的平均 cosine similarity",
@@ -503,9 +873,24 @@
         "6. 分析并记录各 embedding 空间的定性特征"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "所有 5 个 embedding 模型的四项诊断指标均已计算", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "Figure 5 清楚展示各模型在语义空间结构上的差异", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "诊断结果能够为 Phase 4 的性能差异提供解释假设", "status": "unknown", "evidence": []}
+        {
+          "id": "AC001",
+          "text": "所有 5 个 embedding 模型的四项诊断指标均已计算",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC002",
+          "text": "Figure 5 清楚展示各模型在语义空间结构上的差异",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC003",
+          "text": "诊断结果能够为 Phase 4 的性能差异提供解释假设",
+          "status": "unknown",
+          "evidence": []
+        }
       ],
       "testPlan": [
         "python scripts/diagnose_embeddings.py --all",
@@ -529,7 +914,11 @@
       "category": "functional",
       "description": "版本 A：固定原 SBERT embedding 选出的题目集合 S，只换预测阶段的 embedding。这回答了'新 embedding 是否让邻居关系和预测更好'。使用 Phase 1 最佳选题策略确定的 S（但固定不变），Phase 2 最佳预测器，比较所有 embedding 在预测阶段的表现。",
       "priority": "high",
-      "dependsOn": ["F007", "F010", "F011"],
+      "dependsOn": [
+        "F007",
+        "F010",
+        "F011"
+      ],
       "steps": [
         "1. 加载 Phase 1 最佳策略选出的 S（原 SBERT 空间确定）",
         "2. 对每个新 embedding，用相同的 S 和最佳预测器在 test participants 上预测",
@@ -539,9 +928,24 @@
         "6. 与原 SBERT embedding 对比，计算 Δ 和 95% CI"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "所有 5 个 embedding 在同一批 S 和 test participants 上评估", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "版本 A 结果表包含所有 embedding×比例的 item-level r 和 trait-level r", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "清楚展示哪些 embedding 在邻居关系层面优于原 SBERT", "status": "unknown", "evidence": []}
+        {
+          "id": "AC001",
+          "text": "所有 5 个 embedding 在同一批 S 和 test participants 上评估",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC002",
+          "text": "版本 A 结果表包含所有 embedding×比例的 item-level r 和 trait-level r",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC003",
+          "text": "清楚展示哪些 embedding 在邻居关系层面优于原 SBERT",
+          "status": "unknown",
+          "evidence": []
+        }
       ],
       "testPlan": [
         "python scripts/run_phase4_versionA.py",
@@ -565,7 +969,9 @@
       "category": "functional",
       "description": "版本 B：每个 embedding 重新运行完整的选题策略。这回答了'新 embedding 是否能同时改善选题和预测'。对每个 embedding，在 train participants 上重新选题（使用 Phase 1 最佳策略），调优预测器参数（Phase 2 最佳预测器类型），在 test participants 上评估。与版本 A 对比，分离选题贡献和预测贡献。",
       "priority": "high",
-      "dependsOn": ["F013"],
+      "dependsOn": [
+        "F013"
+      ],
       "steps": [
         "1. 对每个 embedding，在 train participants 上用最佳选题策略重新确定 S",
         "2. 在 inner validation 上为每个 embedding 重新调优预测器超参数",
@@ -576,10 +982,30 @@
         "7. 绘制 Figure 4: embedding 模型 learning curve"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "换 embedding 后确实重新选题（S 因 embedding 而异）", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "版本 B 如果优于版本 A，能清楚归因于选题改善", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "Table 4 包含所有 embedding×比例的主指标", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "Figure 4 展示各 embedding 的 learning curve", "status": "unknown", "evidence": []}
+        {
+          "id": "AC001",
+          "text": "换 embedding 后确实重新选题（S 因 embedding 而异）",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC002",
+          "text": "版本 B 如果优于版本 A，能清楚归因于选题改善",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC003",
+          "text": "Table 4 包含所有 embedding×比例的主指标",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC004",
+          "text": "Figure 4 展示各 embedding 的 learning curve",
+          "status": "unknown",
+          "evidence": []
+        }
       ],
       "testPlan": [
         "python scripts/run_phase4_versionB.py",
@@ -603,7 +1029,11 @@
       "category": "functional",
       "description": "汇总全部四个阶段的实验结果，生成最终综合分析报告。包含：(1) 三层次贡献总结（选题策略、预测算法、测量效度）；(2) 所有 Table 和 Figure 的最终版本；(3) 统计检验汇总表；(4) 方法推荐（最佳 pipeline = 最佳 embedding + 最佳选题策略 + 最佳预测器 + 推荐比例）；(5) 结果可复现性说明。输出到 results/final_report/。",
       "priority": "medium",
-      "dependsOn": ["F007", "F010", "F014"],
+      "dependsOn": [
+        "F007",
+        "F010",
+        "F014"
+      ],
       "steps": [
         "1. 汇总 Phase 1-4 所有关键指标到 final_summary.csv",
         "2. 撰写三层次贡献总结（选题、算法、效度）",
@@ -614,10 +1044,30 @@
         "7. 保存完整报告到 results/final_report/"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "最终报告包含三层次贡献的清晰论述", "status": "unknown", "evidence": []},
-        {"id": "AC002", "text": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook）", "status": "unknown", "evidence": []},
-        {"id": "AC003", "text": "最佳 pipeline 有明确的超参数和预期性能", "status": "unknown", "evidence": []},
-        {"id": "AC004", "text": "可复现性说明覆盖所有关键随机因素", "status": "unknown", "evidence": []}
+        {
+          "id": "AC001",
+          "text": "最终报告包含三层次贡献的清晰论述",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC002",
+          "text": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook）",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC003",
+          "text": "最佳 pipeline 有明确的超参数和预期性能",
+          "status": "unknown",
+          "evidence": []
+        },
+        {
+          "id": "AC004",
+          "text": "可复现性说明覆盖所有关键随机因素",
+          "status": "unknown",
+          "evidence": []
+        }
       ],
       "testPlan": [
         "python scripts/generate_final_report.py",
@@ -641,7 +1091,10 @@
       "category": "functional",
       "description": "修正 Phase 2 报告中的 baseline 命名和跨 Phase 对齐问题。审计发现 Phase 2 的 \"UniformKNN\" 并非原文 K=5，而是 inner validation tuned K=3。本 feature 实施 Option A：(1) 将 Phase 2 Table 3/Figure 3/statistical tests/recommendation 中的 \"UniformKNN\" 重命名为 \"Tuned UniformKNN\"; (2) 新增一行 Phase 1 Coverage K=5 作为原文 baseline，来源为 Phase 1 Table 1 中 Coverage 的 item_r 值；(3) Δr 比较改为 \"加权方法 vs Tuned UniformKNN\" 而非 \"vs original baseline K=5\"; (4) 在报告中添加跨 Phase baseline 差异说明。不重新跑实验，纯报告修正。",
       "priority": "high",
-      "dependsOn": ["F007", "F010"],
+      "dependsOn": [
+        "F007",
+        "F010"
+      ],
       "steps": [
         "1. 修改 evaluate_phase2.py: PREDICTOR_ORDER 中将 'UniformKNN' 改为 'Tuned UniformKNN'，COLORS 同步更新",
         "2. 在 build_table3() 中新增一行数据：从 Phase 1 results/phase1/figures/table1_item_level.csv 读取 Coverage 的 item_r/item_mae/item_rmse，标注为 'UniformKNN K=5 (原文 baseline)'",
@@ -652,11 +1105,47 @@
         "7. 将修正后的 Phase 2 命名同步到 progress.md 的 F008/F009/F010 session log 中"
       ],
       "acceptanceCriteria": [
-        {"id": "AC001", "text": "Table 3 第一行显示为 \"Tuned UniformKNN\"（原 UniformKNN），并新增一行 \"UniformKNN K=5 (原文 baseline)\" 引用 Phase 1 Coverage K=5 结果", "status": "pass", "evidence": ["table3_predictor_ablation.csv: Tuned UniformKNN rows + UniformKNN K=5 (原文 baseline) rows"]},
-        {"id": "AC002", "text": "Figure 3 标题和 legend 使用 \"Tuned UniformKNN\"，不再暗示其为原文 K=5 baseline", "status": "pass", "evidence": ["test-output.txt: Figure 3 title updated", "figure3_delta_r.pdf regenerated"]},
-        {"id": "AC003", "text": "Statistical tests 表格中 comparison 列使用 \"Tuned UniformKNN\" 名称", "status": "pass", "evidence": ["statistical_tests_phase2.csv: all comparisons use 'vs Tuned UniformKNN'"]},
-        {"id": "AC004", "text": "Recommendation 文件包含跨 Phase baseline 差异说明：Phase 2 tuned K=3 系统性优于 Phase 1 fixed K=5", "status": "pass", "evidence": ["phase2_recommendation.txt: Cross-Phase Baseline Alignment Note"]},
-        {"id": "AC005", "text": "progress.md F008/F009/F010 session log 中 UniformKNN 相关描述已修正为 Tuned UniformKNN，并注明 K 参数", "status": "pass", "evidence": ["progress.md: F008/F010 entries corrected to Tuned UniformKNN K=3"]}
+        {
+          "id": "AC001",
+          "text": "Table 3 第一行显示为 \"Tuned UniformKNN\"（原 UniformKNN），并新增一行 \"UniformKNN K=5 (原文 baseline)\" 引用 Phase 1 Coverage K=5 结果",
+          "status": "pass",
+          "evidence": [
+            "table3_predictor_ablation.csv: Tuned UniformKNN rows + UniformKNN K=5 (原文 baseline) rows"
+          ]
+        },
+        {
+          "id": "AC002",
+          "text": "Figure 3 标题和 legend 使用 \"Tuned UniformKNN\"，不再暗示其为原文 K=5 baseline",
+          "status": "pass",
+          "evidence": [
+            "test-output.txt: Figure 3 title updated",
+            "figure3_delta_r.pdf regenerated"
+          ]
+        },
+        {
+          "id": "AC003",
+          "text": "Statistical tests 表格中 comparison 列使用 \"Tuned UniformKNN\" 名称",
+          "status": "pass",
+          "evidence": [
+            "statistical_tests_phase2.csv: all comparisons use 'vs Tuned UniformKNN'"
+          ]
+        },
+        {
+          "id": "AC004",
+          "text": "Recommendation 文件包含跨 Phase baseline 差异说明：Phase 2 tuned K=3 系统性优于 Phase 1 fixed K=5",
+          "status": "pass",
+          "evidence": [
+            "phase2_recommendation.txt: Cross-Phase Baseline Alignment Note"
+          ]
+        },
+        {
+          "id": "AC005",
+          "text": "progress.md F008/F009/F010 session log 中 UniformKNN 相关描述已修正为 Tuned UniformKNN，并注明 K 参数",
+          "status": "pass",
+          "evidence": [
+            "progress.md: F008/F010 entries corrected to Tuned UniformKNN K=3"
+          ]
+        }
       ],
       "testPlan": [
         "cd /workspace/questionnaire-embeddings && python scripts/evaluate_phase2.py",

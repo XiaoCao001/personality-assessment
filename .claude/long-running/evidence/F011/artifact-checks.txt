@@ -1,0 +1,9 @@
+F011 artifact shape/norm/order checks
+========================================
+minilm_l6_v2: shape=(100, 384), dtype=float32, norm_min=0.99999994, norm_max=1.00000012
+mpnet_base_v2: shape=(100, 768), dtype=float32, norm_min=0.99999994, norm_max=1.00000012
+e5_base_v2: shape=(100, 768), dtype=float32, norm_min=0.99999994, norm_max=1.00000012
+bge_base_en_v15: shape=(100, 768), dtype=float32, norm_min=0.99999994, norm_max=1.00000012
+metadata source question_ids match data/processed/metadata.parquet
+metadata contains all four model entries and file hashes
+ALL CHECKS PASSED

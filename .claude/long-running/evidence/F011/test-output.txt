@@ -1,0 +1,89 @@
+============================================================
+F011: Validate existing NEO-PI-R embedding artifacts
+============================================================
+[INFO] Pure local validation: no sentence-transformers imports, model loads, or downloads.
+[PASS] Environment file exists: questionnaire.yaml ✓
+[PASS] questionnaire.yaml includes a parquet engine ✓
+[PASS] questionnaire.yaml includes sentence-transformers ✓
+[PASS] questionnaire.yaml includes torch ✓
+[OK] Loaded canonical item metadata: 100 items from data/processed/metadata.parquet
+[PASS] Metadata JSON exists: embeddings/neo_embeddings_metadata.json ✓
+[PASS] metadata schema_version = 1.0 ✓
+[PASS] metadata feature_id = F011 ✓
+[PASS] metadata dataset = BIG5 ✓
+[PASS] metadata questionnaire = NEO-PI-R ✓
+[PASS] metadata script path matches generator ✓
+[PASS] metadata models object exists ✓
+[PASS] source provenance matches for question_ids ✓
+[PASS] source provenance matches for question_ids_sha256 ✓
+[PASS] source provenance matches for item_text_sha256 ✓
+[PASS] source provenance matches for canonical_item_sha256 ✓
+
+--- Embedding artifacts ---
+[PASS] File exists: embeddings/neo_minilm_l6_v2.npy ✓
+  minilm_l6_v2: shape=(100, 384), dtype=float32, norm_range=[1.000000, 1.000000]
+[PASS] metadata entry exists: models.minilm_l6_v2 ✓
+[PASS] metadata fields complete for minilm_l6_v2 ✓
+[PASS] metadata model_name matches for minilm_l6_v2 ✓
+[PASS] metadata output_file matches for minilm_l6_v2 ✓
+[PASS] metadata shape matches for minilm_l6_v2 ✓
+[PASS] metadata dimension matches for minilm_l6_v2 ✓
+[PASS] metadata pooling matches for minilm_l6_v2 ✓
+[PASS] metadata text_prefix matches for minilm_l6_v2 ✓
+[PASS] metadata l2_normalized true for minilm_l6_v2 ✓
+[PASS] metadata normalization matches for minilm_l6_v2 ✓
+[PASS] metadata row_order_source matches for minilm_l6_v2 ✓
+[PASS] metadata generated_at_utc is UTC for minilm_l6_v2 ✓
+[PASS] metadata package_versions complete for minilm_l6_v2 ✓
+[PASS] metadata file_sha256 matches for minilm_l6_v2 ✓
+[PASS] File exists: embeddings/neo_mpnet_base_v2.npy ✓
+  mpnet_base_v2: shape=(100, 768), dtype=float32, norm_range=[1.000000, 1.000000]
+[PASS] metadata entry exists: models.mpnet_base_v2 ✓
+[PASS] metadata fields complete for mpnet_base_v2 ✓
+[PASS] metadata model_name matches for mpnet_base_v2 ✓
+[PASS] metadata output_file matches for mpnet_base_v2 ✓
+[PASS] metadata shape matches for mpnet_base_v2 ✓
+[PASS] metadata dimension matches for mpnet_base_v2 ✓
+[PASS] metadata pooling matches for mpnet_base_v2 ✓
+[PASS] metadata text_prefix matches for mpnet_base_v2 ✓
+[PASS] metadata l2_normalized true for mpnet_base_v2 ✓
+[PASS] metadata normalization matches for mpnet_base_v2 ✓
+[PASS] metadata row_order_source matches for mpnet_base_v2 ✓
+[PASS] metadata generated_at_utc is UTC for mpnet_base_v2 ✓
+[PASS] metadata package_versions complete for mpnet_base_v2 ✓
+[PASS] metadata file_sha256 matches for mpnet_base_v2 ✓
+[PASS] File exists: embeddings/neo_e5_base_v2.npy ✓
+  e5_base_v2: shape=(100, 768), dtype=float32, norm_range=[1.000000, 1.000000]
+[PASS] metadata entry exists: models.e5_base_v2 ✓
+[PASS] metadata fields complete for e5_base_v2 ✓
+[PASS] metadata model_name matches for e5_base_v2 ✓
+[PASS] metadata output_file matches for e5_base_v2 ✓
+[PASS] metadata shape matches for e5_base_v2 ✓
+[PASS] metadata dimension matches for e5_base_v2 ✓
+[PASS] metadata pooling matches for e5_base_v2 ✓
+[PASS] metadata text_prefix matches for e5_base_v2 ✓
+[PASS] metadata l2_normalized true for e5_base_v2 ✓
+[PASS] metadata normalization matches for e5_base_v2 ✓
+[PASS] metadata row_order_source matches for e5_base_v2 ✓
+[PASS] metadata generated_at_utc is UTC for e5_base_v2 ✓
+[PASS] metadata package_versions complete for e5_base_v2 ✓
+[PASS] metadata file_sha256 matches for e5_base_v2 ✓
+[PASS] File exists: embeddings/neo_bge_base_en_v15.npy ✓
+  bge_base_en_v15: shape=(100, 768), dtype=float32, norm_range=[1.000000, 1.000000]
+[PASS] metadata entry exists: models.bge_base_en_v15 ✓
+[PASS] metadata fields complete for bge_base_en_v15 ✓
+[PASS] metadata model_name matches for bge_base_en_v15 ✓
+[PASS] metadata output_file matches for bge_base_en_v15 ✓
+[PASS] metadata shape matches for bge_base_en_v15 ✓
+[PASS] metadata dimension matches for bge_base_en_v15 ✓
+[PASS] metadata pooling matches for bge_base_en_v15 ✓
+[PASS] metadata text_prefix matches for bge_base_en_v15 ✓
+[PASS] metadata l2_normalized true for bge_base_en_v15 ✓
+[PASS] metadata normalization matches for bge_base_en_v15 ✓
+[PASS] metadata row_order_source matches for bge_base_en_v15 ✓
+[PASS] metadata generated_at_utc is UTC for bge_base_en_v15 ✓
+[PASS] metadata package_versions complete for bge_base_en_v15 ✓
+[PASS] metadata file_sha256 matches for bge_base_en_v15 ✓
+
+============================================================
+F011 validation PASSED.

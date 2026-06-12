@@ -1,0 +1,61 @@
+{
+  "featureId": "F011",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "所有 4 个模型的 embedding 均已生成并保存",
+      "status": "pass",
+      "evidence": [
+        "/workspace/.claude/long-running/evidence/F011/generation-output.txt",
+        "/workspace/.claude/long-running/evidence/F011/test-output.txt",
+        "/workspace/questionnaire-embeddings/embeddings/neo_minilm_l6_v2.npy",
+        "/workspace/questionnaire-embeddings/embeddings/neo_mpnet_base_v2.npy",
+        "/workspace/questionnaire-embeddings/embeddings/neo_e5_base_v2.npy",
+        "/workspace/questionnaire-embeddings/embeddings/neo_bge_base_en_v15.npy",
+        "/workspace/questionnaire-embeddings/embeddings/neo_embeddings_metadata.json"
+      ],
+      "notes": "Generation evidence shows all four models were generated and each file was saved ([OK] Saved for all four .npy files plus combined metadata). Validation evidence confirms all four files exist, and the metadata manifest contains entries for minilm_l6_v2, mpnet_base_v2, e5_base_v2, and bge_base_en_v15."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "每个 embedding 矩阵形状为 (100, d)，已 L2 normalize",
+      "status": "pass",
+      "evidence": [
+        "/workspace/.claude/long-running/evidence/F011/generation-output.txt",
+        "/workspace/.claude/long-running/evidence/F011/test-output.txt",
+        "/workspace/.claude/long-running/evidence/F011/artifact-checks.txt",
+        "/workspace/questionnaire-embeddings/embeddings/neo_embeddings_metadata.json"
+      ],
+      "notes": "Concrete evidence from generation and validation logs shows shapes (100,384) for MiniLM and (100,768) for MPNet/E5/BGE, with norm ranges at 1.000000 in the saved-validation logs. Independent artifact checks report norm_min=0.99999994 and norm_max=1.00000012 for all four arrays, which is within the recorded L2 tolerance. Direct array inspection via Bash also confirmed the same shapes, float32 dtype, and near-1 row norms for every artifact."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "embedding 与 item_text 顺序一致（第 i 行对应第 i 题）",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/generate_embeddings.py",
+        "/workspace/questionnaire-embeddings/embeddings/neo_embeddings_metadata.json",
+        "/workspace/.claude/long-running/evidence/F011/artifact-checks.txt",
+        "/workspace/.claude/long-running/evidence/F011/test-output.txt"
+      ],
+      "notes": "The implementation loads canonical ordered question_ids/item_texts from /workspace/questionnaire-embeddings/data/processed/metadata.parquet in load_item_metadata(), then build_model_inputs() preserves that list order when passing texts to the encoder. The metadata manifest records source.question_ids plus canonical/item-text hashes and stores row_order_source='source.question_ids and source.canonical_item_sha256' for each model. Validation evidence confirms metadata source provenance matches the canonical parquet, and direct inspection confirmed meta_source.question_ids exactly match the parquet question_id order for all 100 items."
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "metadata JSON 包含所有要求字段",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/embeddings/neo_embeddings_metadata.json",
+        "/workspace/questionnaire-embeddings/scripts/generate_embeddings.py",
+        "/workspace/.claude/long-running/evidence/F011/test-output.txt"
+      ],
+      "notes": "The manifest includes the required top-level metadata (schema_version, feature_id, dataset, questionnaire, script, timestamps, source provenance, package_versions_last_run, device_last_run) and per-model fields covering model name, dimension, pooling, generation date/time, package versions, output file, file hash, normalization, shape, dtype, text prefix, and device info. Validation output explicitly checks 'metadata fields complete' for each of the four model entries and verifies model_name, output_file, shape, dimension, pooling, text_prefix, generated_at_utc, package_versions, and file_sha256."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "/workspace/questionnaire-embeddings/questionnaire.yaml still contains the pre-existing package entry `panda==0.3.1`; this did not block F011 acceptance evidence but may be worth cleaning up for environment reproducibility.",
+    "/workspace/.claude/long-running/evidence/F011/git-diff.patch does not show the new generator script or binary artifacts because untracked files are not included by plain `git diff`; future evidence capture would be stronger if it also included `git status` or another record of untracked deliverables."
+  ]
+}

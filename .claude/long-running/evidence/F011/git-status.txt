@@ -1,0 +1,15 @@
+ M .claude/long-running/active-feature.json
+ M .claude/long-running/features.json
+ M questionnaire-embeddings/questionnaire.yaml
+?? .claude/long-running/evidence/F011/artifact-checks.txt
+?? .claude/long-running/evidence/F011/commands.log
+?? .claude/long-running/evidence/F011/evaluator-report.json
+?? .claude/long-running/evidence/F011/feature-dev-handoff.md
+?? .claude/long-running/evidence/F011/feature-dev-summary.md
+?? .claude/long-running/evidence/F011/generation-output.txt
+?? .claude/long-running/evidence/F011/git-diff.patch
+?? .claude/long-running/evidence/F011/git-status.txt
+?? .claude/long-running/evidence/F011/offline-validate-output.txt
+?? .claude/long-running/evidence/F011/test-output.txt
+?? questionnaire-embeddings/embeddings/neo_embeddings_metadata.json
+?? questionnaire-embeddings/scripts/generate_embeddings.py
