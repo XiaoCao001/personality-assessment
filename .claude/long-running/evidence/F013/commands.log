@@ -1,0 +1,11 @@
+Commands run for F013:
+1. python scripts/test_phase4_versionA.py
+2. python scripts/run_phase4_versionA.py --quick
+3. python scripts/run_phase4_versionA.py --all
+4. python -m py_compile scripts/phase4_common.py scripts/phase4_predictors.py scripts/run_phase4_versionA.py scripts/test_phase4_versionA.py
+5. Python artifact checks over results/phase4 outputs
+
+Notes:
+- --smoke now writes to results/phase4_smoke by default / explicit output dir in test script, avoiding overwrite of canonical results/phase4 full outputs.
+- Full --all output copied to test-output.txt.
+- Smoke validation output copied to smoke-test-output.txt.

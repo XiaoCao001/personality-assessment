@@ -1,22 +1,31 @@
 # Handoff — Next Session
 
 ## Immediate action
-Run `/long-running-coding F013` to execute **Phase 4-A1/A2: fixed SBERT-Coverage selected items**.
+Run `/long-running-coding F014` to execute **Phase 4-B1/B2: embedding-specific re-selection**.
 
-F012 is complete and should be treated as background context. Do not spend the next feature on F012 cleanup unless explicitly requested.
+F013 is complete and should be treated as background context. Do not spend the next feature on F013 cleanup unless explicitly requested.
 
-## Phase 4 design update (2026-06-12)
-The Phase 4 route has been revised before implementation to avoid confounding embedding quality, hyperparameter tuning, and item-selection effects.
-
+## Completed latest feature
 ### F013 — Version A: fixed original selected items
-- **A1 (main analysis):** fixed SBERT-Coverage `S_old` + fixed Phase 2 recommended SoftmaxKNN hyperparameters.
-  - Purpose: isolate whether the new embedding space improves nearest-neighbor geometry and prediction.
-- **A2 (supplemental):** fixed `S_old` + embedding-specific K/τ tuning on train-inner only.
-  - Purpose: estimate calibrated prediction upper bound for each embedding.
+- Implemented `scripts/run_phase4_versionA.py` plus Phase 4 helper modules.
+- A1: fixed Phase 2 SoftmaxKNN hyperparameters with fixed Phase 1 SBERT Coverage `S_old`.
+- A2: fixed `S_old` plus nested train-inner K/τ tuning for each embedding/fold/ratio.
+- Main scoring convention: continuous clip-only prediction, held-out/unselected items only; rounded metrics are supplemental.
+- Outputs live in `questionnaire-embeddings/results/phase4/`:
+  - `versionA_predictions.parquet`
+  - `versionA_participant_metrics.csv`
+  - `versionA_results.csv`
+  - `versionA_summary.csv`
+  - `hyperparameters_by_fold_ratio_embedding.csv`
+  - `selected_items_by_fold_ratio_embedding.json`
+  - `versionA_statistical_tests.csv`
+  - `outer_folds_subject_ids.json`
+- Evaluator verdict: PASS.
 
-### F014 — Version B: re-select items per embedding
-- **B1:** embedding-specific Coverage `S_new` + fixed Phase 2 recommended hyperparameters.
+## Next feature: F014 — Version B: re-select items per embedding
+- **B1:** embedding-specific Coverage `S_new` + fixed Phase 2 recommended SoftmaxKNN hyperparameters.
 - **B2:** embedding-specific Coverage `S_new` + embedding-specific train-inner K/τ tuning.
+- Compare against F013 A1/A2 using the same participant folds and prediction/scoring convention.
 - Report `Jaccard(S_new, S_old)` for every embedding/fold/ratio.
 - Define selection contribution within the same embedding and tuning regime:
   - `Δ_selection_fixed = performance(B1: S_new, E_new) - performance(A1: S_old, E_new)`
@@ -32,23 +41,14 @@ The Phase 4 route has been revised before implementation to avoid confounding em
 - Prediction mode: primary analysis uses continuous predictions clipped to `[1,5]`, **without rounding**.
 - Rounded accuracy / rounded MAE are supplemental only.
 
-## Required Phase 4 outputs
-Each A/B script should save:
-- `per-participant predictions`
-- `selected_items_by_fold_ratio_embedding.json`
-- `hyperparameters_by_fold_ratio_embedding.csv`
-- metrics table with `item_r`, `MAE`, `trait_r_mean`, `profile_r`
-- paired bootstrap Δ/CI/p-value vs SBERT original
-- corrected p-values for embedding×ratio comparisons
-- for B: Jaccard overlap and B−A `Δ_selection`
-
-## Useful files for F013
-1. `.claude/long-running/features.json` — updated F013/F014/F015 acceptance criteria.
-2. `.claude/long-running/decisions.md` — updated Phase 4 design decisions.
-3. `questionnaire-embeddings/scripts/run_softmax_kernel.py` and `scripts/predictors.py` — Phase 2 SoftmaxKNN implementation.
-4. `questionnaire-embeddings/results/phase1/semantic_selection_detail.csv` — historical SBERT Coverage selected sets for fixed `S_old`.
-5. `questionnaire-embeddings/scripts/diagnose_embeddings.py` — embedding registry and output conventions.
-6. `questionnaire-embeddings/results/phase3/embedding_diagnostics_selected_sets.csv` and `embedding_diagnostics_global_space.csv` — diagnostic context if available locally.
+## Useful files for F014
+1. `.claude/long-running/features.json` — F014 acceptance criteria and dependencies.
+2. `.claude/long-running/decisions.md` — Phase 4 design decisions.
+3. `questionnaire-embeddings/scripts/phase4_common.py` — loaders, embedding registry, fixed S_old, bootstrap helpers.
+4. `questionnaire-embeddings/scripts/phase4_predictors.py` — continuous SoftmaxKNN.
+5. `questionnaire-embeddings/scripts/run_phase4_versionA.py` — A1/A2 loop and output schemas to mirror.
+6. `questionnaire-embeddings/results/phase4/` — F013 A outputs used for B−A comparisons.
+7. `questionnaire-embeddings/scripts/diagnose_embeddings.py` — CoverageSelector usage and embedding diagnostics patterns.
 
 ## F015 final-report requirement
 If no cross-questionnaire generalization experiment is added before the final report, explicitly state the limitation: current conclusions are primarily for NEO-PI-R and cross-questionnaire generalization remains to be tested.

@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 待做 (F013–F015)
-- Last updated: 2026-06-12T08:00:00Z
-- Completed features: 13 / 16
+- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013 完成，F014–F015 待做
+- Last updated: 2026-06-12T09:45:00Z
+- Completed features: 14 / 16
 - Active feature: none
 
 ## Completed work
@@ -129,6 +129,19 @@
 - 独立验收结论：通过；3 条验收标准全部满足（第 1 次尝试）。
 - 证据文件：evaluator-report.json、test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
 
+### F013 — 第四阶段：Embedding 对比实验版本 A1/A2（固定原选题）（2026-06-12T09:45:00Z 完成）
+- 新增 `scripts/phase4_common.py`：集中管理 Phase 4 数据加载、F011/F012 风格 embedding registry、按 fold×ratio 读取 Phase 1 Coverage `S_old`、participant-level paired bootstrap、Holm/BH p 值校正和输出路径。
+- 新增 `scripts/phase4_predictors.py`：实现 Phase 4 专用 `ContinuousSoftmaxKNN`，保持 Phase 2 SoftmaxKNN 邻居几何和 softmax 权重，但主分析只 clip 到 `[1,5]`，不 round；历史 Phase 1/2 predictor 行为未修改。
+- 新增 `scripts/run_phase4_versionA.py`：完成 A1/A2 固定原选题实验，覆盖 5 个 embedding（SBERT original、MiniLM、MPNet、E5、BGE）× 4 个比例 × 5 个 outer folds × 2 个版本。
+- A1 固定预注册 SoftmaxKNN 参数：m=10 K=7 τ=0.1；m=30 K=7 τ=0.1；m=50 K=10 τ=0.1；m=90 K=3 τ=0.03，不做 embedding-specific tuning。
+- A2 在每个 embedding/fold/ratio 内仅用 outer-train 的 train-inner/valid-inner 进行 K/τ 网格搜索（K∈{3,5,7,10,15}，τ∈{0.03,0.05,0.1,0.2,0.5}），outer-test 只用于最终评价。
+- 主评分明确复用 Phase 2 可比性约定：只预测并评分 unselected/held-out items；selected items 作为 observed inputs 保留，预测矩阵中为 NaN。
+- 输出 `results/phase4/versionA_predictions.parquet`（109,960 participant-level rows，含 heldout/predicted item IDs、y_true、continuous y_pred 向量）、`versionA_participant_metrics.csv`、`versionA_results.csv`（200 rows）、`versionA_summary.csv`（40 rows）、`hyperparameters_by_fold_ratio_embedding.csv`（200 rows）、`selected_items_by_fold_ratio_embedding.json`（200 rows）和 `versionA_statistical_tests.csv`（32 paired bootstrap comparisons）。
+- 新 embedding vs SBERT original 比较使用 subject-level item_r 配对差值，并在每个 outer fold 内重采样 subjects；输出 Δ、95% CI、raw p、Holm p、BH p。
+- 新增 `scripts/test_phase4_versionA.py` 作为轻量 smoke test，默认写入 `results/phase4_smoke`，避免覆盖 canonical full-run artifacts。
+- 独立验收结论：通过（6/6 条验收标准，第 1 次尝试）。
+- 证据文件：evaluator-report.json、test-output.txt、smoke-test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
+
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
 2. **Coverage+Div** (F005): 0.2620
@@ -154,8 +167,8 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F013] Phase 4: Embedding 对比实验 — 版本 A1/A2（固定原选题） (depends on F007/F010/F011 ✓)** — A1 固定 SBERT-Coverage S_old + 固定 Phase 2 推荐超参数，用作主分析；A2 固定 S_old + embedding-specific train-inner K/τ tuning，用作补充分析。
-- **[F014] Phase 4: 版本 B1/B2（重新选题）** — B1/B2 分别对应固定超参数/重新调参；必须输出 S_new vs S_old Jaccard overlap，以及同一 embedding 下 B−A 的 Δ_selection。
+- **[F014] Phase 4: 版本 B1/B2（重新选题） (depends on F013 ✓)** — B1/B2 分别对应固定超参数/重新调参；必须输出 S_new vs S_old Jaccard overlap，以及同一 embedding 下 B−A 的 Δ_selection。
+- **[F015] Phase 4: 最终综合报告** — 汇总 Phase 1–4 表格、图表、统计检验和 limitation。
 - Phase 4 主指标预注册为 item-level Pearson r；关键次指标为 trait_r_mean、profile_r、MAE；主分析使用 continuous clip-only prediction，不 round；新 embedding vs SBERT 和 B−A 比较使用 paired bootstrap + Holm/BH 校正。
 
 ## Session log
@@ -331,3 +344,12 @@
 - 统计分析预注册：主指标 item-level Pearson r；关键次指标 trait_r_mean、profile_r、MAE；新 embedding vs SBERT original 和 B−A 使用 paired bootstrap over participants，并报告 Holm/BH 多重比较校正。
 - Phase 4 主分析预测改为 continuous clip-only（只裁剪到 [1,5]，不 round）；rounded accuracy/rounded MAE 仅作为补充分析。
 - F015 最终报告新增要求：若不做 IPIP/其他问卷的小型泛化实验，必须明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
+
+### 2026-06-12T09:45:00Z F013 实现 — Phase 4 Version A 固定原选题 Embedding 对比
+- 实现 `scripts/phase4_common.py`、`scripts/phase4_predictors.py`、`scripts/run_phase4_versionA.py`、`scripts/test_phase4_versionA.py`。
+- `S_old` 由 Phase 1 `semantic_selection_detail.csv` 中 Coverage rows 按 fold×ratio 读取，不重新 Coverage 选题；在每个 fold×ratio 内所有 embedding 和 A1/A2 共享完全相同 selected item indices 和 question IDs。
+- 主评分遵循 Phase 2 held-out-only convention：只预测和评分未选题项；selected items 作为 observed responses，不参与 item_r/MAE 主指标。
+- A1 固定 SoftmaxKNN 参数；A2 只在 outer-train 内做 nested train-inner tuning，test subjects 不参与调参。
+- Full run `python scripts/run_phase4_versionA.py --all` 成功完成：participant rows=109,960；fold rows=200；hyperparameter rows=200。
+- Artifact checks 通过：Parquet prediction row vectors 与 heldout item IDs 长度一致，无 NaN predictions；A1 fixed params exact；A2 inner grid scores recorded；bootstrap rows=32 且包含 raw/Holm/BH p-values。
+- Evaluator verdict: PASS（6/6 acceptance criteria）。

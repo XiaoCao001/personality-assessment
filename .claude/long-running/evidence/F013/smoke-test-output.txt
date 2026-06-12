@@ -1,0 +1,27 @@
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:331: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv, pv)
+/workspace/questionnaire-embeddings/scripts/cv_framework.py:242: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r, _ = sp_stats.pearsonr(tv[valid], pv[valid])
+==============================================================================
+F013 Phase 4 Version A — SMOKE
+==============================================================================
+Folds: [0]; ratios: (10,); embeddings: ('sbert_original',); versions: ('A1_fixed',)
+Primary scoring: continuous clip-only predictions on held-out/unselected items only
+
+--- Fold 0 train=2199 test=550 ---
+  m=10: S_old hash=92745849571d4031 (10 items)
+    A1_fixed sbert_original   K= 7 tau=0.100 subjects=550
+
+[SAVE] Phase 4 Version A outputs
+  predictions          /workspace/questionnaire-embeddings/results/phase4_smoke/versionA_predictions.parquet
+  participant_metrics  /workspace/questionnaire-embeddings/results/phase4_smoke/versionA_participant_metrics.csv
+  results              /workspace/questionnaire-embeddings/results/phase4_smoke/versionA_results.csv
+  summary              /workspace/questionnaire-embeddings/results/phase4_smoke/versionA_summary.csv
+  selected_items       /workspace/questionnaire-embeddings/results/phase4_smoke/selected_items_by_fold_ratio_embedding.json
+  hyperparameters      /workspace/questionnaire-embeddings/results/phase4_smoke/hyperparameters_by_fold_ratio_embedding.csv
+  stats                /workspace/questionnaire-embeddings/results/phase4_smoke/versionA_statistical_tests.csv
+  folds                /workspace/questionnaire-embeddings/results/phase4_smoke/outer_folds_subject_ids.json
+
+[OK] F013 Version A SMOKE completed in 2.2s
+Participant rows: 550; fold rows: 1; hyper rows: 1
+F013 smoke checks passed

@@ -1,0 +1,89 @@
+{
+  "featureId": "F013",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "criterion": "A1/A2 all 5 embeddings evaluated on same S_old, outer folds, and test participants; selected_items_by_fold_ratio_embedding.json verifies fixed original selected items.",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/phase4_common.py",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+        "/workspace/questionnaire-embeddings/results/phase4/selected_items_by_fold_ratio_embedding.json",
+        "/workspace/questionnaire-embeddings/results/phase4/outer_folds_subject_ids.json",
+        "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+      ],
+      "notes": "run_phase4_versionA.py loads one fixed Phase 1 Coverage set per fold×ratio via load_fixed_s_old_by_fold_ratio() and reuses it across all embeddings and both versions. selected_items_by_fold_ratio_embedding.json records 200 audit rows with reused_across_embeddings=true and reused_across_versions=true, and the inspected output showed exactly one selected_S_hash for each fold×ratio. Participant-level outputs were also checked for identical subject_id sequences across every embedding/version within each fold×ratio, with no alignment mismatches found."
+    },
+    {
+      "criterionId": "AC002",
+      "criterion": "A1 uses fixed Phase 2 recommended hyperparameters and no embedding-specific K/τ tuning; hyperparameters file verifies fixed settings.",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/phase4_common.py",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+        "/workspace/questionnaire-embeddings/results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+        "/workspace/questionnaire-embeddings/results/phase2/softmax_kernel_detail.csv",
+        "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+      ],
+      "notes": "A1_FIXED_PARAMS hard-codes ratio-specific settings {10:(7,0.1), 30:(7,0.1), 50:(10,0.1), 90:(3,0.03)} and the main loop applies them whenever version == A1_fixed. The hyperparameter artifact shows all A1 rows as is_fixed=true, is_tuned=false, hyperparam_source=phase2_fixed_preregistered_softmax, with those exact K/τ values for every fold and embedding. The inspected Phase 2 softmax_kernel_detail.csv modal SoftmaxKNN settings by ratio match the A1 fixed values."
+    },
+    {
+      "criterionId": "AC003",
+      "criterion": "A2 K/τ tuning fully train-inner only; test participants not used for tuning.",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+        "/workspace/questionnaire-embeddings/scripts/cv_framework.py",
+        "/workspace/questionnaire-embeddings/results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+        "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+      ],
+      "notes": "A2 tuning is isolated in tune_a2(), which receives only y_train from the outer-training fold, creates an inner split with inner_validation_split(), searches the K×τ grid there, and returns best settings before any prediction on y_test. In the main loop, y_test is first used only after tuning completes. The hyperparameter CSV records train_n, train_inner_n, valid_inner_n, test_n, the K/τ search spaces, and per-grid inner validation scores for A2 rows, confirming nested tuning metadata is being captured."
+    },
+    {
+      "criterionId": "AC004",
+      "criterion": "Version A results table contains embedding×ratio×version item-level Pearson r, MAE, trait_r_mean, profile_r, and per-participant predictions saved.",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_results.csv",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_summary.csv",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_predictions.parquet",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_participant_metrics.csv",
+        "/workspace/.claude/long-running/evidence/F013/artifact-checks.txt"
+      ],
+      "notes": "versionA_results.csv has 200 rows covering 2 versions × 5 embeddings × 4 ratios × 5 folds, with non-null item_r, item_mae, trait_r_mean, and profile_r columns. versionA_predictions.parquet exists with 109960 per-participant rows and vector fields for held-out item IDs, y_true, and continuous predictions; versionA_participant_metrics.csv provides subject-level scalar metrics. artifact-checks.txt confirms row counts and schema completeness."
+    },
+    {
+      "criterionId": "AC005",
+      "criterion": "New embeddings vs SBERT original use paired bootstrap over participants, reporting Δ, 95% CI, raw p and Holm/BH corrected p.",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/phase4_common.py",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_statistical_tests.csv",
+        "/workspace/.claude/long-running/evidence/F013/artifact-checks.txt"
+      ],
+      "notes": "build_bootstrap_tests() pairs each new embedding against SBERT original by subject_id and outer_fold, computes subject-level deltas, and calls paired_bootstrap_by_fold(), which resamples subjects within each outer fold. versionA_statistical_tests.csv has 32 rows (4 new embeddings × 4 ratios × 2 versions) and includes delta_mean, ci_lower, ci_upper, p_raw, p_holm, and p_bh. The artifact also records bootstrap_unit=subjects_resampled_within_outer_fold and bootstrap_iterations=10000 for the full run."
+    },
+    {
+      "criterionId": "AC006",
+      "criterion": "Primary prediction is continuous clip-only, not rounded; rounded accuracy/MAE supplemental only.",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/scripts/phase4_predictors.py",
+        "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_predictions.parquet",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_results.csv",
+        "/workspace/questionnaire-embeddings/results/phase4/versionA_participant_metrics.csv",
+        "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+      ],
+      "notes": "phase4_predictors.py introduces ContinuousSoftmaxKNN, which clips predictions to [1,5] but does not round them. run_phase4_versionA.py records prediction_mode=continuous_clip_only_primary in participant metrics, sets rounded=false in the primary fold-level results, and stores rounded outputs only in supplemental columns such as y_pred_rounded_supplemental, item_rounded_accuracy, item_rounded_mae, per_subject_rounded_accuracy, and per_subject_rounded_mae. The saved parquet sample inspected contained distinct continuous and rounded values, confirming rounding is supplemental rather than primary."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "/workspace/questionnaire-embeddings/results/phase4/outer_folds_subject_ids.json documents regenerated seed=0 participant folds because older Phase 1 artifacts did not preserve participant subject-ID membership; this is adequate for F013 internal comparability but limits direct historical subject-by-subject auditing against prior phases.",
+    "The full run log at /workspace/.claude/long-running/evidence/F013/test-output.txt still emits ConstantInputWarning/RuntimeWarning messages from /workspace/questionnaire-embeddings/scripts/cv_framework.py. They did not block artifact generation or leave required F013 metrics null, but they remain worth monitoring in later phases."
+  ]
+}

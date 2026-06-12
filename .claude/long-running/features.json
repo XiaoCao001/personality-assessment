@@ -3,7 +3,7 @@
   "description": "基于原论文 questionnaire-embeddings 项目的改进研究：验证语义覆盖选题策略、加权 KNN 预测器、新 embedding 模型，并增加人格总分预测维度。主实验数据集为 NEO-PI-R（2,749 被试 × 100 题项 × Big Five 五维度）。",
   "version": "1.0.0",
   "createdAt": "2026-06-04T16:00:00Z",
-  "updatedAt": "2026-06-12T08:00:00Z",
+  "updatedAt": "2026-06-12T09:45:00Z",
   "features": [
     {
       "id": "F001",
@@ -952,38 +952,74 @@
         {
           "id": "AC001",
           "text": "A1/A2 中所有 5 个 embedding 均在同一批 S_old、outer folds 和 test participants 上评估，固定原选题的可比性可由 selected_items_by_fold_ratio_embedding.json 验证。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "/workspace/questionnaire-embeddings/scripts/phase4_common.py",
+            "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+            "/workspace/questionnaire-embeddings/results/phase4/selected_items_by_fold_ratio_embedding.json",
+            "/workspace/questionnaire-embeddings/results/phase4/outer_folds_subject_ids.json",
+            "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+          ]
         },
         {
           "id": "AC002",
           "text": "Version A1 使用固定 Phase 2 推荐超参数，不进行 embedding-specific K/τ 调参；输出 hyperparameters 文件可验证固定设置。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "/workspace/questionnaire-embeddings/scripts/phase4_common.py",
+            "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+            "/workspace/questionnaire-embeddings/results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+            "/workspace/questionnaire-embeddings/results/phase2/softmax_kernel_detail.csv",
+            "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+          ]
         },
         {
           "id": "AC003",
           "text": "Version A2 的 K/τ 调优完全在 train-inner 内完成，test participants 不参与调参。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+            "/workspace/questionnaire-embeddings/scripts/cv_framework.py",
+            "/workspace/questionnaire-embeddings/results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+            "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+          ]
         },
         {
           "id": "AC004",
           "text": "版本 A 结果表包含 embedding×ratio×version 的 item-level Pearson r（主指标）、MAE、trait_r_mean、profile_r，并保存 per-participant predictions。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_results.csv",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_summary.csv",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_predictions.parquet",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_participant_metrics.csv",
+            "/workspace/.claude/long-running/evidence/F013/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC005",
           "text": "新 embedding vs SBERT original 的主比较使用 paired bootstrap over participants，报告 Δ、95% CI、原始 p 值和 Holm/BH 校正后的 p 值。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "/workspace/questionnaire-embeddings/scripts/phase4_common.py",
+            "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_statistical_tests.csv",
+            "/workspace/.claude/long-running/evidence/F013/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC006",
           "text": "主分析预测为 continuous clip-only（不 round）；rounded accuracy/rounded MAE 仅作为补充输出。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "/workspace/questionnaire-embeddings/scripts/phase4_predictors.py",
+            "/workspace/questionnaire-embeddings/scripts/run_phase4_versionA.py",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_predictions.parquet",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_results.csv",
+            "/workspace/questionnaire-embeddings/results/phase4/versionA_participant_metrics.csv",
+            "/workspace/.claude/long-running/evidence/F013/test-output.txt"
+          ]
         }
       ],
       "testPlan": [
@@ -992,17 +1028,24 @@
         "ls results/phase4/versionA_results.csv results/phase4/versionA_summary.csv results/phase4/selected_items_by_fold_ratio_embedding.json results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
         "python -c \"import pandas as pd; df=pd.read_csv('results/phase4/versionA_results.csv'); assert {'A1_fixed_hyperparams','A2_tuned_hyperparams'} <= set(df['version']); assert df['rounded'].eq(False).any()\""
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F013",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/run_phase4_versionA.py --all",
+        "testOutputFile": ".claude/long-running/evidence/F013/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F013/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-12T08:05:00Z",
+          "status": "completed",
+          "completedAt": "2026-06-12T09:45:00Z"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-12T09:45:00Z",
+      "completedAt": "2026-06-12T09:45:00Z"
     },
     {
       "id": "F014",

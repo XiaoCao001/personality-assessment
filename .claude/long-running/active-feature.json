@@ -1,16 +1,27 @@
 {
-  "featureId": "F012",
+  "featureId": "F013",
   "phase": "completed",
   "status": "completed",
-  "startedAt": "2026-06-12T06:33:52Z",
-  "startedFromCommit": "a232ccd",
+  "startedAt": "2026-06-12T08:05:00Z",
+  "startedFromCommit": "55e8225",
   "dirty": true,
   "changedFiles": [
-    "questionnaire-embeddings/scripts/diagnose_embeddings.py"
+    "questionnaire-embeddings/results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+    "questionnaire-embeddings/results/phase4/outer_folds_subject_ids.json",
+    "questionnaire-embeddings/results/phase4/selected_items_by_fold_ratio_embedding.json",
+    "questionnaire-embeddings/results/phase4/versionA_participant_metrics.csv",
+    "questionnaire-embeddings/results/phase4/versionA_predictions.parquet",
+    "questionnaire-embeddings/results/phase4/versionA_results.csv",
+    "questionnaire-embeddings/results/phase4/versionA_statistical_tests.csv",
+    "questionnaire-embeddings/results/phase4/versionA_summary.csv",
+    "questionnaire-embeddings/scripts/phase4_common.py",
+    "questionnaire-embeddings/scripts/phase4_predictors.py",
+    "questionnaire-embeddings/scripts/run_phase4_versionA.py",
+    "questionnaire-embeddings/scripts/test_phase4_versionA.py"
   ],
-  "evidenceDir": ".claude/long-running/evidence/F012",
+  "evidenceDir": ".claude/long-running/evidence/F013",
   "lastEvaluatorVerdict": "PASS",
-  "handoffPromptFile": ".claude/long-running/evidence/F012/feature-dev-handoff.md",
-  "lastModifiedAt": "2026-06-12T07:10:13Z",
-  "completedAt": "2026-06-12T07:10:13Z"
+  "handoffPromptFile": ".claude/long-running/evidence/F013/feature-dev-handoff.md",
+  "lastModifiedAt": "2026-06-12T09:45:00Z",
+  "completedAt": "2026-06-12T09:45:00Z"
 }

@@ -1,0 +1,12 @@
+[PASS] versionA_results.csv: rows=200 expected=200
+[PASS] versionA_summary.csv: rows=40 expected=40
+[PASS] hyperparameters_by_fold_ratio_embedding.csv: rows=200 expected=200
+[PASS] versionA_participant_metrics.csv: rows=109960 expected=109960
+[PASS] versionA_statistical_tests.csv: rows=32 expected=32
+[PASS] versionA_results.csv: versions/embeddings/ratios/folds complete; rounded=False; heldout-only convention documented
+[PASS] hyperparameters_by_fold_ratio_embedding.csv: A1 fixed params exact; A2 nested inner sizes and grid scores recorded
+[PASS] versionA_participant_metrics.csv: no NaN MAE; primary mode continuous_clip_only_primary
+[PASS] versionA_predictions.parquet: rows=109960; item IDs align with y_true/y_pred vectors; predictions clipped to [1,5]
+[PASS] selected_items_by_fold_ratio_embedding.json: 200 records; one S_old hash per fold×ratio across all embeddings/versions
+[PASS] versionA_statistical_tests.csv: 32 paired bootstrap rows with raw/Holm/BH p-values; subjects resampled within fold
+[PASS] outer_folds_subject_ids.json: 5 seed=0 participant folds recorded; test subjects cover 2749 participants
