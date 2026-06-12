@@ -1,22 +1,16 @@
 {
-  "featureId": "F011",
+  "featureId": "F012",
   "phase": "completed",
   "status": "completed",
-  "startedAt": "2026-06-12T05:35:01Z",
-  "startedFromCommit": "9ea5c87",
+  "startedAt": "2026-06-12T06:33:52Z",
+  "startedFromCommit": "a232ccd",
   "dirty": true,
   "changedFiles": [
-    "questionnaire-embeddings/embeddings/neo_bge_base_en_v15.npy",
-    "questionnaire-embeddings/embeddings/neo_e5_base_v2.npy",
-    "questionnaire-embeddings/embeddings/neo_embeddings_metadata.json",
-    "questionnaire-embeddings/embeddings/neo_minilm_l6_v2.npy",
-    "questionnaire-embeddings/embeddings/neo_mpnet_base_v2.npy",
-    "questionnaire-embeddings/questionnaire.yaml",
-    "questionnaire-embeddings/scripts/generate_embeddings.py"
+    "questionnaire-embeddings/scripts/diagnose_embeddings.py"
   ],
-  "evidenceDir": ".claude/long-running/evidence/F011",
+  "evidenceDir": ".claude/long-running/evidence/F012",
   "lastEvaluatorVerdict": "PASS",
-  "handoffPromptFile": ".claude/long-running/evidence/F011/feature-dev-handoff.md",
-  "lastModifiedAt": "2026-06-12T06:20:40Z",
-  "completedAt": "2026-06-12T06:20:40Z"
+  "handoffPromptFile": ".claude/long-running/evidence/F012/feature-dev-handoff.md",
+  "lastModifiedAt": "2026-06-12T07:10:13Z",
+  "completedAt": "2026-06-12T07:10:13Z"
 }

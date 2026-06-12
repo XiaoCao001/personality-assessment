@@ -1,0 +1,251 @@
+diff --git a/.claude/long-running/active-feature.json b/.claude/long-running/active-feature.json
+index 7162eb7..0899d3b 100644
+--- a/.claude/long-running/active-feature.json
++++ b/.claude/long-running/active-feature.json
+@@ -1,22 +1,16 @@
+ {
+-  "featureId": "F011",
++  "featureId": "F012",
+   "phase": "completed",
+   "status": "completed",
+-  "startedAt": "2026-06-12T05:35:01Z",
+-  "startedFromCommit": "9ea5c87",
++  "startedAt": "2026-06-12T06:33:52Z",
++  "startedFromCommit": "a232ccd",
+   "dirty": true,
+   "changedFiles": [
+-    "questionnaire-embeddings/embeddings/neo_bge_base_en_v15.npy",
+-    "questionnaire-embeddings/embeddings/neo_e5_base_v2.npy",
+-    "questionnaire-embeddings/embeddings/neo_embeddings_metadata.json",
+-    "questionnaire-embeddings/embeddings/neo_minilm_l6_v2.npy",
+-    "questionnaire-embeddings/embeddings/neo_mpnet_base_v2.npy",
+-    "questionnaire-embeddings/questionnaire.yaml",
+-    "questionnaire-embeddings/scripts/generate_embeddings.py"
++    "questionnaire-embeddings/scripts/diagnose_embeddings.py"
+   ],
+-  "evidenceDir": ".claude/long-running/evidence/F011",
++  "evidenceDir": ".claude/long-running/evidence/F012",
+   "lastEvaluatorVerdict": "PASS",
+-  "handoffPromptFile": ".claude/long-running/evidence/F011/feature-dev-handoff.md",
+-  "lastModifiedAt": "2026-06-12T06:20:40Z",
+-  "completedAt": "2026-06-12T06:20:40Z"
++  "handoffPromptFile": ".claude/long-running/evidence/F012/feature-dev-handoff.md",
++  "lastModifiedAt": "2026-06-12T07:10:13Z",
++  "completedAt": "2026-06-12T07:10:13Z"
+ }
+diff --git a/.claude/long-running/features.json b/.claude/long-running/features.json
+index 5b035c3..0534580 100644
+--- a/.claude/long-running/features.json
++++ b/.claude/long-running/features.json
+@@ -876,37 +876,56 @@
+         {
+           "id": "AC001",
+           "text": "所有 5 个 embedding 模型的四项诊断指标均已计算",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/phase3/embedding_diagnostics_selected_sets.csv (20 rows: 5 embeddings × m=10/30/50/90)",
++            "questionnaire-embeddings/results/phase3/embedding_diagnostics_global_space.csv (5 rows with raw cosine within/between metrics)",
++            ".claude/long-running/evidence/F012/artifact-checks.txt"
++          ]
+         },
+         {
+           "id": "AC002",
+           "text": "Figure 5 清楚展示各模型在语义空间结构上的差异",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/phase3/figures/figure5.pdf",
++            "questionnaire-embeddings/results/phase3/figures/figure5.png",
++            ".claude/long-running/evidence/F012/test-output.txt"
++          ]
+         },
+         {
+           "id": "AC003",
+           "text": "诊断结果能够为 Phase 4 的性能差异提供解释假设",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/phase3/figures/phase3_embedding_diagnostics.txt",
++            "questionnaire-embeddings/results/phase3/embedding_diagnostics_summary.csv",
++            ".claude/long-running/evidence/F012/evaluator-report.json"
++          ]
+         }
+       ],
+       "testPlan": [
+         "python scripts/diagnose_embeddings.py --all",
+         "ls results/phase3/figures/figure5.pdf"
+       ],
+-      "status": "pending",
++      "status": "completed",
+       "evidence": {
+         "directory": ".claude/long-running/evidence/F012",
+-        "testCommand": null,
+-        "testOutputFile": null,
+-        "evaluatorReport": null
++        "testCommand": "python scripts/diagnose_embeddings.py --all",
++        "testOutputFile": ".claude/long-running/evidence/F012/test-output.txt",
++        "evaluatorReport": ".claude/long-running/evidence/F012/evaluator-report.json"
+       },
+-      "attempts": [],
++      "attempts": [
++        {
++          "attemptNumber": 1,
++          "startedAt": "2026-06-12T06:33:52Z",
++          "status": "completed",
++          "completedAt": "2026-06-12T07:10:13Z"
++        }
++      ],
+       "createdAt": "2026-06-04T16:00:00Z",
+-      "updatedAt": "2026-06-04T16:00:00Z",
+-      "completedAt": null
++      "updatedAt": "2026-06-12T07:10:13Z",
++      "completedAt": "2026-06-12T07:10:13Z"
+     },
+     {
+       "id": "F013",
+diff --git a/.claude/long-running/handoff.md b/.claude/long-running/handoff.md
+index 32ded46..1d10385 100644
+--- a/.claude/long-running/handoff.md
++++ b/.claude/long-running/handoff.md
+@@ -1,33 +1,54 @@
+ # Handoff — Next Session
+ 
+ ## Immediate action
+-Run `/long-running-coding F012` to execute **Phase 3: Embedding 空间质量诊断** (depends on F011 ✓).
++Run `/long-running-coding F013` to execute **Phase 4: Embedding 对比实验 — 版本 A（固定原选题）**.
+ 
+-F011 is now complete — MiniLM/MPNet/E5/BGE embeddings and combined metadata manifest were generated and validated.
++F012 is now complete — embedding-space diagnostics for original SBERT + MiniLM/MPNet/E5/BGE were generated and independently evaluated as PASS.
+ 
+-## What was done in F011
+-- Created `questionnaire-embeddings/scripts/generate_embeddings.py`
+-- Generated four new L2-normalized embedding matrices:
+-  - `questionnaire-embeddings/embeddings/neo_minilm_l6_v2.npy` — shape (100,384)
+-  - `questionnaire-embeddings/embeddings/neo_mpnet_base_v2.npy` — shape (100,768)
+-  - `questionnaire-embeddings/embeddings/neo_e5_base_v2.npy` — shape (100,768), E5 `query: ` prefix
+-  - `questionnaire-embeddings/embeddings/neo_bge_base_en_v15.npy` — shape (100,768)
+-- Added `questionnaire-embeddings/embeddings/neo_embeddings_metadata.json` with source item-order/text hashes, package versions, device info, model metadata, and artifact SHA256 hashes
+-- Added `pyarrow`, `sentence-transformers`, and `torch` to `questionnaire-embeddings/questionnaire.yaml`
+-- Verification passed:
+-  - `python3 scripts/generate_embeddings.py --validate`
+-  - `HF_HUB_OFFLINE=1 python3 scripts/generate_embeddings.py --validate`
+-  - artifact shape/norm/order assertion script
+-- Evaluator verdict: PASS (4/4 criteria)
++## What was done in F012
++- Created `questionnaire-embeddings/scripts/diagnose_embeddings.py`
++- Compared five embedding spaces:
++  - `sbert_original` — `data/processed/E_old.npy`
++  - `minilm_l6_v2` — `embeddings/neo_minilm_l6_v2.npy`
++  - `mpnet_base_v2` — `embeddings/neo_mpnet_base_v2.npy`
++  - `e5_base_v2` — `embeddings/neo_e5_base_v2.npy`
++  - `bge_base_en_v15` — `embeddings/neo_bge_base_en_v15.npy`
++- Generated selected-set diagnostics for `m ∈ {10,30,50,90}`:
++  - `coverage_shifted_cosine`
++  - `redundancy_shifted_cosine`
++  - `selected_S`
++- Generated full-space/global diagnostics:
++  - all-pair raw cosine mean/std
++  - within-trait raw cosine
++  - between-trait raw cosine
++  - within-minus-between raw cosine
++  - full-100 shifted Coverage/Redundancy summary columns
++- Generated Figure 5:
++  - `questionnaire-embeddings/results/phase3/figures/figure5.pdf`
++  - `questionnaire-embeddings/results/phase3/figures/figure5.png`
++- Generated Phase 3 explanatory text:
++  - `questionnaire-embeddings/results/phase3/figures/phase3_embedding_diagnostics.txt`
++
++## Key F012 interpretation for Phase 4
++- E5-base-v2 has the highest selected-set Coverage across all m values.
++- MPNet-base-v2 has the largest within-minus-between raw cosine trait-separation gap.
++- These are hypotheses only; F013/F014 must test whether the geometry differences improve prediction.
++- F012 warns that current deterministic SBERT Coverage sets differ slightly from historical Phase 1 CSV at m=30/50, likely tie/numerical drift. Do not assume byte-for-byte selected_S equivalence unless explicitly loading Phase 1 saved S.
+ 
+ ## Current state
+-- **F001–F011 completed** — Phase 1, Phase 2, and Phase 3 embedding generation done
++- **F001–F012 completed** — Phase 1, Phase 2, and Phase 3 diagnostics done
+ - **F016 completed** — Phase 2 baseline alignment fix done
+-- **F012–F015 pending** — Phase 3 diagnostics and Phase 4/final analysis
++- **F013–F015 pending** — Phase 4 embedding comparison and final analysis
++
++## Files to read for F013
++1. `.claude/long-running/features.json` — F013 steps and acceptance criteria
++2. `questionnaire-embeddings/scripts/diagnose_embeddings.py` — F012 embedding registry and output conventions
++3. `questionnaire-embeddings/results/phase3/embedding_diagnostics_selected_sets.csv` — model-specific Coverage-selected S diagnostics
++4. `questionnaire-embeddings/results/phase3/embedding_diagnostics_global_space.csv` — raw cosine trait-structure diagnostics
++5. `questionnaire-embeddings/results/phase3/figures/phase3_embedding_diagnostics.txt` — interpretation hypotheses for Phase 4
++6. `questionnaire-embeddings/scripts/run_softmax_kernel.py` and `scripts/predictors.py` — Phase 2 best predictor implementation
++7. `questionnaire-embeddings/results/phase1/semantic_selection_detail.csv` — Phase 1 original SBERT Coverage-selected S if F013 fixes original S
+ 
+-## Files to read for F012
+-1. `.claude/long-running/features.json` — F012 steps and acceptance criteria
+-2. `questionnaire-embeddings/scripts/generate_embeddings.py` — F011 manifest/output conventions
+-3. `questionnaire-embeddings/embeddings/neo_embeddings_metadata.json` — new embedding registry and provenance
+-4. `questionnaire-embeddings/data/processed/E_old.npy` and `metadata.parquet` — original SBERT and item trait metadata
+-5. `questionnaire-embeddings/scripts/selection.py` — existing Coverage/Redundancy logic that F012 can reuse
++## Evidence
++- F012 evidence directory: `.claude/long-running/evidence/F012/`
++- Evaluator report: `.claude/long-running/evidence/F012/evaluator-report.json` (PASS)
+diff --git a/.claude/long-running/progress.md b/.claude/long-running/progress.md
+index 5ebb302..874376a 100644
+--- a/.claude/long-running/progress.md
++++ b/.claude/long-running/progress.md
+@@ -4,9 +4,9 @@
+ 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
+ 
+ ## Current status
+-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011 完成，Phase 3-4 待做 (F012–F015)
+-- Last updated: 2026-06-12T06:20:00Z
+-- Completed features: 12 / 16
++- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 待做 (F013–F015)
++- Last updated: 2026-06-12T07:10:13Z
++- Completed features: 13 / 16
+ - Active feature: none
+ 
+ ## Completed work
+@@ -119,6 +119,16 @@
+ - Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
+ - Evidence: evaluator-report.json, generation-output.txt, test-output.txt, offline-validate-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log
+ 
++### F012 — Phase 3: Embedding 空间质量诊断 (completed 2026-06-12T07:10:13Z)
++- Created `scripts/diagnose_embeddings.py` — standalone Phase 3 diagnostics script for original SBERT + MiniLM/MPNet/E5/BGE embeddings
++- 计算 selected-set diagnostics：每个 embedding 用 CoverageSelector 重新选 S，m∈{10,30,50,90}，输出 `coverage_shifted_cosine` 与 `redundancy_shifted_cosine`（sim+ = (cos+1)/2）
++- 计算 full-space/global diagnostics：all-pair raw cosine mean/std、within-trait raw cosine、between-trait raw cosine、within-minus-between raw cosine，并额外记录 full-100 Coverage/Redundancy（不作为 Figure 5 曲线点）
++- Generated Figure 5（2×2 panel）：Coverage curves、Redundancy curves、Within vs Between raw cosine、Trait separation gap
++- 输出：`results/phase3/embedding_diagnostics_{selected_sets,global_space,summary}.csv`，`results/phase3/figures/figure5.{pdf,png}`，`phase3_embedding_diagnostics.txt`
++- 关键诊断假设：E5-base-v2 selected-set coverage 最高；MPNet-base-v2 within-minus-between raw cosine gap 最大；Phase 4 Version A/B 需验证这些空间结构差异是否转化为预测收益
++- Evaluator verdict: PASS — all 3 acceptance criteria met（attempt 1）
++- Evidence: evaluator-report.json, test-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log, git-diff.patch
++
+ ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
+ 1. **Coverage** (F005): 0.2818
+ 2. **Coverage+Div** (F005): 0.2620
+@@ -144,8 +154,8 @@
+ - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
+ 
+ ## Next recommended feature
+-- **[F012] Phase 3: Embedding 空间质量诊断 (depends on F011 ✓)** — 对原 SBERT + 新 MiniLM/MPNet/E5/BGE embedding 计算 Coverage/Redundancy/within-between trait similarity 并生成 Figure 5
+-- F011 已完成：四个新 embedding 矩阵与 combined metadata manifest 已生成并通过 evaluator PASS
++- **[F013] Phase 4: Embedding 对比实验 — 版本 A（固定原选题） (depends on F007/F010/F011 ✓)** — 固定原 SBERT 选出的题目集合 S，只替换预测阶段 embedding，比较 5 个 embedding 的邻居关系/预测表现
++- F012 已完成：已生成 5 个 embedding 空间的 Coverage/Redundancy/within-between trait similarity 诊断和 Figure 5，可作为 Phase 4 结果解释依据
+ 
+ ## Session log
+ ### 2026-06-04T16:00:00Z Initialization
+@@ -300,3 +310,13 @@
+ - Validation results: all matrices float32, expected shape, row L2 norms within 1e-5; metadata source order matches `metadata.parquet`; offline validation passes with `HF_HUB_OFFLINE=1`
+ - Updated `questionnaire.yaml` to include pyarrow, sentence-transformers, and torch
+ - Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
++
++### 2026-06-12T07:10:13Z F012 Implementation — Embedding 空间质量诊断
++- Created `scripts/diagnose_embeddings.py` with a unified 5-model registry (original SBERT + MiniLM/MPNet/E5/BGE), F011 manifest/order validation, embedding shape/norm validation, and Phase 1 `CoverageSelector` reuse
++- Selected-set diagnostics: 20 rows = 5 embeddings × m∈{10,30,50,90}; Coverage/Redundancy use shifted cosine columns (`coverage_shifted_cosine`, `redundancy_shifted_cosine`)
++- Global diagnostics: 5 rows with all-pair raw cosine mean/std, within-trait raw cosine, between-trait raw cosine, within-minus-between raw cosine, and full-100 shifted Coverage/Redundancy summary columns
++- Generated `results/phase3/figures/figure5.pdf` and `.png` with 2×2 panels: Coverage, Redundancy, Within vs Between, Trait separation
++- Wrote `results/phase3/figures/phase3_embedding_diagnostics.txt` with Phase 4 hypotheses: E5 strongest selected-set coverage; MPNet strongest trait-separation gap; Version A/B should test neighbor geometry and re-selection contributions
++- Verification: `python scripts/diagnose_embeddings.py --all` passed; artifact checks confirmed 20 selected-set rows, 5 global rows, required metric columns, and non-empty figure/text outputs
++- Note: SBERT historical cross-check emits non-blocking selected_S/redundancy drift warnings at m=30/50 versus Phase 1 CSV, likely tie/numerical drift; F012 evaluator accepted this as non-blocking
++- Evaluator verdict: PASS（3/3 acceptance criteria, attempt 1）

@@ -1,0 +1,6 @@
+PASS artifact checks
+selected rows: 20
+global rows: 5
+summary rows: 5
+models: sbert_original, minilm_l6_v2, mpnet_base_v2, e5_base_v2, bge_base_en_v15
+m values: [10, 30, 50, 90]

@@ -1,0 +1,44 @@
+{
+  "featureId": "F012",
+  "verdict": "PASS",
+  "criteria": [
+    {
+      "criterionId": "AC001",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase3/embedding_diagnostics_selected_sets.csv",
+        "/workspace/questionnaire-embeddings/results/phase3/embedding_diagnostics_global_space.csv",
+        "/workspace/.claude/long-running/evidence/F012/test-output.txt",
+        "/workspace/.claude/long-running/evidence/F012/artifact-checks.txt",
+        "/workspace/questionnaire-embeddings/scripts/diagnose_embeddings.py"
+      ],
+      "notes": "Concrete outputs exist for all 5 models. selected_sets CSV has 20 rows = 5 embeddings × m∈{10,30,50,90} with coverage_shifted_cosine and redundancy_shifted_cosine. global_space CSV has 5 rows with within_trait_raw_cosine and between_trait_raw_cosine for every model."
+    },
+    {
+      "criterionId": "AC002",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase3/figures/figure5.png",
+        "/workspace/questionnaire-embeddings/results/phase3/figures/figure5.pdf",
+        "/workspace/questionnaire-embeddings/scripts/diagnose_embeddings.py",
+        "/workspace/.claude/long-running/evidence/F012/test-output.txt"
+      ],
+      "notes": "Figure 5 is present in both PNG and PDF and uses a 2×2 multi-panel layout for Coverage, Redundancy, Within vs Between trait similarity, and Trait separation."
+    },
+    {
+      "criterionId": "AC003",
+      "status": "pass",
+      "evidence": [
+        "/workspace/questionnaire-embeddings/results/phase3/figures/phase3_embedding_diagnostics.txt",
+        "/workspace/questionnaire-embeddings/results/phase3/embedding_diagnostics_summary.csv",
+        "/workspace/.claude/long-running/evidence/F012/test-output.txt"
+      ],
+      "notes": "The diagnostic text artifact provides explicit Phase 4 hypotheses: E5-base-v2 as strongest on selected-set coverage, MPNet-base-v2 as strongest on within-minus-between trait separation, and separate Version A/B hypotheses."
+    }
+  ],
+  "requiredFixes": [],
+  "riskNotes": [
+    "test-output.txt reports non-blocking SBERT cross-check drift versus historical Phase 1 selected sets at m=30 and m=50. The feature meets acceptance criteria, but exact historical comparisons should account for this if later phases require byte-for-byte reuse of older selected sets.",
+    "The explanatory artifact frames conclusions as hypotheses only; predictive validation remains for Phase 4."
+  ]
+}

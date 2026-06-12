@@ -1,0 +1,114 @@
+[OK] Loaded canonical item metadata: 100 items, traits={'O': 20, 'A': 20, 'E': 20, 'C': 20, 'N': 20}
+[OK] F011 manifest source order matches metadata.parquet
+
+----------------------------------------------------------------------
+Diagnosing SBERT (original) (sbert_original)
+----------------------------------------------------------------------
+[OK] Loaded SBERT (original): shape=(100, 1024), max norm error before copy-normalization=7.16e-07
+
+----------------------------------------------------------------------
+Diagnosing MiniLM-L6-v2 (minilm_l6_v2)
+----------------------------------------------------------------------
+[OK] Loaded MiniLM-L6-v2: shape=(100, 384), max norm error before copy-normalization=8.44e-08
+
+----------------------------------------------------------------------
+Diagnosing MPNet-base-v2 (mpnet_base_v2)
+----------------------------------------------------------------------
+[OK] Loaded MPNet-base-v2: shape=(100, 768), max norm error before copy-normalization=1.03e-07
+
+----------------------------------------------------------------------
+Diagnosing E5-base-v2 (e5_base_v2)
+----------------------------------------------------------------------
+[OK] Loaded E5-base-v2: shape=(100, 768), max norm error before copy-normalization=8.65e-08
+
+----------------------------------------------------------------------
+Diagnosing BGE-base-en-v1.5 (bge_base_en_v15)
+----------------------------------------------------------------------
+[OK] Loaded BGE-base-en-v1.5: shape=(100, 768), max norm error before copy-normalization=8.80e-08
+[WARN] SBERT selected_S differs from Phase 1 at m=30; current-only=[8], phase1-only=[31]. Continuing because selected-set ties/numerical drift can change item IDs.
+[WARN] SBERT redundancy differs from Phase 1 at m=30: current=0.617722, phase1_mean=0.616400
+[WARN] SBERT selected_S differs from Phase 1 at m=50; current-only=[44, 52], phase1-only=[72, 84]. Continuing because selected-set ties/numerical drift can change item IDs.
+[WARN] SBERT redundancy differs from Phase 1 at m=50: current=0.626265, phase1_mean=0.626562
+[OK] SBERT Phase 1 cross-check completed; warnings above indicate non-blocking drift
+
+[SAVE] Diagnostic CSVs
+  /workspace/questionnaire-embeddings/results/phase3/embedding_diagnostics_global_space.csv
+  /workspace/questionnaire-embeddings/results/phase3/embedding_diagnostics_selected_sets.csv
+  /workspace/questionnaire-embeddings/results/phase3/embedding_diagnostics_summary.csv
+
+--------------------------------------------------
+Figure 5: Embedding Space Diagnostics
+--------------------------------------------------
+  Saved: /workspace/questionnaire-embeddings/results/phase3/figures/figure5.pdf
+  Saved: /workspace/questionnaire-embeddings/results/phase3/figures/figure5.png
+
+======================================================================
+Phase 3 Embedding Diagnostics Summary
+======================================================================
+======================================================================
+Phase 3: Embedding Space Diagnostics — Phase 4 Hypotheses
+======================================================================
+
+Metric scales:
+  - coverage_shifted_cosine and redundancy_shifted_cosine use sim+ = (raw cosine + 1) / 2.
+  - allpair/within/between trait metrics use raw cosine and exclude diagonal self-pairs.
+  - Coverage/Redundancy curves use Coverage-selected S at m = 10, 30, 50, 90 only.
+  - Full-100/global diagnostics are reported here and in the global-space CSV, not as Panel A/B curve points.
+
+Full-100 shifted-cosine diagnostics (not plotted as selected-set curve points):
+  SBERT (original)  : full100_coverage_shifted_cosine=1.0000, full100_redundancy_shifted_cosine=0.6294
+  MiniLM-L6-v2      : full100_coverage_shifted_cosine=1.0000, full100_redundancy_shifted_cosine=0.5977
+  MPNet-base-v2     : full100_coverage_shifted_cosine=1.0000, full100_redundancy_shifted_cosine=0.5980
+  E5-base-v2        : full100_coverage_shifted_cosine=1.0000, full100_redundancy_shifted_cosine=0.8839
+  BGE-base-en-v1.5  : full100_coverage_shifted_cosine=1.0000, full100_redundancy_shifted_cosine=0.7766
+
+Best selected-set coverage by m:
+  m= 10: E5-base-v2         coverage_shifted_cosine=0.9314, redundancy_shifted_cosine=0.8880
+  m= 30: E5-base-v2         coverage_shifted_cosine=0.9549, redundancy_shifted_cosine=0.8810
+  m= 50: E5-base-v2         coverage_shifted_cosine=0.9716, redundancy_shifted_cosine=0.8793
+  m= 90: E5-base-v2         coverage_shifted_cosine=0.9963, redundancy_shifted_cosine=0.8835
+
+Lowest selected-set redundancy by m:
+  m= 10: MiniLM-L6-v2       redundancy_shifted_cosine=0.5936, coverage_shifted_cosine=0.7503
+  m= 30: MPNet-base-v2      redundancy_shifted_cosine=0.5961, coverage_shifted_cosine=0.8436
+  m= 50: MiniLM-L6-v2       redundancy_shifted_cosine=0.5916, coverage_shifted_cosine=0.8968
+  m= 90: MiniLM-L6-v2       redundancy_shifted_cosine=0.5982, coverage_shifted_cosine=0.9878
+
+Overall ranking by mean selected-set coverage (m=10,30,50,90):
+  1. E5-base-v2        : 0.9635
+  2. BGE-base-en-v1.5  : 0.9310
+  3. SBERT (original)  : 0.9047
+  4. MPNet-base-v2     : 0.8742
+  5. MiniLM-L6-v2      : 0.8679
+
+Global trait-structure ranking by within-minus-between raw cosine:
+  1. MPNet-base-v2     : gap=+0.1182 (within=0.2916, between=0.1734, all-pair mean=0.1961)
+  2. SBERT (original)  : gap=+0.0937 (within=0.3346, between=0.2409, all-pair mean=0.2589)
+  3. MiniLM-L6-v2      : gap=+0.0929 (within=0.2705, between=0.1776, all-pair mean=0.1954)
+  4. BGE-base-en-v1.5  : gap=+0.0619 (within=0.6032, between=0.5412, all-pair mean=0.5531)
+  5. E5-base-v2        : gap=+0.0293 (within=0.7914, between=0.7621, all-pair mean=0.7677)
+
+RECOMMENDATION / PHASE 4 HYPOTHESES:
+  Coverage diagnostic: E5-base-v2 has the highest average selected-set
+  coverage across the administered-item ratios, suggesting stronger semantic
+  coverage when each embedding is allowed to choose its own Coverage set S.
+  Trait-structure diagnostic: MPNet-base-v2 has the largest
+  within-minus-between raw cosine gap, suggesting the clearest Big Five
+  clustering signal in the embedding space.
+
+  These are explanatory hypotheses, not final predictive-performance claims.
+  Phase 4 Version A should test whether improved neighbor geometry helps when
+  S is fixed; Phase 4 Version B should test whether improved Coverage selection
+  and trait separation improve the full selection + prediction pipeline.
+
+======================================================================
+
+[SAVE] /workspace/questionnaire-embeddings/results/phase3/figures/phase3_embedding_diagnostics.txt
+
+======================================================================
+F012 diagnostics complete
+======================================================================
+Global-space rows: 5
+Selected-set rows: 20
+Figure 5: /workspace/questionnaire-embeddings/results/phase3/figures/figure5.pdf
+results/phase3/figures/figure5.pdf

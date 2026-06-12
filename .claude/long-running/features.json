@@ -876,37 +876,56 @@
         {
           "id": "AC001",
           "text": "所有 5 个 embedding 模型的四项诊断指标均已计算",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase3/embedding_diagnostics_selected_sets.csv (20 rows: 5 embeddings × m=10/30/50/90)",
+            "questionnaire-embeddings/results/phase3/embedding_diagnostics_global_space.csv (5 rows with raw cosine within/between metrics)",
+            ".claude/long-running/evidence/F012/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC002",
           "text": "Figure 5 清楚展示各模型在语义空间结构上的差异",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase3/figures/figure5.pdf",
+            "questionnaire-embeddings/results/phase3/figures/figure5.png",
+            ".claude/long-running/evidence/F012/test-output.txt"
+          ]
         },
         {
           "id": "AC003",
           "text": "诊断结果能够为 Phase 4 的性能差异提供解释假设",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/phase3/figures/phase3_embedding_diagnostics.txt",
+            "questionnaire-embeddings/results/phase3/embedding_diagnostics_summary.csv",
+            ".claude/long-running/evidence/F012/evaluator-report.json"
+          ]
         }
       ],
       "testPlan": [
         "python scripts/diagnose_embeddings.py --all",
         "ls results/phase3/figures/figure5.pdf"
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F012",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "python scripts/diagnose_embeddings.py --all",
+        "testOutputFile": ".claude/long-running/evidence/F012/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F012/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-12T06:33:52Z",
+          "status": "completed",
+          "completedAt": "2026-06-12T07:10:13Z"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-12T07:10:13Z",
+      "completedAt": "2026-06-12T07:10:13Z"
     },
     {
       "id": "F013",

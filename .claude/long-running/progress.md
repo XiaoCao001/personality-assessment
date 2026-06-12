@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011 完成，Phase 3-4 待做 (F012–F015)
-- Last updated: 2026-06-12T06:20:00Z
-- Completed features: 12 / 16
+- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 待做 (F013–F015)
+- Last updated: 2026-06-12T07:10:13Z
+- Completed features: 13 / 16
 - Active feature: none
 
 ## Completed work
@@ -119,6 +119,16 @@
 - Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
 - Evidence: evaluator-report.json, generation-output.txt, test-output.txt, offline-validate-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log
 
+### F012 — Phase 3: Embedding 空间质量诊断 (completed 2026-06-12T07:10:13Z)
+- Created `scripts/diagnose_embeddings.py` — standalone Phase 3 diagnostics script for original SBERT + MiniLM/MPNet/E5/BGE embeddings
+- 计算 selected-set diagnostics：每个 embedding 用 CoverageSelector 重新选 S，m∈{10,30,50,90}，输出 `coverage_shifted_cosine` 与 `redundancy_shifted_cosine`（sim+ = (cos+1)/2）
+- 计算 full-space/global diagnostics：all-pair raw cosine mean/std、within-trait raw cosine、between-trait raw cosine、within-minus-between raw cosine，并额外记录 full-100 Coverage/Redundancy（不作为 Figure 5 曲线点）
+- Generated Figure 5（2×2 panel）：Coverage curves、Redundancy curves、Within vs Between raw cosine、Trait separation gap
+- 输出：`results/phase3/embedding_diagnostics_{selected_sets,global_space,summary}.csv`，`results/phase3/figures/figure5.{pdf,png}`，`phase3_embedding_diagnostics.txt`
+- 关键诊断假设：E5-base-v2 selected-set coverage 最高；MPNet-base-v2 within-minus-between raw cosine gap 最大；Phase 4 Version A/B 需验证这些空间结构差异是否转化为预测收益
+- Evaluator verdict: PASS — all 3 acceptance criteria met（attempt 1）
+- Evidence: evaluator-report.json, test-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log, git-diff.patch
+
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
 2. **Coverage+Div** (F005): 0.2620
@@ -144,8 +154,8 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F012] Phase 3: Embedding 空间质量诊断 (depends on F011 ✓)** — 对原 SBERT + 新 MiniLM/MPNet/E5/BGE embedding 计算 Coverage/Redundancy/within-between trait similarity 并生成 Figure 5
-- F011 已完成：四个新 embedding 矩阵与 combined metadata manifest 已生成并通过 evaluator PASS
+- **[F013] Phase 4: Embedding 对比实验 — 版本 A（固定原选题） (depends on F007/F010/F011 ✓)** — 固定原 SBERT 选出的题目集合 S，只替换预测阶段 embedding，比较 5 个 embedding 的邻居关系/预测表现
+- F012 已完成：已生成 5 个 embedding 空间的 Coverage/Redundancy/within-between trait similarity 诊断和 Figure 5，可作为 Phase 4 结果解释依据
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization
@@ -300,3 +310,13 @@
 - Validation results: all matrices float32, expected shape, row L2 norms within 1e-5; metadata source order matches `metadata.parquet`; offline validation passes with `HF_HUB_OFFLINE=1`
 - Updated `questionnaire.yaml` to include pyarrow, sentence-transformers, and torch
 - Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
+
+### 2026-06-12T07:10:13Z F012 Implementation — Embedding 空间质量诊断
+- Created `scripts/diagnose_embeddings.py` with a unified 5-model registry (original SBERT + MiniLM/MPNet/E5/BGE), F011 manifest/order validation, embedding shape/norm validation, and Phase 1 `CoverageSelector` reuse
+- Selected-set diagnostics: 20 rows = 5 embeddings × m∈{10,30,50,90}; Coverage/Redundancy use shifted cosine columns (`coverage_shifted_cosine`, `redundancy_shifted_cosine`)
+- Global diagnostics: 5 rows with all-pair raw cosine mean/std, within-trait raw cosine, between-trait raw cosine, within-minus-between raw cosine, and full-100 shifted Coverage/Redundancy summary columns
+- Generated `results/phase3/figures/figure5.pdf` and `.png` with 2×2 panels: Coverage, Redundancy, Within vs Between, Trait separation
+- Wrote `results/phase3/figures/phase3_embedding_diagnostics.txt` with Phase 4 hypotheses: E5 strongest selected-set coverage; MPNet strongest trait-separation gap; Version A/B should test neighbor geometry and re-selection contributions
+- Verification: `python scripts/diagnose_embeddings.py --all` passed; artifact checks confirmed 20 selected-set rows, 5 global rows, required metric columns, and non-empty figure/text outputs
+- Note: SBERT historical cross-check emits non-blocking selected_S/redundancy drift warnings at m=30/50 versus Phase 1 CSV, likely tie/numerical drift; F012 evaluator accepted this as non-blocking
+- Evaluator verdict: PASS（3/3 acceptance criteria, attempt 1）
