@@ -106,28 +106,28 @@
 - Outputs: results/phase2/softmax_kernel_{detail,aggregated,summary,sensitivity}.csv
 - **建议：Phase 4 所有比例使用 SoftmaxKNN（低题量 K=7, τ=0.1；高题量 K=3, τ≈0.035）**
 
-### F011 — Phase 3: 新 Embedding 模型生成 (completed 2026-06-12T06:20:00Z)
-- 实现了 `scripts/generate_embeddings.py` — 统一的 SentenceTransformer embedding 生成与纯本地验证 CLI
-- 生成了 4 个 L2-normalized embedding 矩阵，保存到 `embeddings/`：
-  - `neo_minilm_l6_v2.npy` — all-MiniLM-L6-v2，shape=(100,384)
-  - `neo_mpnet_base_v2.npy` — all-mpnet-base-v2，shape=(100,768)
-  - `neo_e5_base_v2.npy` — intfloat/e5-base-v2，shape=(100,768)，使用 `query: ` prefix
-  - `neo_bge_base_en_v15.npy` — BAAI/bge-base-en-v1.5，shape=(100,768)
-- 新增 combined manifest：`embeddings/neo_embeddings_metadata.json`，记录模型名、维度、pooling、包版本、运行设备、文件 SHA256，以及 canonical item id/text 顺序 provenance hash
-- `--validate` 为纯本地验证：不加载 SentenceTransformer、不加载模型、不触发 Hugging Face 下载；离线验证（`HF_HUB_OFFLINE=1`）通过
-- 更新 `questionnaire.yaml`，新增 F011 依赖：pyarrow、sentence-transformers、torch
-- Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
-- Evidence: evaluator-report.json, generation-output.txt, test-output.txt, offline-validate-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log
+### F011 — 第三阶段：新嵌入模型生成（2026-06-12T06:20:00Z 完成）
+- 实现了 `scripts/generate_embeddings.py`：统一的新嵌入生成脚本，支持模型清单、自动选择运行设备（优先使用 Tesla T4 上的 CUDA，必要时回退到 CPU）、指定模型、覆盖已有文件，以及纯本地校验模式。
+- 基于 `data/processed/metadata.parquet` 中固定的 100 道 NEO-PI-R 题项顺序，生成并校验了 4 个新嵌入矩阵，均已逐行 L2 归一化：
+  - `neo_minilm_l6_v2.npy`：all-MiniLM-L6-v2，矩阵形状为 (100,384)
+  - `neo_mpnet_base_v2.npy`：all-mpnet-base-v2，矩阵形状为 (100,768)
+  - `neo_e5_base_v2.npy`：intfloat/e5-base-v2，矩阵形状为 (100,768)，题项文本使用 `query: ` 前缀
+  - `neo_bge_base_en_v15.npy`：BAAI/bge-base-en-v1.5，矩阵形状为 (100,768)
+- 新增 `embeddings/neo_embeddings_metadata.json` 综合元数据文件，记录模型名称、维度、池化方式、软件包版本、运行设备、文件 SHA256，以及题项编号和题项文本顺序的来源校验哈希。
+- `--validate` 校验模式不加载 SentenceTransformer、不加载模型、不触发 Hugging Face 下载；离线环境校验（`HF_HUB_OFFLINE=1`）通过。
+- 更新 `questionnaire.yaml`，加入 F011 所需依赖：pyarrow、sentence-transformers、torch。
+- 独立验收结论：通过；4 条验收标准全部满足（第 1 次尝试）。
+- 证据文件：evaluator-report.json、generation-output.txt、test-output.txt、offline-validate-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log。
 
-### F012 — Phase 3: Embedding 空间质量诊断 (completed 2026-06-12T07:10:13Z)
-- Created `scripts/diagnose_embeddings.py` — standalone Phase 3 diagnostics script for original SBERT + MiniLM/MPNet/E5/BGE embeddings
-- 计算 selected-set diagnostics：每个 embedding 用 CoverageSelector 重新选 S，m∈{10,30,50,90}，输出 `coverage_shifted_cosine` 与 `redundancy_shifted_cosine`（sim+ = (cos+1)/2）
-- 计算 full-space/global diagnostics：all-pair raw cosine mean/std、within-trait raw cosine、between-trait raw cosine、within-minus-between raw cosine，并额外记录 full-100 Coverage/Redundancy（不作为 Figure 5 曲线点）
-- Generated Figure 5（2×2 panel）：Coverage curves、Redundancy curves、Within vs Between raw cosine、Trait separation gap
-- 输出：`results/phase3/embedding_diagnostics_{selected_sets,global_space,summary}.csv`，`results/phase3/figures/figure5.{pdf,png}`，`phase3_embedding_diagnostics.txt`
-- 关键诊断假设：E5-base-v2 selected-set coverage 最高；MPNet-base-v2 within-minus-between raw cosine gap 最大；Phase 4 Version A/B 需验证这些空间结构差异是否转化为预测收益
-- Evaluator verdict: PASS — all 3 acceptance criteria met（attempt 1）
-- Evidence: evaluator-report.json, test-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log, git-diff.patch
+### F012 — 第三阶段：嵌入空间质量诊断（2026-06-12T07:10:13Z 完成）
+- 实现了 `scripts/diagnose_embeddings.py`：独立的第三阶段诊断脚本，用统一的 5 模型清单比较原始 SBERT、MiniLM、MPNet、E5 和 BGE 嵌入空间。
+- 对每个嵌入模型分别使用 `CoverageSelector` 重新选择题项集合 S，在 m∈{10,30,50,90} 下计算已选题集合诊断指标：`coverage_shifted_cosine` 和 `redundancy_shifted_cosine`，相似度尺度为 sim+ = (cos+1)/2。
+- 对完整 100 题空间计算全局诊断指标：全部题项对的原始余弦均值/标准差、同维度题项原始余弦、跨维度题项原始余弦、同维度减跨维度的原始余弦差值，并额外记录完整 100 题的 Coverage/Redundancy；完整 100 题指标只进入表格和文字总结，不作为 Figure 5 的曲线点。
+- 生成 Figure 5（2×2 面板）：Coverage 曲线、Redundancy 曲线、同维度与跨维度原始余弦对比、维度分离差值。
+- 输出文件：`results/phase3/embedding_diagnostics_{selected_sets,global_space,summary}.csv`、`results/phase3/figures/figure5.{pdf,png}`、`results/phase3/figures/phase3_embedding_diagnostics.txt`。
+- 关键诊断假设：E5-base-v2 在已选题集合 Coverage 上最高；MPNet-base-v2 的同维度减跨维度原始余弦差值最大；第四阶段版本 A/B 需要进一步验证这些空间结构差异是否能转化为预测性能收益。
+- 独立验收结论：通过；3 条验收标准全部满足（第 1 次尝试）。
+- 证据文件：evaluator-report.json、test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
 
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
@@ -297,26 +297,26 @@
 - Phase 2 predictor ranking 新增 UniformKNN K=5 (原文 baseline) 行及说明注释
 - Evaluator verdict: pending
 
-### 2026-06-12T06:20:00Z F011 Implementation — 新 Embedding 模型生成
-- Created `scripts/generate_embeddings.py` with model registry, auto device selection (`cuda` on Tesla T4, CPU fallback), `--models`, `--overwrite`, and pure-local `--validate` mode
-- Generated and validated MiniLM/MPNet/E5/BGE embeddings for the canonical 100 NEO-PI-R items from `data/processed/metadata.parquet`
-- Output artifacts:
-  - `embeddings/neo_minilm_l6_v2.npy` (100×384)
-  - `embeddings/neo_mpnet_base_v2.npy` (100×768)
-  - `embeddings/neo_e5_base_v2.npy` (100×768, E5 `query: ` prefix)
-  - `embeddings/neo_bge_base_en_v15.npy` (100×768)
+### 2026-06-12T06:20:00Z F011 实现 — 新嵌入模型生成
+- 新增 `scripts/generate_embeddings.py`，提供统一的新嵌入生成流程：模型清单管理、自动选择运行设备（Tesla T4 上使用 CUDA，必要时回退 CPU）、按需指定模型、覆盖已有输出，以及纯本地校验模式。
+- 使用 `data/processed/metadata.parquet` 中固定顺序的 100 道 NEO-PI-R 题项，生成并校验 MiniLM、MPNet、E5、BGE 四个新嵌入矩阵。
+- 输出产物：
+  - `embeddings/neo_minilm_l6_v2.npy`（100×384）
+  - `embeddings/neo_mpnet_base_v2.npy`（100×768）
+  - `embeddings/neo_e5_base_v2.npy`（100×768，E5 使用 `query: ` 前缀）
+  - `embeddings/neo_bge_base_en_v15.npy`（100×768）
   - `embeddings/neo_embeddings_metadata.json`
-- Metadata includes stable hashes for ordered `question_id`, ordered `item_text`, paired canonical item id/text provenance, model metadata, package versions, device info, and file SHA256 values
-- Validation results: all matrices float32, expected shape, row L2 norms within 1e-5; metadata source order matches `metadata.parquet`; offline validation passes with `HF_HUB_OFFLINE=1`
-- Updated `questionnaire.yaml` to include pyarrow, sentence-transformers, and torch
-- Evaluator verdict: PASS（4/4 acceptance criteria, attempt 1）
+- 元数据文件记录题项编号顺序、题项文本顺序、题项编号/文本配对顺序的稳定哈希，同时记录模型信息、软件包版本、运行设备和输出文件 SHA256。
+- 校验结果：所有矩阵均为 float32、形状符合预期、逐行 L2 范数在 1e-5 容差内；元数据来源顺序与 `metadata.parquet` 一致；离线校验（`HF_HUB_OFFLINE=1`）通过。
+- 更新 `questionnaire.yaml`，加入 pyarrow、sentence-transformers、torch。
+- 独立验收结论：通过（4/4 条验收标准，第 1 次尝试）。
 
-### 2026-06-12T07:10:13Z F012 Implementation — Embedding 空间质量诊断
-- Created `scripts/diagnose_embeddings.py` with a unified 5-model registry (original SBERT + MiniLM/MPNet/E5/BGE), F011 manifest/order validation, embedding shape/norm validation, and Phase 1 `CoverageSelector` reuse
-- Selected-set diagnostics: 20 rows = 5 embeddings × m∈{10,30,50,90}; Coverage/Redundancy use shifted cosine columns (`coverage_shifted_cosine`, `redundancy_shifted_cosine`)
-- Global diagnostics: 5 rows with all-pair raw cosine mean/std, within-trait raw cosine, between-trait raw cosine, within-minus-between raw cosine, and full-100 shifted Coverage/Redundancy summary columns
-- Generated `results/phase3/figures/figure5.pdf` and `.png` with 2×2 panels: Coverage, Redundancy, Within vs Between, Trait separation
-- Wrote `results/phase3/figures/phase3_embedding_diagnostics.txt` with Phase 4 hypotheses: E5 strongest selected-set coverage; MPNet strongest trait-separation gap; Version A/B should test neighbor geometry and re-selection contributions
-- Verification: `python scripts/diagnose_embeddings.py --all` passed; artifact checks confirmed 20 selected-set rows, 5 global rows, required metric columns, and non-empty figure/text outputs
-- Note: SBERT historical cross-check emits non-blocking selected_S/redundancy drift warnings at m=30/50 versus Phase 1 CSV, likely tie/numerical drift; F012 evaluator accepted this as non-blocking
-- Evaluator verdict: PASS（3/3 acceptance criteria, attempt 1）
+### 2026-06-12T07:10:13Z F012 实现 — 嵌入空间质量诊断
+- 新增 `scripts/diagnose_embeddings.py`，用统一的 5 模型清单比较原始 SBERT、MiniLM、MPNet、E5、BGE，并校验 F011 元数据顺序、嵌入矩阵形状和 L2 范数。
+- 已选题集合诊断：共 20 行结果（5 个嵌入 × m∈{10,30,50,90}），Coverage/Redundancy 使用 shifted cosine 指标列：`coverage_shifted_cosine`、`redundancy_shifted_cosine`。
+- 全局空间诊断：共 5 行结果，包含全部题项对原始余弦均值/标准差、同维度题项原始余弦、跨维度题项原始余弦、同维度减跨维度原始余弦差值，以及完整 100 题的 shifted Coverage/Redundancy 汇总列。
+- 生成 `results/phase3/figures/figure5.pdf` 和 `.png`，采用 2×2 面板展示 Coverage、Redundancy、同维度/跨维度原始余弦、维度分离差值。
+- 写入 `results/phase3/figures/phase3_embedding_diagnostics.txt`，给出第四阶段解释假设：E5 的已选题 Coverage 最高；MPNet 的维度分离差值最大；版本 A/B 应分别检验邻居几何结构与重新选题贡献。
+- 验证：`python scripts/diagnose_embeddings.py --all` 通过；产物检查确认 20 行已选题集合结果、5 行全局结果、必需指标列和非空图表/文字输出均存在。
+- 说明：与第一阶段历史 CSV 对比时，SBERT 在 m=30/50 的 selected_S 和 Redundancy 有非阻塞轻微漂移，可能来自贪心选择并列项或数值差异；F012 独立验收确认该问题不影响本功能验收。
+- 独立验收结论：通过（3/3 条验收标准，第 1 次尝试）。
