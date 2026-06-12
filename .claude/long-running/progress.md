@@ -107,15 +107,15 @@
 - **建议：Phase 4 所有比例使用 SoftmaxKNN（低题量 K=7, τ=0.1；高题量 K=3, τ≈0.035）**
 
 ### F011 — Phase 3: 新 Embedding 模型生成 (completed 2026-06-12T06:20:00Z)
-- Created `scripts/generate_embeddings.py` — self-contained SentenceTransformer embedding generation + pure local validation CLI
-- Generated four L2-normalized matrices under `embeddings/`:
-  - `neo_minilm_l6_v2.npy` — all-MiniLM-L6-v2, shape (100,384)
-  - `neo_mpnet_base_v2.npy` — all-mpnet-base-v2, shape (100,768)
-  - `neo_e5_base_v2.npy` — intfloat/e5-base-v2, shape (100,768), with `query: ` prefix
-  - `neo_bge_base_en_v15.npy` — BAAI/bge-base-en-v1.5, shape (100,768)
-- Added combined manifest `embeddings/neo_embeddings_metadata.json` with model names, dimensions, pooling, package versions, device, file hashes, and canonical item id/text provenance hashes
-- `--validate` is pure local validation: no SentenceTransformer/model loading and no Hugging Face downloads; offline validation (`HF_HUB_OFFLINE=1`) passes
-- Updated `questionnaire.yaml` with F011 dependencies: pyarrow, sentence-transformers, torch
+- 实现了 `scripts/generate_embeddings.py` — 统一的 SentenceTransformer embedding 生成与纯本地验证 CLI
+- 生成了 4 个 L2-normalized embedding 矩阵，保存到 `embeddings/`：
+  - `neo_minilm_l6_v2.npy` — all-MiniLM-L6-v2，shape=(100,384)
+  - `neo_mpnet_base_v2.npy` — all-mpnet-base-v2，shape=(100,768)
+  - `neo_e5_base_v2.npy` — intfloat/e5-base-v2，shape=(100,768)，使用 `query: ` prefix
+  - `neo_bge_base_en_v15.npy` — BAAI/bge-base-en-v1.5，shape=(100,768)
+- 新增 combined manifest：`embeddings/neo_embeddings_metadata.json`，记录模型名、维度、pooling、包版本、运行设备、文件 SHA256，以及 canonical item id/text 顺序 provenance hash
+- `--validate` 为纯本地验证：不加载 SentenceTransformer、不加载模型、不触发 Hugging Face 下载；离线验证（`HF_HUB_OFFLINE=1`）通过
+- 更新 `questionnaire.yaml`，新增 F011 依赖：pyarrow、sentence-transformers、torch
 - Evaluator verdict: PASS — all 4 acceptance criteria met（attempt 1）
 - Evidence: evaluator-report.json, generation-output.txt, test-output.txt, offline-validate-output.txt, artifact-checks.txt, feature-dev-summary.md, commands.log
 
