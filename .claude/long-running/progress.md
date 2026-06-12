@@ -178,9 +178,10 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F014] Phase 4: 版本 B1/B2（重新选题） (depends on F013 ✓)** — B1/B2 分别对应固定超参数/重新调参；必须输出 S_new vs S_old Jaccard overlap，以及同一 embedding 下 B−A 的 Δ_selection。
 - **[F015] Phase 4: 最终综合报告** — 汇总 Phase 1–4 表格、图表、统计检验和 limitation。
+- F015 应重点整合 F013 A1/A2（固定 `S_old`）与 F014 B1/B2（重新选题 `S_new`）的 Phase 4 结果，明确区分 embedding 邻居几何贡献与重新选题贡献。
 - Phase 4 主指标预注册为 item-level Pearson r；关键次指标为 trait_r_mean、profile_r、MAE；主分析使用 continuous clip-only prediction，不 round；新 embedding vs SBERT 和 B−A 比较使用 paired bootstrap + Holm/BH 校正。
+- 若 F015 不增加跨问卷泛化实验，最终报告必须明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization
