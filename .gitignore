@@ -38,3 +38,8 @@ fix-dsclaude-nvm.sh
 # Local config and npm binaries
 .claude/settings.local.json
 .npm-global/
+
+# Locally installed document helper skills (not part of the harness)
+.claude/skills/docx/
+.claude/skills/pdf/
+.claude/skills/xlsx/

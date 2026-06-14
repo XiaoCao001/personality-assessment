@@ -46,6 +46,27 @@ The project uses text embeddings (Sentence-BERT, Word2Vec, LIWC) of personality 
 └── results/                      # Top-level results directory
 ```
 
+
+## ✅ Completed Extension Study and Final Report
+
+The long-running extension study is complete: all planned features **F001–F016** have been implemented, independently evaluated, and committed. The final integrated Phase 1–4 report is available in:
+
+- `questionnaire-embeddings/results/final_report/final_report.pdf` — canonical PDF deliverable
+- `questionnaire-embeddings/results/final_report/final_report.md` — reviewable Markdown source
+- `questionnaire-embeddings/results/final_report/final_summary.csv` — normalized Phase 1–4 summary table
+- `questionnaire-embeddings/results/final_report/statistical_summary.csv` — consolidated statistical tests
+- `questionnaire-embeddings/results/final_report/best_pipeline_table.csv` — recommended pipeline by administered-item ratio
+
+To regenerate and smoke-test the final report from existing accepted artifacts:
+
+```bash
+cd questionnaire-embeddings
+python scripts/generate_final_report.py
+python scripts/test_generate_final_report.py
+```
+
+The F015 final report is an aggregation/synthesis layer: it consumes accepted Phase 1–4 artifacts and does **not** rerun the expensive experiments. It explicitly notes that conclusions are primarily based on NEO-PI-R and that cross-questionnaire generalization remains future work.
+
 ## 🚀 Getting Started
 
 ### Environment Setup
@@ -78,6 +99,8 @@ Additional utilities:
 - **`target_selection.ipynb`** — Select targets for human rater studies
 - **`evaluate_phase1.py`** — Phase 1 statistical evaluation
 - **`evaluate_phase2.py`** — Phase 2 predictor ablation evaluation
+- **`generate_final_report.py`** — F015 final integrated Phase 1–4 report generator
+- **`test_generate_final_report.py`** — standalone smoke test for the final report package
 
 ## 📊 Datasets
 
