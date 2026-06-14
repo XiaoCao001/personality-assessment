@@ -1,0 +1,58 @@
+# Final Report: Questionnaire Embeddings Phase 1–4 Integrated Analysis
+
+## Scope and deliverables
+This F015 report aggregates existing accepted artifacts only. It does not rerun Phase 1–4 experiments, regenerate embeddings, or re-estimate bootstrap tests.
+Primary metric: **item-level Pearson r**. Key secondary metrics: **trait_r_mean, profile_r, MAE**.
+
+## Executive summary
+- Phase 1 selected **Coverage** as the strongest item-selection strategy in the observed Table 1 cells (best cell m=90, item_r=0.4842).
+- Phase 2 selected **SoftmaxKNN** as the recommended predictor family over Coverage-selected items.
+- Phase 3 diagnostics suggested **E5-base-v2** for highest selected-set coverage and **MPNet-base-v2** for strongest within-minus-between trait separation.
+- Phase 4 best observed pipeline cell was **A2_tuned / BGE-base-en-v1.5** at m=90, item_r=0.6167.
+- Largest positive B−A re-selection contribution was **B1_fixed minus A1_fixed** for MPNet-base-v2 at m=10, Δitem_r=0.0622.
+
+## Phase 1: item-selection contribution
+Phase 1 compared random, balanced-random, semantic Coverage, Coverage+Diversity, TraitPredictiveness, and Hybrid strategies. The final report carries forward Coverage as the preferred semantic selection strategy and treats Phase 1 Table 1/Table 2 as the source of item-level and trait-level evidence.
+
+## Phase 2: prediction-algorithm contribution
+Phase 2 compared Tuned UniformKNN, CosineWeightedKNN, SoftmaxKNN, KernelSmoothing, and the cross-phase original-paper UniformKNN K=5 baseline. The final Phase 4 pipeline uses SoftmaxKNN because it gave the best overall item-level Pearson r in Phase 2 and supports both fixed Phase 2 hyperparameters and train-inner tuning.
+
+## Phase 3: embedding-space diagnostics
+Phase 3 compared SBERT original, MiniLM, MPNet, E5, and BGE using Coverage/Redundancy and raw-cosine trait-structure diagnostics. These diagnostics are explanatory hypotheses, not predictive-performance claims; Phase 4 is the predictive test.
+
+## Phase 4: A1/A2/B1/B2 attribution
+- **A1_fixed** = fixed historical SBERT Coverage `S_old` plus fixed Phase 2 SoftmaxKNN hyperparameters. This isolates embedding-neighbor geometry under a fixed administered item set.
+- **A2_tuned** = fixed `S_old` plus embedding-specific train-inner K/τ tuning. This estimates geometry contribution after calibration without changing item selection.
+- **B1_fixed** = embedding-specific Coverage re-selection `S_new` plus fixed Phase 2 hyperparameters. This adds re-selection contribution while keeping hyperparameters fixed.
+- **B2_tuned** = embedding-specific `S_new` plus embedding-specific train-inner K/τ tuning. This is the full re-selected+tuned Phase 4 pipeline.
+The B−A comparisons are paired within the same embedding and tuning regime, so B1−A1 and B2−A2 quantify selection contribution beyond the corresponding fixed-`S_old` baseline.
+
+## Best pipeline by administered-item ratio
+| m | version | embedding | selection | predictor | K | tau | item_r | trait_r_mean | profile_r | MAE |
+|---:|---|---|---|---|---:|---:|---:|---:|---:|---:|
+| 10 | B1_fixed | MPNet-base-v2 | S_new_embedding_specific_reselected | SoftmaxKNN | 7 | 0.1000 | 0.3507 | 0.6776 | 0.7715 | 0.9836 |
+| 30 | A2_tuned | MPNet-base-v2 | S_old_fixed | SoftmaxKNN | 3 | 0.1000 | 0.4474 | 0.8884 | 0.9002 | 0.8961 |
+| 50 | A2_tuned | MPNet-base-v2 | S_old_fixed | SoftmaxKNN | 5 | 0.1000 | 0.4896 | 0.9452 | 0.9486 | 0.8442 |
+| 90 | A2_tuned | BGE-base-en-v1.5 | S_old_fixed | SoftmaxKNN | 3 | 0.1200 | 0.6167 | 0.9943 | 0.9943 | 0.6946 |
+
+## Statistical inference
+The primary Phase 4 statistical comparisons use paired bootstrap over participants while preserving outer-fold pairing. New embeddings are compared against `sbert_original`; B−A selection-contribution tests compare B1 vs A1 and B2 vs A2 within the same embedding and ratio. Raw p-values plus Holm and Benjamini-Hochberg corrected p-values are preserved in `statistical_summary.csv`.
+
+## Reproducibility notes
+- Random state is fixed at 0 in upstream CV and selection code.
+- Outer folds are participant-level folds and are paired across Phase 4 A/B comparisons.
+- A2/B2 K and τ values are selected only on train-inner validation splits; test participants are held out for final evaluation.
+- Phase 4 primary predictions are continuous and clipped to [1,5] without rounding; rounded accuracy and rounded MAE are supplemental outputs only.
+- This report reads existing CSV/TXT/PNG artifacts and records source hashes in `report_manifest.json`.
+
+## Output inventory
+- `final_summary.csv`: normalized Phase 1–4 and recommended-pipeline rows.
+- `statistical_summary.csv`: normalized inferential tests from Phase 1, Phase 2, and Phase 4.
+- `best_pipeline_table.csv`: best observed Phase 4 pipeline by 10/30/50/90 administered items.
+- `figures/table5_phase4_integrated_synthesis.csv` (**Table 5**): A-vs-B synthesis table for Phase 4.
+- `figures/figure6_phase4_selection_vs_performance.pdf/png` (**Figure 6**): new integrated selection/performance synthesis figure.
+
+## Limitations
+Current conclusions are primarily based on NEO-PI-R; cross-questionnaire generalization remains to be tested in future work.
+No cross-questionnaire generalization experiment is added in F015; the report is an aggregation and synthesis of existing NEO-PI-R artifacts.
+

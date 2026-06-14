@@ -3,7 +3,7 @@
   "description": "基于原论文 questionnaire-embeddings 项目的改进研究：验证语义覆盖选题策略、加权 KNN 预测器、新 embedding 模型，并增加人格总分预测维度。主实验数据集为 NEO-PI-R（2,749 被试 × 100 题项 × Big Five 五维度）。",
   "version": "1.0.0",
   "createdAt": "2026-06-04T16:00:00Z",
-  "updatedAt": "2026-06-12T16:39:22Z",
+  "updatedAt": "2026-06-14T07:19:11Z",
   "features": [
     {
       "id": "F001",
@@ -1177,55 +1177,88 @@
         {
           "id": "AC001",
           "text": "最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/final_report/final_report.md",
+            "questionnaire-embeddings/scripts/generate_final_report.py",
+            ".claude/long-running/evidence/F015/evaluator-report.json"
+          ]
         },
         {
           "id": "AC002",
           "text": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/scripts/generate_final_report.py",
+            "questionnaire-embeddings/scripts/test_generate_final_report.py",
+            "questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv",
+            "questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf",
+            ".claude/long-running/evidence/F015/test-output.txt",
+            ".claude/long-running/evidence/F015/artifact-checks.txt"
+          ]
         },
         {
           "id": "AC003",
           "text": "最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/final_report/best_pipeline_table.csv",
+            "questionnaire-embeddings/results/final_report/final_summary.csv",
+            "questionnaire-embeddings/results/final_report/final_report.md"
+          ]
         },
         {
           "id": "AC004",
           "text": "统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/final_report/statistical_summary.csv",
+            "questionnaire-embeddings/results/final_report/final_report.md",
+            "questionnaire-embeddings/results/final_report/report_manifest.json"
+          ]
         },
         {
           "id": "AC005",
           "text": "可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/final_report/final_report.md",
+            "questionnaire-embeddings/results/final_report/report_manifest.json"
+          ]
         },
         {
           "id": "AC006",
           "text": "最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。",
-          "status": "unknown",
-          "evidence": []
+          "status": "pass",
+          "evidence": [
+            "questionnaire-embeddings/results/final_report/final_report.md",
+            "questionnaire-embeddings/results/final_report/report_manifest.json",
+            ".claude/long-running/evidence/F015/evaluator-report.json"
+          ]
         }
       ],
       "testPlan": [
         "python scripts/generate_final_report.py",
         "ls results/final_report/final_summary.csv results/final_report/final_report.pdf"
       ],
-      "status": "pending",
+      "status": "completed",
       "evidence": {
         "directory": ".claude/long-running/evidence/F015",
-        "testCommand": null,
-        "testOutputFile": null,
-        "evaluatorReport": null
+        "testCommand": "cd /workspace/questionnaire-embeddings && python3 scripts/generate_final_report.py && python3 scripts/test_generate_final_report.py",
+        "testOutputFile": ".claude/long-running/evidence/F015/test-output.txt",
+        "evaluatorReport": ".claude/long-running/evidence/F015/evaluator-report.json"
       },
-      "attempts": [],
+      "attempts": [
+        {
+          "attemptNumber": 1,
+          "startedAt": "2026-06-14T01:36:08Z",
+          "status": "completed",
+          "completedAt": "2026-06-14T07:19:11Z"
+        }
+      ],
       "createdAt": "2026-06-04T16:00:00Z",
-      "updatedAt": "2026-06-04T16:00:00Z",
-      "completedAt": null
+      "updatedAt": "2026-06-14T07:19:11Z",
+      "completedAt": "2026-06-14T07:19:11Z"
     },
     {
       "id": "F016",

@@ -1,0 +1,14 @@
+======================================================================
+F015 final report generated
+======================================================================
+[SAVE] final_summary: /workspace/questionnaire-embeddings/results/final_report_smoke/final_summary.csv
+[SAVE] statistical_summary: /workspace/questionnaire-embeddings/results/final_report_smoke/statistical_summary.csv
+[SAVE] best_pipeline_table: /workspace/questionnaire-embeddings/results/final_report_smoke/best_pipeline_table.csv
+[SAVE] phase4_integrated_synthesis: /workspace/questionnaire-embeddings/results/final_report_smoke/figures/table5_phase4_integrated_synthesis.csv
+[SAVE] figure6_pdf: /workspace/questionnaire-embeddings/results/final_report_smoke/figures/figure6_phase4_selection_vs_performance.pdf
+[SAVE] figure6_png: /workspace/questionnaire-embeddings/results/final_report_smoke/figures/figure6_phase4_selection_vs_performance.png
+[SAVE] final_report_md: /workspace/questionnaire-embeddings/results/final_report_smoke/final_report.md
+[SAVE] final_report_txt: /workspace/questionnaire-embeddings/results/final_report_smoke/final_report.txt
+[SAVE] final_report_pdf: /workspace/questionnaire-embeddings/results/final_report_smoke/final_report.pdf
+[SAVE] report_manifest: /workspace/questionnaire-embeddings/results/final_report_smoke/report_manifest.json
+F015 final-report smoke checks passed: /workspace/questionnaire-embeddings/results/final_report_smoke

@@ -1,0 +1,18 @@
+F015 artifact checks
+final_report.pdf: exists=True bytes=532472
+final_report.md: exists=True bytes=5329
+final_report.txt: exists=True bytes=5211
+final_summary.csv: exists=True bytes=52774
+statistical_summary.csv: exists=True bytes=41833
+best_pipeline_table.csv: exists=True bytes=1581
+report_manifest.json: exists=True bytes=6249
+figures/table5_phase4_integrated_synthesis.csv: exists=True bytes=19240
+figures/figure6_phase4_selection_vs_performance.pdf: exists=True bytes=29213
+figures/figure6_phase4_selection_vs_performance.png: exists=True bytes=205359
+final_summary phases: ['final', 'phase1', 'phase2', 'phase3', 'phase4']
+final_summary versions: ['A1_fixed', 'A2_tuned', 'B1_fixed', 'B2_tuned']
+best ratios: [10, 30, 50, 90]
+synthesis rows: 40 families: ['fixed_params', 'tuned_params']
+stat families: ['phase1_vs_random', 'phase2_predictor_ablation', 'phase4_selection_contribution', 'phase4_vs_sbert']
+manifest no_experiments_rerun: True
+manifest limitation_cross_questionnaire_not_run: True

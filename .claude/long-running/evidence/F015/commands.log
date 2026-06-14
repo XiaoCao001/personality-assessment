@@ -1,0 +1,4 @@
+# F015 verification commands
+python3 scripts/generate_final_report.py > /workspace/.claude/long-running/evidence/F015/generate-output.txt 2>&1
+cd /workspace/questionnaire-embeddings && python3 scripts/test_generate_final_report.py > /workspace/.claude/long-running/evidence/F015/test-output.txt 2>&1
+cd /workspace/questionnaire-embeddings && git diff HEAD > /workspace/.claude/long-running/evidence/F015/git-diff.patch

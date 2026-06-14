@@ -1,0 +1,180 @@
+{
+  "feature_id": "F015",
+  "generated_at": "deterministic_not_recorded",
+  "script_path": "scripts/generate_final_report.py",
+  "output_dir": "results/final_report",
+  "no_experiments_rerun": true,
+  "primary_metric": "item-level Pearson r",
+  "secondary_metrics": "trait_r_mean, profile_r, MAE",
+  "limitation_cross_questionnaire_not_run": true,
+  "source_artifacts": [
+    {
+      "key": "phase1_figure1_learning_curve",
+      "path": "results/phase1/figures/figure1_learning_curve.png",
+      "sha256": "7eb0cc501117d0b0d440b73ec7fe08cf7665d4adf3bd67d20a5d44945552eae1",
+      "bytes": 256684
+    },
+    {
+      "key": "phase1_figure2_trait_distribution",
+      "path": "results/phase1/figures/figure2_trait_distribution.png",
+      "sha256": "65ffb166777f86bc438d8b1640b3967845a60f1a79b02cc0e7e2c51a23f5f6be",
+      "bytes": 120980
+    },
+    {
+      "key": "phase1_recommendation",
+      "path": "results/phase1/figures/phase1_recommendation.txt",
+      "sha256": "647818f298ebcbb0fa516b1a1e58326b1a4fdc303b3eaf760b4e9237ffed6455",
+      "bytes": 2890
+    },
+    {
+      "key": "phase1_stats",
+      "path": "results/phase1/figures/statistical_tests.csv",
+      "sha256": "3de7177eed375b32d5122faabfdc8cc674fccecdcf1b7cb8ecdb3f5e9e8c8364",
+      "bytes": 3138
+    },
+    {
+      "key": "phase1_table1",
+      "path": "results/phase1/figures/table1_item_level.csv",
+      "sha256": "c7237a348e1ebcc75e9f0f76a57bfdcd502cc6d97d07b01274e4b4588df35c52",
+      "bytes": 2362
+    },
+    {
+      "key": "phase1_table2_imputed",
+      "path": "results/phase1/figures/table2_imputed.csv",
+      "sha256": "c0d9364f5ab855e6e787a33e9aca5bf560cd0b1a1649a494fe19b90b31a2b621",
+      "bytes": 11259
+    },
+    {
+      "key": "phase2_figure3_delta_r",
+      "path": "results/phase2/figures/figure3_delta_r.png",
+      "sha256": "4e89289597d25139539e1fab2c05e58af7ba704c2583d672459d44a6736ef3a3",
+      "bytes": 72120
+    },
+    {
+      "key": "phase2_recommendation",
+      "path": "results/phase2/figures/phase2_recommendation.txt",
+      "sha256": "1b7092bf9aeb5247ce130ee2362c1b12d5a923ebda61a1060e81626bbc7cd8bb",
+      "bytes": 2792
+    },
+    {
+      "key": "phase2_stats",
+      "path": "results/phase2/figures/statistical_tests_phase2.csv",
+      "sha256": "b6030d4fe9d8eb59b5273553f253b7f49cebd0069c2538838442ccb6c206a249",
+      "bytes": 2874
+    },
+    {
+      "key": "phase2_table3",
+      "path": "results/phase2/figures/table3_predictor_ablation.csv",
+      "sha256": "df95b38ebf997a0d3e9d195e5366fd6790b57af28eb21e130d03dcbe60991359",
+      "bytes": 2803
+    },
+    {
+      "key": "phase3_diagnostics_text",
+      "path": "results/phase3/figures/phase3_embedding_diagnostics.txt",
+      "sha256": "d9ca518a970610d83916118e5aff75da9868bd423d1257bcebda9de70c93ad2f",
+      "bytes": 3569
+    },
+    {
+      "key": "phase3_figure5",
+      "path": "results/phase3/figures/figure5.png",
+      "sha256": "7226be3fa0d9cf7e184734c4f481d18754f152b7f39c61d19c7fa600a98af946",
+      "bytes": 281897
+    },
+    {
+      "key": "phase3_summary",
+      "path": "results/phase3/embedding_diagnostics_summary.csv",
+      "sha256": "d552daa326a65bc89064ca30206313b0e6d760464bef834536e6611ba4874d14",
+      "bytes": 2661
+    },
+    {
+      "key": "phase4_contribution",
+      "path": "results/phase4/versionB_selection_contribution.csv",
+      "sha256": "22983782f3bf946749b9f98acfda5b6a51cecb2d8a4c14fabc5bf0bb8cca6edf",
+      "bytes": 9431
+    },
+    {
+      "key": "phase4_figure4",
+      "path": "results/phase4/figures/figure4.png",
+      "sha256": "ed0d32dc39221646bf328332a3a3d2a2b14744ccf6b8b093e326c9468e59d9fa",
+      "bytes": 281070
+    },
+    {
+      "key": "phase4_hyper_a",
+      "path": "results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
+      "sha256": "050e47463a0abd934afb4b439f796cc9e9c23fac8572eb64f33e25d0fc2692c5",
+      "bytes": 125347
+    },
+    {
+      "key": "phase4_hyper_b",
+      "path": "results/phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv",
+      "sha256": "f5e9369abe1d6649bb2949fe1d2f7a985a696036b0a620fa053426a29443c06f",
+      "bytes": 131889
+    },
+    {
+      "key": "phase4_overlap",
+      "path": "results/phase4/versionB_selection_overlap.csv",
+      "sha256": "9e39a72c154a2d0b0a535a255c8b6b91c64a88fc11c84cf18cac39bf7e32acfd",
+      "bytes": 26995
+    },
+    {
+      "key": "phase4_stats_a",
+      "path": "results/phase4/versionA_statistical_tests.csv",
+      "sha256": "77cc9aa95d032dbcb1c884adea47e8be05372350845b8dd42fa6590a8977a333",
+      "bytes": 6516
+    },
+    {
+      "key": "phase4_stats_b",
+      "path": "results/phase4/versionB_statistical_tests.csv",
+      "sha256": "8b6a4aa845b6fc51defbe102489a3373ccb99e56b88912bb9cc629e64c0e75b3",
+      "bytes": 6427
+    },
+    {
+      "key": "phase4_table4",
+      "path": "results/phase4/figures/table4.csv",
+      "sha256": "dc733cd1ee9828dd837995f9d86701ebd2a25801220d22fa7a67ffd0dbaedcf5",
+      "bytes": 52924
+    },
+    {
+      "key": "phase4_versionA_summary",
+      "path": "results/phase4/versionA_summary.csv",
+      "sha256": "f8262e7340b96dec02a44f45ac6ddae8961a5b13b2ac7c2c2f0cf348316bd522",
+      "bytes": 21420
+    },
+    {
+      "key": "phase4_versionB_summary",
+      "path": "results/phase4/versionB_summary.csv",
+      "sha256": "c519d1d0736d741ca777cd23f6d4f9885eaaf4f0e2d14079fd10df34b13c0950",
+      "bytes": 23585
+    }
+  ],
+  "output_files": {
+    "best_pipeline_table": "best_pipeline_table.csv",
+    "figure6_pdf": "figures/figure6_phase4_selection_vs_performance.pdf",
+    "figure6_png": "figures/figure6_phase4_selection_vs_performance.png",
+    "final_report_md": "final_report.md",
+    "final_report_pdf": "final_report.pdf",
+    "final_report_txt": "final_report.txt",
+    "final_summary": "final_summary.csv",
+    "phase4_integrated_synthesis": "figures/table5_phase4_integrated_synthesis.csv",
+    "report_manifest": "report_manifest.json",
+    "statistical_summary": "statistical_summary.csv"
+  },
+  "row_counts": {
+    "final_summary": 141,
+    "statistical_summary": 156,
+    "best_pipeline_table": 4,
+    "phase4_integrated_synthesis": 40
+  },
+  "required_phase4_versions": [
+    "A1_fixed",
+    "A2_tuned",
+    "B1_fixed",
+    "B2_tuned"
+  ],
+  "required_ratios": [
+    10,
+    30,
+    50,
+    90
+  ]
+}

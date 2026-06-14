@@ -4,9 +4,9 @@
 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
 
 ## Current status
-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013–F014 完成，F015 待做
-- Last updated: 2026-06-12T16:39:22Z
-- Completed features: 15 / 16
+- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013–F015 全部完成
+- Last updated: 2026-06-14T07:19:11Z
+- Completed features: 16 / 16
 - Active feature: none
 
 ## Completed work
@@ -153,6 +153,19 @@
 - 独立验收结论：PASS（6/6 条验收标准）。
 - 证据文件：evaluator-report.json、test-output.txt、smoke-test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
 
+### F015 — Phase 4: 最终综合分析与论文级输出（completed 2026-06-14T07:19:11Z）
+- 新增 `scripts/generate_final_report.py`：确定性聚合已验收的 Phase 1–4 artifacts，不重新运行实验、不重新生成 embedding、不重新估计 bootstrap。
+- 新增 `scripts/test_generate_final_report.py`：真实运行 final-report generator 到 fresh smoke 输出目录，并检查输出文件、schema、phase coverage、A1/A2/B1/B2 覆盖、PDF 签名/大小、manifest provenance、limitation 文本和 recommended-pipeline 规范化字段。
+- 生成 canonical `results/final_report/` 包：`final_report.pdf`（真实 Matplotlib PdfPages 生成）、`final_report.md`、`final_report.txt`、`final_summary.csv`、`statistical_summary.csv`、`best_pipeline_table.csv`、`report_manifest.json`。
+- 新增 Phase 4 综合产物：`figures/table5_phase4_integrated_synthesis.csv` 和 `figures/figure6_phase4_selection_vs_performance.pdf/png`，联合/校验 `table4.csv`、`versionB_selection_contribution.csv`、`versionB_selection_overlap.csv`。
+- 最终报告明确三层贡献：Phase 1 选题策略、Phase 2 预测算法、Phase 3 embedding 空间诊断，并在 Phase 4 区分 A1/A2 固定 `S_old` 的 embedding 邻居几何/调参贡献与 B1/B2 重新选题 `S_new` 的 selection contribution。
+- Best pipeline table 对 10/30/50/90% 分别给出 embedding、Coverage 选题策略、SoftmaxKNN、K/τ、fixed/tuned 策略和预期 item_r/trait_r/profile_r/MAE。
+- 统计说明固定主指标为 item-level Pearson r，关键次指标为 `trait_r_mean`、`profile_r`、MAE；保留 paired bootstrap、Holm 和 BH 校正 p 值。
+- 可复现性说明覆盖 random state、outer-fold pairing、inner tuning、continuous clip-only 主分析以及 rounded supplemental metrics。
+- 未新增跨问卷泛化实验；报告明确 limitation：当前结论主要基于 NEO-PI-R，cross-questionnaire generalization remains to be tested。
+- 独立 evaluator verdict: PASS（6/6 acceptance criteria）。
+- 证据文件：evaluator-report.json、generate-output.txt、test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
+
 ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
 1. **Coverage** (F005): 0.2818
 2. **Coverage+Div** (F005): 0.2620
@@ -178,10 +191,7 @@
 - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
 
 ## Next recommended feature
-- **[F015] Phase 4: 最终综合报告** — 汇总 Phase 1–4 表格、图表、统计检验和 limitation。
-- F015 应重点整合 F013 A1/A2（固定 `S_old`）与 F014 B1/B2（重新选题 `S_new`）的 Phase 4 结果，明确区分 embedding 邻居几何贡献与重新选题贡献。
-- Phase 4 主指标预注册为 item-level Pearson r；关键次指标为 trait_r_mean、profile_r、MAE；主分析使用 continuous clip-only prediction，不 round；新 embedding vs SBERT 和 B−A 比较使用 paired bootstrap + Holm/BH 校正。
-- 若 F015 不增加跨问卷泛化实验，最终报告必须明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
+- 所有 16 个 feature 均已完成。若继续研究，建议人工审阅 `questionnaire-embeddings/results/final_report/final_report.pdf` 并决定是否开展跨问卷泛化实验。
 
 ## Session log
 ### 2026-06-04T16:00:00Z Initialization

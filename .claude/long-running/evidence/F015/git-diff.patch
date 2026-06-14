@@ -1,0 +1,2050 @@
+diff --git a/.claude/long-running/evidence/F015/artifact-checks.txt b/.claude/long-running/evidence/F015/artifact-checks.txt
+new file mode 100644
+index 0000000..8c20190
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/artifact-checks.txt
+@@ -0,0 +1,18 @@
++F015 artifact checks
++final_report.pdf: exists=True bytes=532472
++final_report.md: exists=True bytes=5329
++final_report.txt: exists=True bytes=5211
++final_summary.csv: exists=True bytes=52774
++statistical_summary.csv: exists=True bytes=41833
++best_pipeline_table.csv: exists=True bytes=1581
++report_manifest.json: exists=True bytes=6249
++figures/table5_phase4_integrated_synthesis.csv: exists=True bytes=19240
++figures/figure6_phase4_selection_vs_performance.pdf: exists=True bytes=29213
++figures/figure6_phase4_selection_vs_performance.png: exists=True bytes=205359
++final_summary phases: ['final', 'phase1', 'phase2', 'phase3', 'phase4']
++final_summary versions: ['A1_fixed', 'A2_tuned', 'B1_fixed', 'B2_tuned']
++best ratios: [10, 30, 50, 90]
++synthesis rows: 40 families: ['fixed_params', 'tuned_params']
++stat families: ['phase1_vs_random', 'phase2_predictor_ablation', 'phase4_selection_contribution', 'phase4_vs_sbert']
++manifest no_experiments_rerun: True
++manifest limitation_cross_questionnaire_not_run: True
+diff --git a/.claude/long-running/evidence/F015/commands.log b/.claude/long-running/evidence/F015/commands.log
+new file mode 100644
+index 0000000..08970c1
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/commands.log
+@@ -0,0 +1,4 @@
++# F015 verification commands
++python3 scripts/generate_final_report.py > /workspace/.claude/long-running/evidence/F015/generate-output.txt 2>&1
++cd /workspace/questionnaire-embeddings && python3 scripts/test_generate_final_report.py > /workspace/.claude/long-running/evidence/F015/test-output.txt 2>&1
++cd /workspace/questionnaire-embeddings && git diff HEAD > /workspace/.claude/long-running/evidence/F015/git-diff.patch
+diff --git a/.claude/long-running/evidence/F015/evaluator-report.json b/.claude/long-running/evidence/F015/evaluator-report.json
+new file mode 100644
+index 0000000..3d8ae21
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/evaluator-report.json
+@@ -0,0 +1,83 @@
++{
++  "featureId": "F015",
++  "verdict": "PASS",
++  "criteria": [
++    {
++      "criterionId": "AC001",
++      "criterion": "最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。",
++      "status": "pass",
++      "evidence": [
++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py"
++      ],
++      "notes": "最终报告明确分成 Phase 1 item-selection contribution、Phase 2 prediction-algorithm contribution、Phase 3 embedding-space diagnostics 三层，并在 Phase 4 attribution 中逐条定义 A1_fixed/A2_tuned/B1_fixed/B2_tuned；文本明确说明 A1/A2 固定 S_old 用于隔离 embedding/调参贡献，而 B1/B2 引入 S_new 用于量化 re-selection contribution。"
++    },
++    {
++      "criterionId": "AC002",
++      "criterion": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。",
++      "status": "pass",
++      "evidence": [
++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py",
++        "/workspace/questionnaire-embeddings/scripts/test_generate_final_report.py",
++        "/workspace/.claude/long-running/evidence/F015/test-output.txt",
++        "/workspace/.claude/long-running/evidence/F015/artifact-checks.txt",
++        "/workspace/questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv",
++        "/workspace/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf",
++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json"
++      ],
++      "notes": "单一脚本 generate_final_report.py 生成 final summary、best pipeline table、statistical summary、Table 5 和 Figure 6，并复制上游 Phase 1–4 figures 进入最终包；测试脚本成功重跑到 smoke 目录。Table 5 明确包含 a_version/b_version、delta_selection_vs_a、p_selection_holm/p_selection_bh、jaccard_mean/min/max_vs_s_old 和 selection_changed_any_fold，覆盖 A1/A2/B1/B2、Jaccard overlap 和 B−A selection contribution。"
++    },
++    {
++      "criterionId": "AC003",
++      "criterion": "最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。",
++      "status": "pass",
++      "evidence": [
++        "/workspace/questionnaire-embeddings/results/final_report/best_pipeline_table.csv",
++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
++        "/workspace/questionnaire-embeddings/results/final_report/final_summary.csv"
++      ],
++      "notes": "best_pipeline_table.csv 为 10/30/50/90 四个比例各给出 recommended_version、embedding、selection_strategy/selection_scope、predictor、hyperparam_policy、K_mode、tau_mean 以及 item_r_mean、trait_r_mean、profile_r_mean、item_mae_mean。最终报告正文也内嵌了对应表格。"
++    },
++    {
++      "criterionId": "AC004",
++      "criterion": "统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。",
++      "status": "pass",
++      "evidence": [
++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py",
++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
++        "/workspace/questionnaire-embeddings/results/final_report/statistical_summary.csv",
++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json"
++      ],
++      "notes": "脚本将 PRIMARY_METRIC 固定为 item-level Pearson r，SECONDARY_METRICS 固定为 trait_r_mean, profile_r, MAE。最终报告 Statistical inference 段明确说明 Phase 4 使用 paired bootstrap，并保留 raw p-values、Holm 和 Benjamini-Hochberg 校正；statistical_summary.csv 也实际包含 p_raw、p_holm、p_bh 列。"
++    },
++    {
++      "criterionId": "AC005",
++      "criterion": "可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。",
++      "status": "pass",
++      "evidence": [
++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py",
++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json"
++      ],
++      "notes": "最终报告 Reproducibility notes 明确写到 random state fixed at 0、outer folds paired across Phase 4 A/B、A2/B2 仅在 train-inner 调 K/τ、主分析为 continuous clipped to [1,5] without rounding、rounded accuracy/rounded MAE 仅为补充；manifest 还记录了 source hashes 和 no_experiments_rerun。"
++    },
++    {
++      "criterionId": "AC006",
++      "criterion": "最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。",
++      "status": "pass",
++      "evidence": [
++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
++        "/workspace/.claude/long-running/evidence/F015/artifact-checks.txt",
++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json",
++        "/workspace/questionnaire-embeddings/scripts/test_generate_final_report.py"
++      ],
++      "notes": "未新增跨问卷实验，但最终报告 Limitations 段明确写出“Current conclusions are primarily based on NEO-PI-R; cross-questionnaire generalization remains to be tested in future work.” artifact checks 与 manifest 也都记录了 limitation_cross_questionnaire_not_run=true。"
++    }
++  ],
++  "requiredFixes": [],
++  "riskNotes": [
++    "/workspace/questionnaire-embeddings/scripts/generate_final_report.py、/workspace/questionnaire-embeddings/scripts/test_generate_final_report.py 和 /workspace/questionnaire-embeddings/results/final_report/ 当前在 git status 中仍是未跟踪文件；本次 PASS 基于工作树中的具体文件与日志，而不是已提交的 source diff。",
++    "F015 的可复现性是“确定性聚合上游已接受 artifacts”，不是重新计算 Phase 1–4 实验；若上游结果文件更新，需重新运行 /workspace/questionnaire-embeddings/scripts/generate_final_report.py 以同步最终报告。",
++    "Table 5 作为 /workspace/questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv 交付并在报告中被引用，但未完整渲染为 final_report.md/pdf 内的表格页。"
++  ]
++}
+diff --git a/.claude/long-running/evidence/F015/feature-dev-handoff.md b/.claude/long-running/evidence/F015/feature-dev-handoff.md
+new file mode 100644
+index 0000000..5df6c66
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/feature-dev-handoff.md
+@@ -0,0 +1,38 @@
++# Feature-dev handoff for F015
++
++Use the installed `/feature-dev` plugin workflow for this single selected feature.
++
++## Feature
++- ID: F015
++- Title: Phase 4: 最终综合分析 — 完整结果汇总与论文级输出
++- Description: 汇总全部四个阶段的实验结果，生成最终综合分析报告。包含：(1) 三层次贡献总结（选题策略、预测算法、测量效度）；(2) A1/A2/B1/B2 的 embedding 对比和选题贡献归因；(3) 所有 Table 和 Figure 的最终版本；(4) 统计检验汇总表，明确主指标、关键次指标和多重比较校正；(5) 最佳 pipeline 推荐；(6) 可复现性说明；(7) 若未完成跨问卷泛化实验，明确将结论限定为 NEO-PI-R 并列为 limitation。
++- Priority: medium
++- Dependencies: [F007, F010, F014]
++
++## Acceptance criteria
++1. [AC001] 最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。
++2. [AC002] 所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。
++3. [AC003] 最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。
++4. [AC004] 统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。
++5. [AC005] 可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。
++6. [AC006] 最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
++
++## Test plan
++- `cd /workspace/questionnaire-embeddings && python scripts/generate_final_report.py`
++- `cd /workspace/questionnaire-embeddings && python scripts/test_generate_final_report.py`
++- Verify outputs exist under `questionnaire-embeddings/results/final_report/`, especially `final_summary.csv` and `final_report.pdf`.
++
++## Important context and inputs
++- Phase 1 outputs: `questionnaire-embeddings/results/phase1/figures/`.
++- Phase 2 outputs: `questionnaire-embeddings/results/phase2/figures/`.
++- Phase 3 outputs: `questionnaire-embeddings/results/phase3/` and `questionnaire-embeddings/results/phase3/figures/`.
++- Phase 4 Version A outputs: `questionnaire-embeddings/results/phase4/versionA_*`, `hyperparameters_by_fold_ratio_embedding.csv`, `selected_items_by_fold_ratio_embedding.json`, `versionA_statistical_tests.csv`.
++- Phase 4 Version B outputs: `questionnaire-embeddings/results/phase4/versionB_*`, `versionB_selection_overlap.csv`, `versionB_selection_contribution.csv`, `versionB_statistical_tests.csv`, `figures/table4.csv`, `figures/figure4.pdf`, `figures/figure4.png`.
++- Pre-registered Phase 4 rules: main metric is item-level Pearson r; key secondary metrics are `trait_r_mean`, `profile_r`, `MAE`; new embedding vs `sbert_original` and B−A comparisons use paired bootstrap over participants with Holm/BH correction; main predictions are continuous clip-only without rounding; rounded accuracy/MAE are supplemental only.
++- If no cross-questionnaire generalization experiment is added, explicitly state the limitation: current conclusions are primarily for NEO-PI-R and cross-questionnaire generalization remains to be tested.
++
++## Constraints
++- Implement only F015. Do not touch unrelated code or long-running state completion fields.
++- Do NOT mark this feature `completed` in `features.json` — that is the orchestrator's job after evaluator PASS.
++- Save verification artifacts under `.claude/long-running/evidence/F015/` when practical.
++- After implementation, summarize: changed files, commands run, generated artifacts, test results, risks, and any incomplete criteria.
+diff --git a/.claude/long-running/evidence/F015/feature-dev-summary.md b/.claude/long-running/evidence/F015/feature-dev-summary.md
+new file mode 100644
+index 0000000..fdcc27a
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/feature-dev-summary.md
+@@ -0,0 +1,20 @@
++# F015 feature-dev summary
++
++## Changed files
++- `questionnaire-embeddings/scripts/generate_final_report.py`
++- `questionnaire-embeddings/scripts/test_generate_final_report.py`
++- `questionnaire-embeddings/results/final_report/` generated canonical report artifacts
++
++## What was built
++- Deterministic F015 report aggregation script that consumes accepted Phase 1–4 artifacts only.
++- Canonical outputs under `results/final_report/`: `final_report.pdf`, `final_report.md`, `final_report.txt`, `final_summary.csv`, `statistical_summary.csv`, `best_pipeline_table.csv`, `report_manifest.json`, copied upstream figures, Table 5 synthesis, and Figure 6 synthesis.
++- Standalone smoke test that runs the real generator into a fresh scratch directory and validates files, schemas, phase coverage, Phase 4 A1/A2/B1/B2 coverage, key narrative text, PDF signature/size, manifest provenance, and normalized recommended-pipeline rows.
++
++## Verification
++- `python3 scripts/generate_final_report.py` passed.
++- `python3 scripts/test_generate_final_report.py` passed.
++
++## Scope notes
++- No Phase 1–4 experiment is rerun.
++- Cross-questionnaire generalization experiment is not added; final report explicitly states the NEO-PI-R limitation.
++- Table 5 joins/cross-validates `table4.csv`, `versionB_selection_contribution.csv`, and `versionB_selection_overlap.csv`.
+diff --git a/.claude/long-running/evidence/F015/generate-output.txt b/.claude/long-running/evidence/F015/generate-output.txt
+new file mode 100644
+index 0000000..4f8299d
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/generate-output.txt
+@@ -0,0 +1,13 @@
++======================================================================
++F015 final report generated
++======================================================================
++[SAVE] final_summary: /workspace/questionnaire-embeddings/results/final_report/final_summary.csv
++[SAVE] statistical_summary: /workspace/questionnaire-embeddings/results/final_report/statistical_summary.csv
++[SAVE] best_pipeline_table: /workspace/questionnaire-embeddings/results/final_report/best_pipeline_table.csv
++[SAVE] phase4_integrated_synthesis: /workspace/questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv
++[SAVE] figure6_pdf: /workspace/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf
++[SAVE] figure6_png: /workspace/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.png
++[SAVE] final_report_md: /workspace/questionnaire-embeddings/results/final_report/final_report.md
++[SAVE] final_report_txt: /workspace/questionnaire-embeddings/results/final_report/final_report.txt
++[SAVE] final_report_pdf: /workspace/questionnaire-embeddings/results/final_report/final_report.pdf
++[SAVE] report_manifest: /workspace/questionnaire-embeddings/results/final_report/report_manifest.json
+diff --git a/.claude/long-running/evidence/F015/git-diff.patch b/.claude/long-running/evidence/F015/git-diff.patch
+new file mode 100644
+index 0000000..3406aeb
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/git-diff.patch
+@@ -0,0 +1,160 @@
++diff --git a/.claude/long-running/evidence/F015/artifact-checks.txt b/.claude/long-running/evidence/F015/artifact-checks.txt
++new file mode 100644
++index 0000000..8c20190
++--- /dev/null
+++++ b/.claude/long-running/evidence/F015/artifact-checks.txt
++@@ -0,0 +1,18 @@
+++F015 artifact checks
+++final_report.pdf: exists=True bytes=532472
+++final_report.md: exists=True bytes=5329
+++final_report.txt: exists=True bytes=5211
+++final_summary.csv: exists=True bytes=52774
+++statistical_summary.csv: exists=True bytes=41833
+++best_pipeline_table.csv: exists=True bytes=1581
+++report_manifest.json: exists=True bytes=6249
+++figures/table5_phase4_integrated_synthesis.csv: exists=True bytes=19240
+++figures/figure6_phase4_selection_vs_performance.pdf: exists=True bytes=29213
+++figures/figure6_phase4_selection_vs_performance.png: exists=True bytes=205359
+++final_summary phases: ['final', 'phase1', 'phase2', 'phase3', 'phase4']
+++final_summary versions: ['A1_fixed', 'A2_tuned', 'B1_fixed', 'B2_tuned']
+++best ratios: [10, 30, 50, 90]
+++synthesis rows: 40 families: ['fixed_params', 'tuned_params']
+++stat families: ['phase1_vs_random', 'phase2_predictor_ablation', 'phase4_selection_contribution', 'phase4_vs_sbert']
+++manifest no_experiments_rerun: True
+++manifest limitation_cross_questionnaire_not_run: True
++diff --git a/.claude/long-running/evidence/F015/commands.log b/.claude/long-running/evidence/F015/commands.log
++new file mode 100644
++index 0000000..08970c1
++--- /dev/null
+++++ b/.claude/long-running/evidence/F015/commands.log
++@@ -0,0 +1,4 @@
+++# F015 verification commands
+++python3 scripts/generate_final_report.py > /workspace/.claude/long-running/evidence/F015/generate-output.txt 2>&1
+++cd /workspace/questionnaire-embeddings && python3 scripts/test_generate_final_report.py > /workspace/.claude/long-running/evidence/F015/test-output.txt 2>&1
+++cd /workspace/questionnaire-embeddings && git diff HEAD > /workspace/.claude/long-running/evidence/F015/git-diff.patch
++diff --git a/.claude/long-running/evidence/F015/evaluator-report.json b/.claude/long-running/evidence/F015/evaluator-report.json
++new file mode 100644
++index 0000000..3d8ae21
++--- /dev/null
+++++ b/.claude/long-running/evidence/F015/evaluator-report.json
++@@ -0,0 +1,83 @@
+++{
+++  "featureId": "F015",
+++  "verdict": "PASS",
+++  "criteria": [
+++    {
+++      "criterionId": "AC001",
+++      "criterion": "最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。",
+++      "status": "pass",
+++      "evidence": [
+++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
+++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py"
+++      ],
+++      "notes": "最终报告明确分成 Phase 1 item-selection contribution、Phase 2 prediction-algorithm contribution、Phase 3 embedding-space diagnostics 三层，并在 Phase 4 attribution 中逐条定义 A1_fixed/A2_tuned/B1_fixed/B2_tuned；文本明确说明 A1/A2 固定 S_old 用于隔离 embedding/调参贡献，而 B1/B2 引入 S_new 用于量化 re-selection contribution。"
+++    },
+++    {
+++      "criterionId": "AC002",
+++      "criterion": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。",
+++      "status": "pass",
+++      "evidence": [
+++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py",
+++        "/workspace/questionnaire-embeddings/scripts/test_generate_final_report.py",
+++        "/workspace/.claude/long-running/evidence/F015/test-output.txt",
+++        "/workspace/.claude/long-running/evidence/F015/artifact-checks.txt",
+++        "/workspace/questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv",
+++        "/workspace/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf",
+++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json"
+++      ],
+++      "notes": "单一脚本 generate_final_report.py 生成 final summary、best pipeline table、statistical summary、Table 5 和 Figure 6，并复制上游 Phase 1–4 figures 进入最终包；测试脚本成功重跑到 smoke 目录。Table 5 明确包含 a_version/b_version、delta_selection_vs_a、p_selection_holm/p_selection_bh、jaccard_mean/min/max_vs_s_old 和 selection_changed_any_fold，覆盖 A1/A2/B1/B2、Jaccard overlap 和 B−A selection contribution。"
+++    },
+++    {
+++      "criterionId": "AC003",
+++      "criterion": "最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。",
+++      "status": "pass",
+++      "evidence": [
+++        "/workspace/questionnaire-embeddings/results/final_report/best_pipeline_table.csv",
+++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
+++        "/workspace/questionnaire-embeddings/results/final_report/final_summary.csv"
+++      ],
+++      "notes": "best_pipeline_table.csv 为 10/30/50/90 四个比例各给出 recommended_version、embedding、selection_strategy/selection_scope、predictor、hyperparam_policy、K_mode、tau_mean 以及 item_r_mean、trait_r_mean、profile_r_mean、item_mae_mean。最终报告正文也内嵌了对应表格。"
+++    },
+++    {
+++      "criterionId": "AC004",
+++      "criterion": "统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。",
+++      "status": "pass",
+++      "evidence": [
+++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py",
+++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
+++        "/workspace/questionnaire-embeddings/results/final_report/statistical_summary.csv",
+++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json"
+++      ],
+++      "notes": "脚本将 PRIMARY_METRIC 固定为 item-level Pearson r，SECONDARY_METRICS 固定为 trait_r_mean, profile_r, MAE。最终报告 Statistical inference 段明确说明 Phase 4 使用 paired bootstrap，并保留 raw p-values、Holm 和 Benjamini-Hochberg 校正；statistical_summary.csv 也实际包含 p_raw、p_holm、p_bh 列。"
+++    },
+++    {
+++      "criterionId": "AC005",
+++      "criterion": "可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。",
+++      "status": "pass",
+++      "evidence": [
+++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
+++        "/workspace/questionnaire-embeddings/scripts/generate_final_report.py",
+++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json"
+++      ],
+++      "notes": "最终报告 Reproducibility notes 明确写到 random state fixed at 0、outer folds paired across Phase 4 A/B、A2/B2 仅在 train-inner 调 K/τ、主分析为 continuous clipped to [1,5] without rounding、rounded accuracy/rounded MAE 仅为补充；manifest 还记录了 source hashes 和 no_experiments_rerun。"
+++    },
+++    {
+++      "criterionId": "AC006",
+++      "criterion": "最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。",
+++      "status": "pass",
+++      "evidence": [
+++        "/workspace/questionnaire-embeddings/results/final_report/final_report.md",
+++        "/workspace/.claude/long-running/evidence/F015/artifact-checks.txt",
+++        "/workspace/questionnaire-embeddings/results/final_report/report_manifest.json",
+++        "/workspace/questionnaire-embeddings/scripts/test_generate_final_report.py"
+++      ],
+++      "notes": "未新增跨问卷实验，但最终报告 Limitations 段明确写出“Current conclusions are primarily based on NEO-PI-R; cross-questionnaire generalization remains to be tested in future work.” artifact checks 与 manifest 也都记录了 limitation_cross_questionnaire_not_run=true。"
+++    }
+++  ],
+++  "requiredFixes": [],
+++  "riskNotes": [
+++    "/workspace/questionnaire-embeddings/scripts/generate_final_report.py、/workspace/questionnaire-embeddings/scripts/test_generate_final_report.py 和 /workspace/questionnaire-embeddings/results/final_report/ 当前在 git status 中仍是未跟踪文件；本次 PASS 基于工作树中的具体文件与日志，而不是已提交的 source diff。",
+++    "F015 的可复现性是“确定性聚合上游已接受 artifacts”，不是重新计算 Phase 1–4 实验；若上游结果文件更新，需重新运行 /workspace/questionnaire-embeddings/scripts/generate_final_report.py 以同步最终报告。",
+++    "Table 5 作为 /workspace/questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv 交付并在报告中被引用，但未完整渲染为 final_report.md/pdf 内的表格页。"
+++  ]
+++}
++diff --git a/.claude/long-running/evidence/F015/feature-dev-handoff.md b/.claude/long-running/evidence/F015/feature-dev-handoff.md
++new file mode 100644
++index 0000000..5df6c66
++--- /dev/null
+++++ b/.claude/long-running/evidence/F015/feature-dev-handoff.md
++@@ -0,0 +1,38 @@
+++# Feature-dev handoff for F015
+++
+++Use the installed `/feature-dev` plugin workflow for this single selected feature.
+++
+++## Feature
+++- ID: F015
+++- Title: Phase 4: 最终综合分析 — 完整结果汇总与论文级输出
+++- Description: 汇总全部四个阶段的实验结果，生成最终综合分析报告。包含：(1) 三层次贡献总结（选题策略、预测算法、测量效度）；(2) A1/A2/B1/B2 的 embedding 对比和选题贡献归因；(3) 所有 Table 和 Figure 的最终版本；(4) 统计检验汇总表，明确主指标、关键次指标和多重比较校正；(5) 最佳 pipeline 推荐；(6) 可复现性说明；(7) 若未完成跨问卷泛化实验，明确将结论限定为 NEO-PI-R 并列为 limitation。
+++- Priority: medium
+++- Dependencies: [F007, F010, F014]
+++
+++## Acceptance criteria
+++1. [AC001] 最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。
+++2. [AC002] 所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。
+++3. [AC003] 最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。
+++4. [AC004] 统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。
+++5. [AC005] 可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。
+++6. [AC006] 最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
+++
+++## Test plan
+++- `cd /workspace/questionnaire-embeddings && python scripts/generate_final_report.py`
+++- `cd /workspace/questionnaire-embeddings && python scripts/test_generate_final_report.py`
+++- Verify outputs exist under `questionnaire-embeddings/results/final_report/`, especially `final_summary.csv` and `final_report.pdf`.
+++
+++## Important context and inputs
+++- Phase 1 outputs: `questionnaire-embeddings/results/phase1/figures/`.
+++- Phase 2 outputs: `questionnaire-embeddings/results/phase2/figures/`.
+++- Phase 3 outputs: `questionnaire-embeddings/results/phase3/` and `questionnaire-embeddings/results/phase3/figures/`.
+++- Phase 4 Version A outputs: `questionnaire-embeddings/results/phase4/versionA_*`, `hyperparameters_by_fold_ratio_embedding.csv`, `selected_items_by_fold_ratio_embedding.json`, `versionA_statistical_tests.csv`.
+++- Phase 4 Version B outputs: `questionnaire-embeddings/results/phase4/versionB_*`, `versionB_selection_overlap.csv`, `versionB_selection_contribution.csv`, `versionB_statistical_tests.csv`, `figures/table4.csv`, `figures/figure4.pdf`, `figures/figure4.png`.
+++- Pre-registered Phase 4 rules: main metric is item-level Pearson r; key secondary metrics are `trait_r_mean`, `profile_r`, `MA
+\ No newline at end of file
+diff --git a/.claude/long-running/evidence/F015/test-output.txt b/.claude/long-running/evidence/F015/test-output.txt
+new file mode 100644
+index 0000000..37868b7
+--- /dev/null
++++ b/.claude/long-running/evidence/F015/test-output.txt
+@@ -0,0 +1,14 @@
++======================================================================
++F015 final report generated
++======================================================================
++[SAVE] final_summary: /workspace/questionnaire-embeddings/results/final_report_smoke/final_summary.csv
++[SAVE] statistical_summary: /workspace/questionnaire-embeddings/results/final_report_smoke/statistical_summary.csv
++[SAVE] best_pipeline_table: /workspace/questionnaire-embeddings/results/final_report_smoke/best_pipeline_table.csv
++[SAVE] phase4_integrated_synthesis: /workspace/questionnaire-embeddings/results/final_report_smoke/figures/table5_phase4_integrated_synthesis.csv
++[SAVE] figure6_pdf: /workspace/questionnaire-embeddings/results/final_report_smoke/figures/figure6_phase4_selection_vs_performance.pdf
++[SAVE] figure6_png: /workspace/questionnaire-embeddings/results/final_report_smoke/figures/figure6_phase4_selection_vs_performance.png
++[SAVE] final_report_md: /workspace/questionnaire-embeddings/results/final_report_smoke/final_report.md
++[SAVE] final_report_txt: /workspace/questionnaire-embeddings/results/final_report_smoke/final_report.txt
++[SAVE] final_report_pdf: /workspace/questionnaire-embeddings/results/final_report_smoke/final_report.pdf
++[SAVE] report_manifest: /workspace/questionnaire-embeddings/results/final_report_smoke/report_manifest.json
++F015 final-report smoke checks passed: /workspace/questionnaire-embeddings/results/final_report_smoke
+diff --git a/.claude/long-running/features.json b/.claude/long-running/features.json
+index e31b092..963f803 100644
+--- a/.claude/long-running/features.json
++++ b/.claude/long-running/features.json
+@@ -3,7 +3,7 @@
+   "description": "基于原论文 questionnaire-embeddings 项目的改进研究：验证语义覆盖选题策略、加权 KNN 预测器、新 embedding 模型，并增加人格总分预测维度。主实验数据集为 NEO-PI-R（2,749 被试 × 100 题项 × Big Five 五维度）。",
+   "version": "1.0.0",
+   "createdAt": "2026-06-04T16:00:00Z",
+-  "updatedAt": "2026-06-12T16:39:22Z",
++  "updatedAt": "2026-06-14T07:19:11Z",
+   "features": [
+     {
+       "id": "F001",
+@@ -1177,55 +1177,88 @@
+         {
+           "id": "AC001",
+           "text": "最终报告包含三层次贡献的清晰论述，并明确区分 A1/A2 的预测空间贡献与 B1/B2 的重新选题贡献。",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/final_report/final_report.md",
++            "questionnaire-embeddings/scripts/generate_final_report.py",
++            ".claude/long-running/evidence/F015/evaluator-report.json"
++          ]
+         },
+         {
+           "id": "AC002",
+           "text": "所有 Table 和 Figure 可复现生成（单一脚本或 notebook），并覆盖 Phase 4 A1/A2/B1/B2、Jaccard overlap、B−A selection contribution。",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/scripts/generate_final_report.py",
++            "questionnaire-embeddings/scripts/test_generate_final_report.py",
++            "questionnaire-embeddings/results/final_report/figures/table5_phase4_integrated_synthesis.csv",
++            "questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf",
++            ".claude/long-running/evidence/F015/test-output.txt",
++            ".claude/long-running/evidence/F015/artifact-checks.txt"
++          ]
+         },
+         {
+           "id": "AC003",
+           "text": "最佳 pipeline 有明确的 embedding、选题策略、预测器、K/τ 超参数、是否 tuned，以及 10/30/50/90% 下的预期性能。",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/final_report/best_pipeline_table.csv",
++            "questionnaire-embeddings/results/final_report/final_summary.csv",
++            "questionnaire-embeddings/results/final_report/final_report.md"
++          ]
+         },
+         {
+           "id": "AC004",
+           "text": "统计检验预先固定主指标 item-level Pearson r，报告 trait_r_mean/profile_r/MAE 为关键次指标，并包含 paired bootstrap 与 Holm/BH 多重比较校正说明。",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/final_report/statistical_summary.csv",
++            "questionnaire-embeddings/results/final_report/final_report.md",
++            "questionnaire-embeddings/results/final_report/report_manifest.json"
++          ]
+         },
+         {
+           "id": "AC005",
+           "text": "可复现性说明覆盖所有关键随机因素、fold 配对、inner tuning、continuous clip-only 主分析和 rounded 补充分析。",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/final_report/final_report.md",
++            "questionnaire-embeddings/results/final_report/report_manifest.json"
++          ]
+         },
+         {
+           "id": "AC006",
+           "text": "最终报告包含跨问卷泛化小实验结果，或明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。",
+-          "status": "unknown",
+-          "evidence": []
++          "status": "pass",
++          "evidence": [
++            "questionnaire-embeddings/results/final_report/final_report.md",
++            "questionnaire-embeddings/results/final_report/report_manifest.json",
++            ".claude/long-running/evidence/F015/evaluator-report.json"
++          ]
+         }
+       ],
+       "testPlan": [
+         "python scripts/generate_final_report.py",
+         "ls results/final_report/final_summary.csv results/final_report/final_report.pdf"
+       ],
+-      "status": "pending",
++      "status": "completed",
+       "evidence": {
+         "directory": ".claude/long-running/evidence/F015",
+-        "testCommand": null,
+-        "testOutputFile": null,
+-        "evaluatorReport": null
++        "testCommand": "cd /workspace/questionnaire-embeddings && python3 scripts/generate_final_report.py && python3 scripts/test_generate_final_report.py",
++        "testOutputFile": ".claude/long-running/evidence/F015/test-output.txt",
++        "evaluatorReport": ".claude/long-running/evidence/F015/evaluator-report.json"
+       },
+-      "attempts": [],
++      "attempts": [
++        {
++          "attemptNumber": 1,
++          "startedAt": "2026-06-14T01:36:08Z",
++          "status": "completed",
++          "completedAt": "2026-06-14T07:19:11Z"
++        }
++      ],
+       "createdAt": "2026-06-04T16:00:00Z",
+-      "updatedAt": "2026-06-04T16:00:00Z",
+-      "completedAt": null
++      "updatedAt": "2026-06-14T07:19:11Z",
++      "completedAt": "2026-06-14T07:19:11Z"
+     },
+     {
+       "id": "F016",
+diff --git a/.claude/long-running/handoff.md b/.claude/long-running/handoff.md
+index 29ff55d..67f082f 100644
+--- a/.claude/long-running/handoff.md
++++ b/.claude/long-running/handoff.md
+@@ -1,65 +1,21 @@
+ # Handoff — Next Session
+ 
+ ## Immediate action
+-Run `/long-running-coding F015` to execute **Phase 4 final integrated report**.
+-
+-F013 and F014 are complete and should be treated as background context. Do not spend the next feature on Phase 4 A/B cleanup unless explicitly requested.
++All planned long-running features F001–F016 are complete. No next feature is currently pending.
+ 
+ ## Completed latest feature
+-### F014 — Version B: re-select items per embedding
+-- Implemented `scripts/run_phase4_versionB.py` and `scripts/test_phase4_versionB.py`.
+-- **B1:** embedding-specific Coverage `S_new` + fixed Phase 2 SoftmaxKNN hyperparameters.
+-- **B2:** embedding-specific Coverage `S_new` + embedding-specific train-inner K/τ tuning.
+-- Full run reused F013 outer folds and held-out-only continuous clip-only scoring.
+-- Canonical F014 outputs use `versionB_*` names so F013 generic audit artifacts remain intact:
+-  - `versionB_predictions.parquet`
+-  - `versionB_participant_metrics.csv`
+-  - `versionB_results.csv`
+-  - `versionB_aggregate_metrics.csv`
+-  - `versionB_summary.csv`
+-  - `versionB_hyperparameters_by_fold_ratio_embedding.csv`
+-  - `versionB_selected_items_by_fold_ratio_embedding.json`
+-  - `versionB_statistical_tests.csv`
+-  - `versionB_selection_contribution.csv`
+-  - `versionB_selection_overlap.csv`
+-  - `versionB_outer_folds_subject_ids.json`
+-  - `figures/table4.csv`
+-  - `figures/figure4.pdf` / `figure4.png`
+-- B−A contribution is paired within the same subject×fold×embedding×ratio×tuning regime:
+-  - `B1_minus_A1 = B1(S_new,E_new) − A1(S_old,E_new)`
+-  - `B2_minus_A2 = B2(S_new,E_new) − A2(S_old,E_new)`
+-- Evaluator verdict: PASS.
+-
+-## Completed previous feature
+-### F013 — Version A: fixed original selected items
+-- Implemented `scripts/run_phase4_versionA.py` plus Phase 4 helper modules.
+-- A1: fixed Phase 2 SoftmaxKNN hyperparameters with fixed Phase 1 SBERT Coverage `S_old`.
+-- A2: fixed `S_old` plus nested train-inner K/τ tuning for each embedding/fold/ratio.
+-- Main scoring convention: continuous clip-only prediction, held-out/unselected items only; rounded metrics are supplemental.
++### F015 — Phase 4 final integrated report
++- Implemented deterministic final-report aggregation in `questionnaire-embeddings/scripts/generate_final_report.py`.
++- Added smoke test `questionnaire-embeddings/scripts/test_generate_final_report.py`.
++- Canonical deliverables are in `questionnaire-embeddings/results/final_report/`:
++  - `final_report.pdf`, `final_report.md`, `final_report.txt`
++  - `final_summary.csv`, `statistical_summary.csv`, `best_pipeline_table.csv`, `report_manifest.json`
++  - `figures/table5_phase4_integrated_synthesis.csv`
++  - `figures/figure6_phase4_selection_vs_performance.pdf/png`
++- F015 aggregates existing Phase 1–4 artifacts only; it does not rerun experiments.
++- The report explicitly states the limitation that conclusions are primarily based on NEO-PI-R and cross-questionnaire generalization remains future work.
+ - Evaluator verdict: PASS.
+ 
+-## Next feature: F015 — final integrated report
+-- Summarize Phase 1–4 results, including A1/A2/B1/B2 embedding comparison and selection contribution attribution.
+-- Use F014 `figures/table4.csv`, `versionB_selection_overlap.csv`, and `versionB_selection_contribution.csv` as key Phase 4-B inputs.
+-
+-## Pre-registered Phase 4 analysis rules
+-- Primary metric: **item-level Pearson r**.
+-- Key secondary metrics: `trait_r_mean`, `profile_r`, `MAE`.
+-- Main comparison: each new embedding vs `sbert_original`.
+-- Selection contribution comparison: B−A within the same embedding and same tuning regime.
+-- Statistical inference: paired bootstrap over participants, preserving outer-fold pairing.
+-- Multiple-comparison correction: Holm or Benjamini-Hochberg.
+-- Prediction mode: primary analysis uses continuous predictions clipped to `[1,5]`, **without rounding**.
+-- Rounded accuracy / rounded MAE are supplemental only.
+-
+-## Useful files for F014
+-1. `.claude/long-running/features.json` — F014 acceptance criteria and dependencies.
+-2. `.claude/long-running/decisions.md` — Phase 4 design decisions.
+-3. `questionnaire-embeddings/scripts/phase4_common.py` — loaders, embedding registry, fixed S_old, bootstrap helpers.
+-4. `questionnaire-embeddings/scripts/phase4_predictors.py` — continuous SoftmaxKNN.
+-5. `questionnaire-embeddings/scripts/run_phase4_versionA.py` — A1/A2 loop and output schemas to mirror.
+-6. `questionnaire-embeddings/results/phase4/` — F013 A outputs used for B−A comparisons.
+-7. `questionnaire-embeddings/scripts/diagnose_embeddings.py` — CoverageSelector usage and embedding diagnostics patterns.
+-
+-## F015 final-report requirement
+-If no cross-questionnaire generalization experiment is added before the final report, explicitly state the limitation: current conclusions are primarily for NEO-PI-R and cross-questionnaire generalization remains to be tested.
++## Recommended next work
++- Human review of `results/final_report/final_report.pdf` for paper wording/formatting.
++- If extending the study, define a new feature for cross-questionnaire generalization before modifying the F015 report.
+diff --git a/.claude/long-running/progress.md b/.claude/long-running/progress.md
+index 0d5fd27..ab7d3ae 100644
+--- a/.claude/long-running/progress.md
++++ b/.claude/long-running/progress.md
+@@ -4,9 +4,9 @@
+ 基于原论文 "A Deep Language Approach to Personality Assessment" 的 questionnaire-embeddings 代码库进行改进研究。三个核心改进方向：(1) 用语义覆盖+心理测量策略选择最具代表性的真实作答题，替代原文随机 90/10 题项划分；(2) 用加权 KNN/Softmax KNN/Kernel Smoothing 替代原文简单 KNN 预测器；(3) 用更新的本地开源 embedding 模型（MiniLM, MPNet, E5, BGE）替代原 SBERT。全程增加人格总分预测维度。主实验数据：NEO-PI-R (2749 被试 × 100 题项 × Big Five 5 维度)。
+ 
+ ## Current status
+-- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013–F014 完成，F015 待做
+-- Last updated: 2026-06-12T16:39:22Z
+-- Completed features: 15 / 16
++- Phase: Phase 1 全部完成 (F001–F007)，Phase 2 全部完成 (F008–F010, F016)，Phase 3 F011–F012 完成，Phase 4 F013–F015 全部完成
++- Last updated: 2026-06-14T07:19:11Z
++- Completed features: 16 / 16
+ - Active feature: none
+ 
+ ## Completed work
+@@ -153,6 +153,19 @@
+ - 独立验收结论：PASS（6/6 条验收标准）。
+ - 证据文件：evaluator-report.json、test-output.txt、smoke-test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
+ 
++### F015 — Phase 4: 最终综合分析与论文级输出（completed 2026-06-14T07:19:11Z）
++- 新增 `scripts/generate_final_report.py`：确定性聚合已验收的 Phase 1–4 artifacts，不重新运行实验、不重新生成 embedding、不重新估计 bootstrap。
++- 新增 `scripts/test_generate_final_report.py`：真实运行 final-report generator 到 fresh smoke 输出目录，并检查输出文件、schema、phase coverage、A1/A2/B1/B2 覆盖、PDF 签名/大小、manifest provenance、limitation 文本和 recommended-pipeline 规范化字段。
++- 生成 canonical `results/final_report/` 包：`final_report.pdf`（真实 Matplotlib PdfPages 生成）、`final_report.md`、`final_report.txt`、`final_summary.csv`、`statistical_summary.csv`、`best_pipeline_table.csv`、`report_manifest.json`。
++- 新增 Phase 4 综合产物：`figures/table5_phase4_integrated_synthesis.csv` 和 `figures/figure6_phase4_selection_vs_performance.pdf/png`，联合/校验 `table4.csv`、`versionB_selection_contribution.csv`、`versionB_selection_overlap.csv`。
++- 最终报告明确三层贡献：Phase 1 选题策略、Phase 2 预测算法、Phase 3 embedding 空间诊断，并在 Phase 4 区分 A1/A2 固定 `S_old` 的 embedding 邻居几何/调参贡献与 B1/B2 重新选题 `S_new` 的 selection contribution。
++- Best pipeline table 对 10/30/50/90% 分别给出 embedding、Coverage 选题策略、SoftmaxKNN、K/τ、fixed/tuned 策略和预期 item_r/trait_r/profile_r/MAE。
++- 统计说明固定主指标为 item-level Pearson r，关键次指标为 `trait_r_mean`、`profile_r`、MAE；保留 paired bootstrap、Holm 和 BH 校正 p 值。
++- 可复现性说明覆盖 random state、outer-fold pairing、inner tuning、continuous clip-only 主分析以及 rounded supplemental metrics。
++- 未新增跨问卷泛化实验；报告明确 limitation：当前结论主要基于 NEO-PI-R，cross-questionnaire generalization remains to be tested。
++- 独立 evaluator verdict: PASS（6/6 acceptance criteria）。
++- 证据文件：evaluator-report.json、generate-output.txt、test-output.txt、artifact-checks.txt、feature-dev-summary.md、commands.log、git-diff.patch。
++
+ ## Phase 1 final ranking (by mean item_r across m=10,30,50,90)
+ 1. **Coverage** (F005): 0.2818
+ 2. **Coverage+Div** (F005): 0.2620
+@@ -178,10 +191,7 @@
+ - E_old SBERT embedding dim=1024 (roberta-large-nli-stsb-mean-tokens)，与 features.json 初始设计一致
+ 
+ ## Next recommended feature
+-- **[F015] Phase 4: 最终综合报告** — 汇总 Phase 1–4 表格、图表、统计检验和 limitation。
+-- F015 应重点整合 F013 A1/A2（固定 `S_old`）与 F014 B1/B2（重新选题 `S_new`）的 Phase 4 结果，明确区分 embedding 邻居几何贡献与重新选题贡献。
+-- Phase 4 主指标预注册为 item-level Pearson r；关键次指标为 trait_r_mean、profile_r、MAE；主分析使用 continuous clip-only prediction，不 round；新 embedding vs SBERT 和 B−A 比较使用 paired bootstrap + Holm/BH 校正。
+-- 若 F015 不增加跨问卷泛化实验，最终报告必须明确写入 limitation：当前结论主要针对 NEO-PI-R，跨问卷泛化仍需验证。
++- 所有 16 个 feature 均已完成。若继续研究，建议人工审阅 `questionnaire-embeddings/results/final_report/final_report.pdf` 并决定是否开展跨问卷泛化实验。
+ 
+ ## Session log
+ ### 2026-06-04T16:00:00Z Initialization
+diff --git a/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf b/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf
+new file mode 100644
+index 0000000..056af70
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.pdf differ
+diff --git a/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.png b/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.png
+new file mode 100644
+index 0000000..a8904a5
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/figure6_phase4_selection_vs_performance.png differ
+diff --git a/questionnaire-embeddings/results/final_report/figures/phase1_figure1_learning_curve.png b/questionnaire-embeddings/results/final_report/figures/phase1_figure1_learning_curve.png
+new file mode 100644
+index 0000000..4203c9b
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/phase1_figure1_learning_curve.png differ
+diff --git a/questionnaire-embeddings/results/final_report/figures/phase1_figure2_trait_distribution.png b/questionnaire-embeddings/results/final_report/figures/phase1_figure2_trait_distribution.png
+new file mode 100644
+index 0000000..73f800c
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/phase1_figure2_trait_distribution.png differ
+diff --git a/questionnaire-embeddings/results/final_report/figures/phase2_figure3_delta_r.png b/questionnaire-embeddings/results/final_report/figures/phase2_figure3_delta_r.png
+new file mode 100644
+index 0000000..34d8d85
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/phase2_figure3_delta_r.png differ
+diff --git a/questionnaire-embeddings/results/final_report/figures/phase3_figure5.png b/questionnaire-embeddings/results/final_report/figures/phase3_figure5.png
+new file mode 100644
+index 0000000..c5b9e7b
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/phase3_figure5.png differ
+diff --git a/questionnaire-embeddings/results/final_report/figures/phase4_figure4.png b/questionnaire-embeddings/results/final_report/figures/phase4_figure4.png
+new file mode 100644
+index 0000000..a5db002
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/figures/phase4_figure4.png differ
+diff --git a/questionnaire-embeddings/results/final_report/final_report.md b/questionnaire-embeddings/results/final_report/final_report.md
+new file mode 100644
+index 0000000..8e51296
+--- /dev/null
++++ b/questionnaire-embeddings/results/final_report/final_report.md
+@@ -0,0 +1,58 @@
++# Final Report: Questionnaire Embeddings Phase 1–4 Integrated Analysis
++
++## Scope and deliverables
++This F015 report aggregates existing accepted artifacts only. It does not rerun Phase 1–4 experiments, regenerate embeddings, or re-estimate bootstrap tests.
++Primary metric: **item-level Pearson r**. Key secondary metrics: **trait_r_mean, profile_r, MAE**.
++
++## Executive summary
++- Phase 1 selected **Coverage** as the strongest item-selection strategy in the observed Table 1 cells (best cell m=90, item_r=0.4842).
++- Phase 2 selected **SoftmaxKNN** as the recommended predictor family over Coverage-selected items.
++- Phase 3 diagnostics suggested **E5-base-v2** for highest selected-set coverage and **MPNet-base-v2** for strongest within-minus-between trait separation.
++- Phase 4 best observed pipeline cell was **A2_tuned / BGE-base-en-v1.5** at m=90, item_r=0.6167.
++- Largest positive B−A re-selection contribution was **B1_fixed minus A1_fixed** for MPNet-base-v2 at m=10, Δitem_r=0.0622.
++
++## Phase 1: item-selection contribution
++Phase 1 compared random, balanced-random, semantic Coverage, Coverage+Diversity, TraitPredictiveness, and Hybrid strategies. The final report carries forward Coverage as the preferred semantic selection strategy and treats Phase 1 Table 1/Table 2 as the source of item-level and trait-level evidence.
++
++## Phase 2: prediction-algorithm contribution
++Phase 2 compared Tuned UniformKNN, CosineWeightedKNN, SoftmaxKNN, KernelSmoothing, and the cross-phase original-paper UniformKNN K=5 baseline. The final Phase 4 pipeline uses SoftmaxKNN because it gave the best overall item-level Pearson r in Phase 2 and supports both fixed Phase 2 hyperparameters and train-inner tuning.
++
++## Phase 3: embedding-space diagnostics
++Phase 3 compared SBERT original, MiniLM, MPNet, E5, and BGE using Coverage/Redundancy and raw-cosine trait-structure diagnostics. These diagnostics are explanatory hypotheses, not predictive-performance claims; Phase 4 is the predictive test.
++
++## Phase 4: A1/A2/B1/B2 attribution
++- **A1_fixed** = fixed historical SBERT Coverage `S_old` plus fixed Phase 2 SoftmaxKNN hyperparameters. This isolates embedding-neighbor geometry under a fixed administered item set.
++- **A2_tuned** = fixed `S_old` plus embedding-specific train-inner K/τ tuning. This estimates geometry contribution after calibration without changing item selection.
++- **B1_fixed** = embedding-specific Coverage re-selection `S_new` plus fixed Phase 2 hyperparameters. This adds re-selection contribution while keeping hyperparameters fixed.
++- **B2_tuned** = embedding-specific `S_new` plus embedding-specific train-inner K/τ tuning. This is the full re-selected+tuned Phase 4 pipeline.
++The B−A comparisons are paired within the same embedding and tuning regime, so B1−A1 and B2−A2 quantify selection contribution beyond the corresponding fixed-`S_old` baseline.
++
++## Best pipeline by administered-item ratio
++| m | version | embedding | selection | predictor | K | tau | item_r | trait_r_mean | profile_r | MAE |
++|---:|---|---|---|---|---:|---:|---:|---:|---:|---:|
++| 10 | B1_fixed | MPNet-base-v2 | S_new_embedding_specific_reselected | SoftmaxKNN | 7 | 0.1000 | 0.3507 | 0.6776 | 0.7715 | 0.9836 |
++| 30 | A2_tuned | MPNet-base-v2 | S_old_fixed | SoftmaxKNN | 3 | 0.1000 | 0.4474 | 0.8884 | 0.9002 | 0.8961 |
++| 50 | A2_tuned | MPNet-base-v2 | S_old_fixed | SoftmaxKNN | 5 | 0.1000 | 0.4896 | 0.9452 | 0.9486 | 0.8442 |
++| 90 | A2_tuned | BGE-base-en-v1.5 | S_old_fixed | SoftmaxKNN | 3 | 0.1200 | 0.6167 | 0.9943 | 0.9943 | 0.6946 |
++
++## Statistical inference
++The primary Phase 4 statistical comparisons use paired bootstrap over participants while preserving outer-fold pairing. New embeddings are compared against `sbert_original`; B−A selection-contribution tests compare B1 vs A1 and B2 vs A2 within the same embedding and ratio. Raw p-values plus Holm and Benjamini-Hochberg corrected p-values are preserved in `statistical_summary.csv`.
++
++## Reproducibility notes
++- Random state is fixed at 0 in upstream CV and selection code.
++- Outer folds are participant-level folds and are paired across Phase 4 A/B comparisons.
++- A2/B2 K and τ values are selected only on train-inner validation splits; test participants are held out for final evaluation.
++- Phase 4 primary predictions are continuous and clipped to [1,5] without rounding; rounded accuracy and rounded MAE are supplemental outputs only.
++- This report reads existing CSV/TXT/PNG artifacts and records source hashes in `report_manifest.json`.
++
++## Output inventory
++- `final_summary.csv`: normalized Phase 1–4 and recommended-pipeline rows.
++- `statistical_summary.csv`: normalized inferential tests from Phase 1, Phase 2, and Phase 4.
++- `best_pipeline_table.csv`: best observed Phase 4 pipeline by 10/30/50/90 administered items.
++- `figures/table5_phase4_integrated_synthesis.csv` (**Table 5**): A-vs-B synthesis table for Phase 4.
++- `figures/figure6_phase4_selection_vs_performance.pdf/png` (**Figure 6**): new integrated selection/performance synthesis figure.
++
++## Limitations
++Current conclusions are primarily based on NEO-PI-R; cross-questionnaire generalization remains to be tested in future work.
++No cross-questionnaire generalization experiment is added in F015; the report is an aggregation and synthesis of existing NEO-PI-R artifacts.
++
+diff --git a/questionnaire-embeddings/results/final_report/final_report.pdf b/questionnaire-embeddings/results/final_report/final_report.pdf
+new file mode 100644
+index 0000000..42e2b7e
+Binary files /dev/null and b/questionnaire-embeddings/results/final_report/final_report.pdf differ
+diff --git a/questionnaire-embeddings/results/final_report/final_report.txt b/questionnaire-embeddings/results/final_report/final_report.txt
+new file mode 100644
+index 0000000..748af63
+--- /dev/null
++++ b/questionnaire-embeddings/results/final_report/final_report.txt
+@@ -0,0 +1,57 @@
++Final Report: Questionnaire Embeddings Phase 1–4 Integrated Analysis
++
++Scope and deliverables
++This F015 report aggregates existing accepted artifacts only. It does not rerun Phase 1–4 experiments, regenerate embeddings, or re-estimate bootstrap tests.
++Primary metric: item-level Pearson r. Key secondary metrics: trait_r_mean, profile_r, MAE.
++
++Executive summary
++- Phase 1 selected Coverage as the strongest item-selection strategy in the observed Table 1 cells (best cell m=90, item_r=0.4842).
++- Phase 2 selected SoftmaxKNN as the recommended predictor family over Coverage-selected items.
++- Phase 3 diagnostics suggested E5-base-v2 for highest selected-set coverage and MPNet-base-v2 for strongest within-minus-between trait separation.
++- Phase 4 best observed pipeline cell was A2_tuned / BGE-base-en-v1.5 at m=90, item_r=0.6167.
++- Largest positive B−A re-selection contribution was B1_fixed minus A1_fixed for MPNet-base-v2 at m=10, Δitem_r=0.0622.
++
++Phase 1: item-selection contribution
++Phase 1 compared random, balanced-random, semantic Coverage, Coverage+Diversity, TraitPredictiveness, and Hybrid strategies. The final report carries forward Coverage as the preferred semantic selection strategy and treats Phase 1 Table 1/Table 2 as the source of item-level and trait-level evidence.
++
++Phase 2: prediction-algorithm contribution
++Phase 2 compared Tuned UniformKNN, CosineWeightedKNN, SoftmaxKNN, KernelSmoothing, and the cross-phase original-paper UniformKNN K=5 baseline. The final Phase 4 pipeline uses SoftmaxKNN because it gave the best overall item-level Pearson r in Phase 2 and supports both fixed Phase 2 hyperparameters and train-inner tuning.
++
++Phase 3: embedding-space diagnostics
++Phase 3 compared SBERT original, MiniLM, MPNet, E5, and BGE using Coverage/Redundancy and raw-cosine trait-structure diagnostics. These diagnostics are explanatory hypotheses, not predictive-performance claims; Phase 4 is the predictive test.
++
++Phase 4: A1/A2/B1/B2 attribution
++- A1_fixed = fixed historical SBERT Coverage S_old plus fixed Phase 2 SoftmaxKNN hyperparameters. This isolates embedding-neighbor geometry under a fixed administered item set.
++- A2_tuned = fixed S_old plus embedding-specific train-inner K/τ tuning. This estimates geometry contribution after calibration without changing item selection.
++- B1_fixed = embedding-specific Coverage re-selection S_new plus fixed Phase 2 hyperparameters. This adds re-selection contribution while keeping hyperparameters fixed.
++- B2_tuned = embedding-specific S_new plus embedding-specific train-inner K/τ tuning. This is the full re-selected+tuned Phase 4 pipeline.
++The B−A comparisons are paired within the same embedding and tuning regime, so B1−A1 and B2−A2 quantify selection contribution beyond the corresponding fixed-S_old baseline.
++
++Best pipeline by administered-item ratio
++| m | version | embedding | selection | predictor | K | tau | item_r | trait_r_mean | profile_r | MAE |
++|---:|---|---|---|---|---:|---:|---:|---:|---:|---:|
++| 10 | B1_fixed | MPNet-base-v2 | S_new_embedding_specific_reselected | SoftmaxKNN | 7 | 0.1000 | 0.3507 | 0.6776 | 0.7715 | 0.9836 |
++| 30 | A2_tuned | MPNet-base-v2 | S_old_fixed | SoftmaxKNN | 3 | 0.1000 | 0.4474 | 0.8884 | 0.9002 | 0.8961 |
++| 50 | A2_tuned | MPNet-base-v2 | S_old_fixed | SoftmaxKNN | 5 | 0.1000 | 0.4896 | 0.9452 | 0.9486 | 0.8442 |
++| 90 | A2_tuned | BGE-base-en-v1.5 | S_old_fixed | SoftmaxKNN | 3 | 0.1200 | 0.6167 | 0.9943 | 0.9943 | 0.6946 |
++
++Statistical inference
++The primary Phase 4 statistical comparisons use paired bootstrap over participants while preserving outer-fold pairing. New embeddings are compared against sbert_original; B−A selection-contribution tests compare B1 vs A1 and B2 vs A2 within the same embedding and ratio. Raw p-values plus Holm and Benjamini-Hochberg corrected p-values are preserved in statistical_summary.csv.
++
++Reproducibility notes
++- Random state is fixed at 0 in upstream CV and selection code.
++- Outer folds are participant-level folds and are paired across Phase 4 A/B comparisons.
++- A2/B2 K and τ values are selected only on train-inner validation splits; test participants are held out for final evaluation.
++- Phase 4 primary predictions are continuous and clipped to [1,5] without rounding; rounded accuracy and rounded MAE are supplemental outputs only.
++- This report reads existing CSV/TXT/PNG artifacts and records source hashes in report_manifest.json.
++
++Output inventory
++- final_summary.csv: normalized Phase 1–4 and recommended-pipeline rows.
++- statistical_summary.csv: normalized inferential tests from Phase 1, Phase 2, and Phase 4.
++- best_pipeline_table.csv: best observed Phase 4 pipeline by 10/30/50/90 administered items.
++- figures/table5_phase4_integrated_synthesis.csv (Table 5): A-vs-B synthesis table for Phase 4.
++- figures/figure6_phase4_selection_vs_performance.pdf/png (Figure 6): new integrated selection/performance synthesis figure.
++
++Limitations
++Current conclusions are primarily based on NEO-PI-R; cross-questionnaire generalization remains to be tested in future work.
++No cross-questionnaire generalization experiment is added in F015; the report is an aggregation and synthesis of existing NEO-PI-R artifacts.
+diff --git a/questionnaire-embeddings/results/final_report/report_manifest.json b/questionnaire-embeddings/results/final_report/report_manifest.json
+new file mode 100644
+index 0000000..c72213d
+--- /dev/null
++++ b/questionnaire-embeddings/results/final_report/report_manifest.json
+@@ -0,0 +1,180 @@
++{
++  "feature_id": "F015",
++  "generated_at": "deterministic_not_recorded",
++  "script_path": "scripts/generate_final_report.py",
++  "output_dir": "results/final_report",
++  "no_experiments_rerun": true,
++  "primary_metric": "item-level Pearson r",
++  "secondary_metrics": "trait_r_mean, profile_r, MAE",
++  "limitation_cross_questionnaire_not_run": true,
++  "source_artifacts": [
++    {
++      "key": "phase1_figure1_learning_curve",
++      "path": "results/phase1/figures/figure1_learning_curve.png",
++      "sha256": "7eb0cc501117d0b0d440b73ec7fe08cf7665d4adf3bd67d20a5d44945552eae1",
++      "bytes": 256684
++    },
++    {
++      "key": "phase1_figure2_trait_distribution",
++      "path": "results/phase1/figures/figure2_trait_distribution.png",
++      "sha256": "65ffb166777f86bc438d8b1640b3967845a60f1a79b02cc0e7e2c51a23f5f6be",
++      "bytes": 120980
++    },
++    {
++      "key": "phase1_recommendation",
++      "path": "results/phase1/figures/phase1_recommendation.txt",
++      "sha256": "647818f298ebcbb0fa516b1a1e58326b1a4fdc303b3eaf760b4e9237ffed6455",
++      "bytes": 2890
++    },
++    {
++      "key": "phase1_stats",
++      "path": "results/phase1/figures/statistical_tests.csv",
++      "sha256": "3de7177eed375b32d5122faabfdc8cc674fccecdcf1b7cb8ecdb3f5e9e8c8364",
++      "bytes": 3138
++    },
++    {
++      "key": "phase1_table1",
++      "path": "results/phase1/figures/table1_item_level.csv",
++      "sha256": "c7237a348e1ebcc75e9f0f76a57bfdcd502cc6d97d07b01274e4b4588df35c52",
++      "bytes": 2362
++    },
++    {
++      "key": "phase1_table2_imputed",
++      "path": "results/phase1/figures/table2_imputed.csv",
++      "sha256": "c0d9364f5ab855e6e787a33e9aca5bf560cd0b1a1649a494fe19b90b31a2b621",
++      "bytes": 11259
++    },
++    {
++      "key": "phase2_figure3_delta_r",
++      "path": "results/phase2/figures/figure3_delta_r.png",
++      "sha256": "4e89289597d25139539e1fab2c05e58af7ba704c2583d672459d44a6736ef3a3",
++      "bytes": 72120
++    },
++    {
++      "key": "phase2_recommendation",
++      "path": "results/phase2/figures/phase2_recommendation.txt",
++      "sha256": "1b7092bf9aeb5247ce130ee2362c1b12d5a923ebda61a1060e81626bbc7cd8bb",
++      "bytes": 2792
++    },
++    {
++      "key": "phase2_stats",
++      "path": "results/phase2/figures/statistical_tests_phase2.csv",
++      "sha256": "b6030d4fe9d8eb59b5273553f253b7f49cebd0069c2538838442ccb6c206a249",
++      "bytes": 2874
++    },
++    {
++      "key": "phase2_table3",
++      "path": "results/phase2/figures/table3_predictor_ablation.csv",
++      "sha256": "df95b38ebf997a0d3e9d195e5366fd6790b57af28eb21e130d03dcbe60991359",
++      "bytes": 2803
++    },
++    {
++      "key": "phase3_diagnostics_text",
++      "path": "results/phase3/figures/phase3_embedding_diagnostics.txt",
++      "sha256": "d9ca518a970610d83916118e5aff75da9868bd423d1257bcebda9de70c93ad2f",
++      "bytes": 3569
++    },
++    {
++      "key": "phase3_figure5",
++      "path": "results/phase3/figures/figure5.png",
++      "sha256": "7226be3fa0d9cf7e184734c4f481d18754f152b7f39c61d19c7fa600a98af946",
++      "bytes": 281897
++    },
++    {
++      "key": "phase3_summary",
++      "path": "results/phase3/embedding_diagnostics_summary.csv",
++      "sha256": "d552daa326a65bc89064ca30206313b0e6d760464bef834536e6611ba4874d14",
++      "bytes": 2661
++    },
++    {
++      "key": "phase4_contribution",
++      "path": "results/phase4/versionB_selection_contribution.csv",
++      "sha256": "22983782f3bf946749b9f98acfda5b6a51cecb2d8a4c14fabc5bf0bb8cca6edf",
++      "bytes": 9431
++    },
++    {
++      "key": "phase4_figure4",
++      "path": "results/phase4/figures/figure4.png",
++      "sha256": "ed0d32dc39221646bf328332a3a3d2a2b14744ccf6b8b093e326c9468e59d9fa",
++      "bytes": 281070
++    },
++    {
++      "key": "phase4_hyper_a",
++      "path": "results/phase4/hyperparameters_by_fold_ratio_embedding.csv",
++      "sha256": "050e47463a0abd934afb4b439f796cc9e9c23fac8572eb64f33e25d0fc2692c5",
++      "bytes": 125347
++    },
++    {
++      "key": "phase4_hyper_b",
++      "path": "results/phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv",
++      "sha256": "f5e9369abe1d6649bb2949fe1d2f7a985a696036b0a620fa053426a29443c06f",
++      "bytes": 131889
++    },
++    {
++      "key": "phase4_overlap",
++      "path": "results/phase4/versionB_selection_overlap.csv",
++      "sha256": "9e39a72c154a2d0b0a535a255c8b6b91c64a88fc11c84cf18cac39bf7e32acfd",
++      "bytes": 26995
++    },
++    {
++      "key": "phase4_stats_a",
++      "path": "results/phase4/versionA_statistical_tests.csv",
++      "sha256": "77cc9aa95d032dbcb1c884adea47e8be05372350845b8dd42fa6590a8977a333",
++      "bytes": 6516
++    },
++    {
++      "key": "phase4_stats_b",
++      "path": "results/phase4/versionB_statistical_tests.csv",
++      "sha256": "8b6a4aa845b6fc51defbe102489a3373ccb99e56b88912bb9cc629e64c0e75b3",
++      "bytes": 6427
++    },
++    {
++      "key": "phase4_table4",
++      "path": "results/phase4/figures/table4.csv",
++      "sha256": "dc733cd1ee9828dd837995f9d86701ebd2a25801220d22fa7a67ffd0dbaedcf5",
++      "bytes": 52924
++    },
++    {
++      "key": "phase4_versionA_summary",
++      "path": "results/phase4/versionA_summary.csv",
++      "sha256": "f8262e7340b96dec02a44f45ac6ddae8961a5b13b2ac7c2c2f0cf348316bd522",
++      "bytes": 21420
++    },
++    {
++      "key": "phase4_versionB_summary",
++      "path": "results/phase4/versionB_summary.csv",
++      "sha256": "c519d1d0736d741ca777cd23f6d4f9885eaaf4f0e2d14079fd10df34b13c0950",
++      "bytes": 23585
++    }
++  ],
++  "output_files": {
++    "best_pipeline_table": "best_pipeline_table.csv",
++    "figure6_pdf": "figures/figure6_phase4_selection_vs_performance.pdf",
++    "figure6_png": "figures/figure6_phase4_selection_vs_performance.png",
++    "final_report_md": "final_report.md",
++    "final_report_pdf": "final_report.pdf",
++    "final_report_txt": "final_report.txt",
++    "final_summary": "final_summary.csv",
++    "phase4_integrated_synthesis": "figures/table5_phase4_integrated_synthesis.csv",
++    "report_manifest": "report_manifest.json",
++    "statistical_summary": "statistical_summary.csv"
++  },
++  "row_counts": {
++    "final_summary": 141,
++    "statistical_summary": 156,
++    "best_pipeline_table": 4,
++    "phase4_integrated_synthesis": 40
++  },
++  "required_phase4_versions": [
++    "A1_fixed",
++    "A2_tuned",
++    "B1_fixed",
++    "B2_tuned"
++  ],
++  "required_ratios": [
++    10,
++    30,
++    50,
++    90
++  ]
++}
+diff --git a/questionnaire-embeddings/scripts/generate_final_report.py b/questionnaire-embeddings/scripts/generate_final_report.py
+new file mode 100644
+index 0000000..886b176
+--- /dev/null
++++ b/questionnaire-embeddings/scripts/generate_final_report.py
+@@ -0,0 +1,879 @@
++#!/usr/bin/env python3
++"""F015: final integrated Phase 1–4 report generator.
++
++This script is intentionally an aggregation layer: it reads existing accepted
++Phase 1–4 artifacts, validates their schemas, and writes a deterministic final
++report package.  It does not rerun experiments, regenerate embeddings, or load
++participant-level prediction parquet files.
++"""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import shutil
++import sys
++import textwrap
++from pathlib import Path
++from typing import Any
++
++import numpy as np
++import pandas as pd
++
++PROJECT_ROOT = Path(__file__).resolve().parent.parent
++RESULTS_ROOT = PROJECT_ROOT / "results"
++DEFAULT_OUTPUT_DIR = RESULTS_ROOT / "final_report"
++
++RATIOS = (10, 30, 50, 90)
++MODEL_ORDER = ("sbert_original", "minilm_l6_v2", "mpnet_base_v2", "e5_base_v2", "bge_base_en_v15")
++VERSION_ORDER = ("A1_fixed", "A2_tuned", "B1_fixed", "B2_tuned")
++PRIMARY_METRIC = "item-level Pearson r"
++SECONDARY_METRICS = "trait_r_mean, profile_r, MAE"
++LIMITATION_TEXT = (
++    "Current conclusions are primarily based on NEO-PI-R; cross-questionnaire "
++    "generalization remains to be tested in future work."
++)
++
++REQUIRED_INPUTS: dict[str, tuple[str, set[str]]] = {
++    "phase1_table1": (
++        "phase1/figures/table1_item_level.csv",
++        {"strategy", "ratio", "item_r", "ci_lower", "ci_upper"},
++    ),
++    "phase1_table2_imputed": (
++        "phase1/figures/table2_imputed.csv",
++        {"strategy", "ratio", "trait_r_mean", "ci_lower", "ci_upper"},
++    ),
++    "phase1_stats": (
++        "phase1/figures/statistical_tests.csv",
++        {"strategy", "ratio", "vs_baseline", "delta_mean", "ci_lower", "ci_upper", "p_value", "n_pairs"},
++    ),
++    "phase2_table3": (
++        "phase2/figures/table3_predictor_ablation.csv",
++        {"predictor", "ratio", "item_r", "item_r_ci_lower", "item_r_ci_upper", "item_mae", "trait_r_mean", "profile_r", "best_K", "best_tau"},
++    ),
++    "phase2_stats": (
++        "phase2/figures/statistical_tests_phase2.csv",
++        {"comparison", "predictor_a", "predictor_b", "ratio", "delta_mean", "ci_lower", "ci_upper", "p_value", "n_pairs"},
++    ),
++    "phase3_summary": (
++        "phase3/embedding_diagnostics_summary.csv",
++        {"embedding_key", "embedding_label", "dimension", "within_minus_between_raw_cosine", "mean_selected_set_coverage_shifted_cosine", "mean_selected_set_redundancy_shifted_cosine"},
++    ),
++    "phase4_versionA_summary": (
++        "phase4/versionA_summary.csv",
++        {"version", "embedding_key", "embedding_label", "ratio", "K_mode", "tau_mean", "item_r_mean", "item_r_ci_lower", "item_r_ci_upper", "item_mae_mean", "profile_r_mean", "trait_r_mean"},
++    ),
++    "phase4_versionB_summary": (
++        "phase4/versionB_summary.csv",
++        {"version", "embedding_key", "embedding_label", "ratio", "K_mode", "tau_mean", "item_r_mean", "item_r_ci_lower", "item_r_ci_upper", "item_mae_mean", "profile_r_mean", "trait_r_mean", "jaccard_mean_vs_s_old"},
++    ),
++    "phase4_table4": (
++        "phase4/figures/table4.csv",
++        {
++            "version", "embedding_key", "embedding_label", "ratio", "K_mode", "tau_mean",
++            "item_r_mean", "item_r_ci_lower", "item_r_ci_upper", "item_mae_mean",
++            "profile_r_mean", "trait_r_mean", "delta_item_r_vs_sbert", "p_vs_sbert_holm",
++            "delta_item_r_selection_vs_A", "delta_item_r_selection_vs_A_ci_lower",
++            "delta_item_r_selection_vs_A_ci_upper", "p_selection_holm", "p_selection_bh",
++            "jaccard_mean_vs_s_old", "jaccard_min_vs_s_old", "jaccard_max_vs_s_old",
++            "selection_changed_any_fold",
++        },
++    ),
++    "phase4_stats_a": (
++        "phase4/versionA_statistical_tests.csv",
++        {"version", "ratio", "embedding_key", "embedding_label", "metric", "delta_mean", "ci_lower", "ci_upper", "p_raw", "p_holm", "p_bh", "n_pairs"},
++    ),
++    "phase4_stats_b": (
++        "phase4/versionB_statistical_tests.csv",
++        {"version", "ratio", "embedding_key", "embedding_label", "metric", "delta_mean", "ci_lower", "ci_upper", "p_raw", "p_holm", "p_bh", "n_pairs"},
++    ),
++    "phase4_overlap": (
++        "phase4/versionB_selection_overlap.csv",
++        {"embedding_key", "embedding_label", "ratio", "fold", "jaccard_overlap", "selection_changed", "s_new_coverage", "s_new_redundancy", "s_old_coverage", "s_old_redundancy"},
++    ),
++    "phase4_contribution": (
++        "phase4/versionB_selection_contribution.csv",
++        {"comparison", "a_version", "b_version", "embedding_key", "embedding_label", "ratio", "metric", "delta_mean", "ci_lower", "ci_upper", "p_raw", "p_holm", "p_bh", "n_pairs", "jaccard_mean_vs_s_old"},
++    ),
++    "phase4_hyper_a": (
++        "phase4/hyperparameters_by_fold_ratio_embedding.csv",
++        {"version", "embedding_key", "ratio", "fold", "predictor", "K", "tau", "is_fixed", "is_tuned", "hyperparam_source"},
++    ),
++    "phase4_hyper_b": (
++        "phase4/versionB_hyperparameters_by_fold_ratio_embedding.csv",
++        {"version", "embedding_key", "ratio", "fold", "predictor", "K", "tau", "is_fixed", "is_tuned", "hyperparam_source"},
++    ),
++}
++
++TEXT_INPUTS = {
++    "phase1_recommendation": "phase1/figures/phase1_recommendation.txt",
++    "phase2_recommendation": "phase2/figures/phase2_recommendation.txt",
++    "phase3_diagnostics_text": "phase3/figures/phase3_embedding_diagnostics.txt",
++}
++
++FIGURE_INPUTS = {
++    "phase1_figure1_learning_curve": "phase1/figures/figure1_learning_curve.png",
++    "phase1_figure2_trait_distribution": "phase1/figures/figure2_trait_distribution.png",
++    "phase2_figure3_delta_r": "phase2/figures/figure3_delta_r.png",
++    "phase3_figure5": "phase3/figures/figure5.png",
++    "phase4_figure4": "phase4/figures/figure4.png",
++}
++
++
++def parse_args() -> argparse.Namespace:
++    parser = argparse.ArgumentParser(description="Generate F015 final integrated Phase 1–4 report.")
++    parser.add_argument(
++        "--output-dir",
++        type=Path,
++        default=DEFAULT_OUTPUT_DIR,
++        help="Output directory. Defaults to results/final_report; tests may pass a scratch directory.",
++    )
++    return parser.parse_args()
++
++
++def sha256_file(path: Path) -> str:
++    h = hashlib.sha256()
++    with path.open("rb") as f:
++        for chunk in iter(lambda: f.read(1024 * 1024), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def read_csv_checked(path: Path, columns: set[str]) -> pd.DataFrame:
++    if not path.exists():
++        raise FileNotFoundError(f"Missing required source artifact: {path}")
++    df = pd.read_csv(path)
++    missing = sorted(columns - set(df.columns))
++    if missing:
++        raise ValueError(f"{path} is missing required columns: {missing}")
++    return df
++
++
++def load_inputs(results_root: Path = RESULTS_ROOT) -> dict[str, Any]:
++    inputs: dict[str, Any] = {"dataframes": {}, "texts": {}, "figures": {}, "sources": {}}
++    missing: list[str] = []
++
++    for key, (rel, cols) in REQUIRED_INPUTS.items():
++        path = results_root / rel
++        if not path.exists():
++            missing.append(str(path))
++            continue
++        inputs["dataframes"][key] = read_csv_checked(path, cols)
++        inputs["sources"][key] = path
++
++    for key, rel in TEXT_INPUTS.items():
++        path = results_root / rel
++        if not path.exists():
++            missing.append(str(path))
++            continue
++        inputs["texts"][key] = path.read_text(encoding="utf-8")
++        inputs["sources"][key] = path
++
++    for key, rel in FIGURE_INPUTS.items():
++        path = results_root / rel
++        if not path.exists():
++            missing.append(str(path))
++            continue
++        inputs["figures"][key] = path
++        inputs["sources"][key] = path
++
++    if missing:
++        hint = (
++            "Regenerate upstream artifacts first: Phase 1 evaluate_phase1.py, "
++            "Phase 2 evaluate_phase2.py, Phase 3 diagnose_embeddings.py --all, "
++            "and Phase 4 run_phase4_versionA.py/VersionB.py --all."
++        )
++        raise FileNotFoundError("Missing required F015 inputs:\n  " + "\n  ".join(missing) + "\n" + hint)
++
++    validate_inputs(inputs["dataframes"])
++    return inputs
++
++
++def validate_inputs(dfs: dict[str, pd.DataFrame]) -> None:
++    def expect_set(name: str, col: str, expected: set[Any]) -> None:
++        got = set(dfs[name][col].dropna().astype(type(next(iter(expected))) if expected else str))
++        if got != expected:
++            raise ValueError(f"{name}.{col} coverage mismatch: expected {sorted(expected)}, got {sorted(got)}")
++
++    expect_set("phase1_table1", "ratio", set(RATIOS))
++    if len(dfs["phase1_table1"]) != 32:
++        raise ValueError("phase1_table1 must contain 8 strategies × 4 ratios = 32 rows")
++    expect_set("phase2_table3", "ratio", set(RATIOS))
++    predictors = set(dfs["phase2_table3"]["predictor"])
++    if "SoftmaxKNN" not in predictors or "UniformKNN K=5 (原文 baseline)" not in predictors:
++        raise ValueError("phase2_table3 must include SoftmaxKNN and UniformKNN K=5 (原文 baseline)")
++    if set(dfs["phase3_summary"]["embedding_key"]) != set(MODEL_ORDER):
++        raise ValueError("phase3_summary must cover the five expected embeddings")
++    if set(dfs["phase4_versionA_summary"]["version"]) != {"A1_fixed", "A2_tuned"}:
++        raise ValueError("versionA_summary must cover A1_fixed and A2_tuned")
++    if set(dfs["phase4_versionB_summary"]["version"]) != {"B1_fixed", "B2_tuned"}:
++        raise ValueError("versionB_summary must cover B1_fixed and B2_tuned")
++    table4 = dfs["phase4_table4"]
++    if set(table4["version"]) != set(VERSION_ORDER):
++        raise ValueError("table4 must cover A1_fixed, A2_tuned, B1_fixed, B2_tuned")
++    if len(table4) != 80:
++        raise ValueError("table4 must contain 4 versions × 5 embeddings × 4 ratios = 80 rows")
++    if len(dfs["phase4_overlap"]) != 100:
++        raise ValueError("selection overlap must contain 5 embeddings × 4 ratios × 5 folds = 100 rows")
++    if set(dfs["phase4_contribution"]["comparison"]) != {"B1_minus_A1", "B2_minus_A2"}:
++        raise ValueError("selection contribution must contain B1_minus_A1 and B2_minus_A2")
++    if len(dfs["phase4_contribution"]) != 40:
++        raise ValueError("selection contribution must contain 2 comparisons × 5 embeddings × 4 ratios = 40 rows")
++
++
++def sort_phase4(df: pd.DataFrame) -> pd.DataFrame:
++    out = df.copy()
++    out["_version_order"] = out["version"].map({v: i for i, v in enumerate(VERSION_ORDER)})
++    out["_model_order"] = out["embedding_key"].map({m: i for i, m in enumerate(MODEL_ORDER)})
++    return out.sort_values(["_version_order", "ratio", "_model_order"]).drop(columns=["_version_order", "_model_order"])
++
++
++def build_phase4_integrated_synthesis(
++    table4: pd.DataFrame,
++    contribution: pd.DataFrame,
++    overlap: pd.DataFrame,
++) -> pd.DataFrame:
++    """Build Table 5 by joining performance, B−A contribution, and overlap artifacts."""
++    rows: list[dict[str, Any]] = []
++    pairs = [("fixed_params", "A1_fixed", "B1_fixed", "B1_minus_A1"), ("tuned_params", "A2_tuned", "B2_tuned", "B2_minus_A2")]
++    overlap_summary = overlap.groupby(["embedding_key", "ratio"]).agg(
++        jaccard_mean_vs_s_old=("jaccard_overlap", "mean"),
++        jaccard_min_vs_s_old=("jaccard_overlap", "min"),
++        jaccard_max_vs_s_old=("jaccard_overlap", "max"),
++        selection_changed_any_fold=("selection_changed", "any"),
++    ).reset_index()
++
++    for family, a_version, b_version, comparison in pairs:
++        for embedding_key in MODEL_ORDER:
++            for ratio in RATIOS:
++                a = table4[(table4["version"] == a_version) & (table4["embedding_key"] == embedding_key) & (table4["ratio"] == ratio)]
++                b = table4[(table4["version"] == b_version) & (table4["embedding_key"] == embedding_key) & (table4["ratio"] == ratio)]
++                c = contribution[(contribution["comparison"] == comparison) & (contribution["embedding_key"] == embedding_key) & (contribution["ratio"] == ratio)]
++                o = overlap_summary[(overlap_summary["embedding_key"] == embedding_key) & (overlap_summary["ratio"] == ratio)]
++                if a.empty or b.empty or c.empty or o.empty:
++                    raise ValueError(f"Missing Phase 4 synthesis source rows for {family} {embedding_key} ratio={ratio}")
++                ar = a.iloc[0]
++                br = b.iloc[0]
++                cr = c.iloc[0]
++                orow = o.iloc[0]
++
++                # Fail fast if table4's embedded contribution/overlap fields drift from
++                # their canonical source artifacts.  This preserves table4 as a convenient
++                # performance source without allowing stale derived columns to slip through.
++                checks = [
++                    (br["delta_item_r_selection_vs_A"], cr["delta_mean"], "delta_item_r_selection_vs_A"),
++                    (br["p_selection_holm"], cr["p_holm"], "p_selection_holm"),
++                    (br["p_selection_bh"], cr["p_bh"], "p_selection_bh"),
++                    (br["jaccard_mean_vs_s_old"], orow["jaccard_mean_vs_s_old"], "jaccard_mean_vs_s_old"),
++                    (br["jaccard_min_vs_s_old"], orow["jaccard_min_vs_s_old"], "jaccard_min_vs_s_old"),
++                    (br["jaccard_max_vs_s_old"], orow["jaccard_max_vs_s_old"], "jaccard_max_vs_s_old"),
++                ]
++                for from_table4, from_source, field in checks:
++                    if not np.isclose(float(from_table4), float(from_source), atol=1e-10, equal_nan=True):
++                        raise ValueError(f"table4 {field} drift for {comparison} {embedding_key} m={ratio}: {from_table4} vs {from_source}")
++
++                rows.append({
++                    "family": family,
++                    "a_version": a_version,
++                    "b_version": b_version,
++                    "embedding_key": embedding_key,
++                    "embedding_label": br["embedding_label"],
++                    "ratio": int(ratio),
++                    "a_item_r_mean": ar["item_r_mean"],
++                    "a_item_r_ci_lower": ar["item_r_ci_lower"],
++                    "a_item_r_ci_upper": ar["item_r_ci_upper"],
++                    "b_item_r_mean": br["item_r_mean"],
++                    "b_item_r_ci_lower": br["item_r_ci_lower"],
++                    "b_item_r_ci_upper": br["item_r_ci_upper"],
++                    "delta_selection_vs_a": cr["delta_mean"],
++                    "delta_selection_vs_a_ci_lower": cr["ci_lower"],
++                    "delta_selection_vs_a_ci_upper": cr["ci_upper"],
++                    "p_selection_holm": cr["p_holm"],
++                    "p_selection_bh": cr["p_bh"],
++                    "jaccard_mean_vs_s_old": orow["jaccard_mean_vs_s_old"],
++                    "jaccard_min_vs_s_old": orow["jaccard_min_vs_s_old"],
++                    "jaccard_max_vs_s_old": orow["jaccard_max_vs_s_old"],
++                    "selection_changed_any_fold": bool(orow["selection_changed_any_fold"]),
++                    "delta_a_vs_sbert": ar["delta_item_r_vs_sbert"],
++                    "delta_b_vs_sbert": br["delta_item_r_vs_sbert"],
++                    "best_of_pair": b_version if br["item_r_mean"] >= ar["item_r_mean"] else a_version,
++                    "evidence_source_table4": "results/phase4/figures/table4.csv",
++                    "evidence_source_contribution": "results/phase4/versionB_selection_contribution.csv",
++                    "evidence_source_overlap": "results/phase4/versionB_selection_overlap.csv",
++                })
++    return pd.DataFrame(rows)
++
++
++def build_best_pipeline_table(table4: pd.DataFrame) -> pd.DataFrame:
++    rows: list[dict[str, Any]] = []
++    for ratio in RATIOS:
++        sub = table4[table4["ratio"] == ratio].copy()
++        sub["_fixed_pref"] = sub["version"].map(lambda v: 0 if v.endswith("fixed") else 1)
++        sub = sub.sort_values(
++            ["item_r_mean", "item_mae_mean", "trait_r_mean", "profile_r_mean", "_fixed_pref", "version", "embedding_key"],
++            ascending=[False, True, False, False, True, True, True],
++        )
++        best = sub.iloc[0]
++        version = str(best["version"])
++        rows.append({
++            "ratio": int(ratio),
++            "recommended_version": version,
++            "embedding_key": best["embedding_key"],
++            "embedding_label": best["embedding_label"],
++            "selection_strategy": "Coverage",
++            "selection_scope": "S_old_fixed" if version.startswith("A") else "S_new_embedding_specific_reselected",
++            "predictor": "SoftmaxKNN",
++            "hyperparam_policy": "fixed_phase2_preregistered" if version.endswith("fixed") else "embedding_specific_train_inner_tuned",
++            "K_mode": int(best["K_mode"]),
++            "tau_mean": float(best["tau_mean"]),
++            "item_r_mean": best["item_r_mean"],
++            "item_r_ci_lower": best["item_r_ci_lower"],
++            "item_r_ci_upper": best["item_r_ci_upper"],
++            "trait_r_mean": best["trait_r_mean"],
++            "profile_r_mean": best["profile_r_mean"],
++            "item_mae_mean": best["item_mae_mean"],
++            "delta_item_r_vs_sbert": best["delta_item_r_vs_sbert"],
++            "p_vs_sbert_holm": best["p_vs_sbert_holm"],
++            "delta_item_r_selection_vs_A": best["delta_item_r_selection_vs_A"],
++            "p_selection_holm": best["p_selection_holm"],
++            "source_summary_artifact": "results/phase4/figures/table4.csv",
++        })
++    return pd.DataFrame(rows)
++
++
++def build_final_summary(dfs: dict[str, pd.DataFrame], best: pd.DataFrame) -> pd.DataFrame:
++    rows: list[dict[str, Any]] = []
++
++    phase1_trait = dfs["phase1_table2_imputed"][["strategy", "ratio", "trait_r_mean"]]
++    phase1 = dfs["phase1_table1"].merge(phase1_trait, on=["strategy", "ratio"], how="left")
++    for row in phase1.itertuples(index=False):
++        rows.append({
++            "section": "phase1_selection_strategy",
++            "phase": "phase1",
++            "ratio": row.ratio,
++            "version": "",
++            "embedding_key": "sbert_original",
++            "embedding_label": "SBERT (original)",
++            "selection_strategy": row.strategy,
++            "selection_scope": "phase1_selected_items",
++            "predictor": "UniformKNN K=5",
++            "hyperparam_policy": "original_fixed_K5",
++            "K": 5,
++            "tau": np.nan,
++            "item_r_mean": row.item_r,
++            "item_r_ci_lower": row.ci_lower,
++            "item_r_ci_upper": row.ci_upper,
++            "trait_r_mean": row.trait_r_mean,
++            "profile_r_mean": np.nan,
++            "item_mae_mean": np.nan,
++            "reference": "Phase 1 item-selection comparison",
++            "source_artifact": "results/phase1/figures/table1_item_level.csv",
++        })
++
++    for row in dfs["phase2_table3"].itertuples(index=False):
++        rows.append({
++            "section": "phase2_predictor_ablation",
++            "phase": "phase2",
++            "ratio": row.ratio,
++            "version": "",
++            "embedding_key": "sbert_original",
++            "embedding_label": "SBERT (original)",
++            "selection_strategy": "Coverage",
++            "selection_scope": "S_old_phase1_coverage",
++            "predictor": row.predictor,
++            "hyperparam_policy": "train_inner_tuned" if "Tuned" in row.predictor or row.predictor in {"SoftmaxKNN", "KernelSmoothing", "CosineWeightedKNN"} else "original_fixed_K5",
++            "K": row.best_K,
++            "tau": row.best_tau,
++            "item_r_mean": row.item_r,
++            "item_r_ci_lower": row.item_r_ci_lower,
++            "item_r_ci_upper": row.item_r_ci_upper,
++            "trait_r_mean": row.trait_r_mean,
++            "profile_r_mean": row.profile_r,
++            "item_mae_mean": row.item_mae,
++            "reference": "Phase 2 predictor ablation",
++            "source_artifact": "results/phase2/figures/table3_predictor_ablation.csv",
++        })
++
++    for row in dfs["phase3_summary"].itertuples(index=False):
++        rows.append({
++            "section": "phase3_embedding_diagnostics",
++            "phase": "phase3",
++            "ratio": np.nan,
++            "version": "",
++            "embedding_key": row.embedding_key,
++            "embedding_label": row.embedding_label,
++            "selection_strategy": "Coverage diagnostics",
++            "selection_scope": "embedding_space_full100_and_selected_sets",
++            "predictor": "",
++            "hyperparam_policy": "",
++            "K": np.nan,
++            "tau": np.nan,
++            "item_r_mean": np.nan,
++            "item_r_ci_lower": np.nan,
++            "item_r_ci_upper": np.nan,
++            "trait_r_mean": np.nan,
++            "profile_r_mean": np.nan,
++            "item_mae_mean": np.nan,
++            "within_minus_between_raw_cosine": row.within_minus_between_raw_cosine,
++            "mean_selected_set_coverage_shifted_cosine": row.mean_selected_set_coverage_shifted_cosine,
++            "mean_selected_set_redundancy_shifted_cosine": row.mean_selected_set_redundancy_shifted_cosine,
++            "reference": "Phase 3 embedding-space diagnostics",
++            "source_artifact": "results/phase3/embedding_diagnostics_summary.csv",
++        })
++
++    for row in sort_phase4(dfs["phase4_table4"]).itertuples(index=False):
++        rows.append({
++            "section": "phase4_version_result",
++            "phase": "phase4",
++            "ratio": row.ratio,
++            "version": row.version,
++            "embedding_key": row.embedding_key,
++            "embedding_label": row.embedding_label,
++            "selection_strategy": "Coverage",
++            "selection_scope": "S_old_fixed" if row.version.startswith("A") else "S_new_embedding_specific_reselected",
++            "predictor": "SoftmaxKNN",
++            "hyperparam_policy": "fixed_phase2_preregistered" if row.version.endswith("fixed") else "embedding_specific_train_inner_tuned",
++            "K": row.K_mode,
++            "tau": row.tau_mean,
++            "item_r_mean": row.item_r_mean,
++            "item_r_ci_lower": row.item_r_ci_lower,
++            "item_r_ci_upper": row.item_r_ci_upper,
++            "trait_r_mean": row.trait_r_mean,
++            "profile_r_mean": row.profile_r_mean,
++            "item_mae_mean": row.item_mae_mean,
++            "delta_item_r_vs_sbert": row.delta_item_r_vs_sbert,
++            "p_vs_sbert_holm": row.p_vs_sbert_holm,
++            "delta_item_r_selection_vs_A": row.delta_item_r_selection_vs_A,
++            "p_selection_holm": row.p_selection_holm,
++            "jaccard_mean_vs_s_old": row.jaccard_mean_vs_s_old,
++            "reference": "Phase 4 A/B embedding and re-selection comparison",
++            "source_artifact": "results/phase4/figures/table4.csv",
++        })
++
++    for row in best.itertuples(index=False):
++        rows.append({
++            "section": "recommended_pipeline",
++            "phase": "final",
++            "ratio": row.ratio,
++            "version": row.recommended_version,
++            "embedding_key": row.embedding_key,
++            "embedding_label": row.embedding_label,
++            "selection_strategy": row.selection_strategy,
++            "selection_scope": row.selection_scope,
++            "predictor": row.predictor,
++            "hyperparam_policy": row.hyperparam_policy,
++            "K": row.K_mode,
++            "tau": row.tau_mean,
++            "item_r_mean": row.item_r_mean,
++            "item_r_ci_lower": row.item_r_ci_lower,
++            "item_r_ci_upper": row.item_r_ci_upper,
++            "trait_r_mean": row.trait_r_mean,
++            "profile_r_mean": row.profile_r_mean,
++            "item_mae_mean": row.item_mae_mean,
++            "delta_item_r_vs_sbert": row.delta_item_r_vs_sbert,
++            "p_vs_sbert_holm": row.p_vs_sbert_holm,
++            "delta_item_r_selection_vs_A": row.delta_item_r_selection_vs_A,
++            "p_selection_holm": row.p_selection_holm,
++            "reference": "Best observed pipeline by primary metric",
++            "source_artifact": row.source_summary_artifact,
++        })
++
++    return pd.DataFrame(rows)
++
++
++def build_statistical_summary(dfs: dict[str, pd.DataFrame]) -> pd.DataFrame:
++    rows: list[dict[str, Any]] = []
++    for row in dfs["phase1_stats"].itertuples(index=False):
++        rows.append({
++            "phase": "phase1",
++            "comparison_family": "phase1_vs_random",
++            "comparison": f"{row.strategy} vs {row.vs_baseline}",
++            "ratio": row.ratio,
++            "version": "",
++            "embedding_key": "sbert_original",
++            "embedding_label": "SBERT (original)",
++            "metric": "item_r",
++            "delta_mean": row.delta_mean,
++            "ci_lower": row.ci_lower,
++            "ci_upper": row.ci_upper,
++            "p_raw": row.p_value,
++            "p_holm": np.nan,
++            "p_bh": np.nan,
++            "n_pairs": row.n_pairs,
++            "bootstrap_unit": "folds_or_repeats_as_phase1_reported",
++            "source_artifact": "results/phase1/figures/statistical_tests.csv",
++        })
++    for row in dfs["phase2_stats"].itertuples(index=False):
++        rows.append({
++            "phase": "phase2",
++            "comparison_family": "phase2_predictor_ablation",
++            "comparison": row.comparison,
++            "ratio": row.ratio,
++            "version": "",
++            "embedding_key": "sbert_original",
++            "embedding_label": "SBERT (original)",
++            "metric": "item_r",
++            "delta_mean": row.delta_mean,
++            "ci_lower": row.ci_lower,
++            "ci_upper": row.ci_upper,
++            "p_raw": row.p_value,
++            "p_holm": np.nan,
++            "p_bh": np.nan,
++            "n_pairs": row.n_pairs,
++            "bootstrap_unit": "paired_by_fold_as_phase2_reported",
++            "source_artifact": "results/phase2/figures/statistical_tests_phase2.csv",
++        })
++    for source_key, rel, family in [
++        ("phase4_stats_a", "results/phase4/versionA_statistical_tests.csv", "phase4_vs_sbert"),
++        ("phase4_stats_b", "results/phase4/versionB_statistical_tests.csv", "phase4_vs_sbert"),
++        ("phase4_contribution", "results/phase4/versionB_selection_contribution.csv", "phase4_selection_contribution"),
++    ]:
++        for row in dfs[source_key].itertuples(index=False):
++            if source_key == "phase4_contribution":
++                comparison = row.comparison
++                version = f"{row.a_version}->{row.b_version}"
++            else:
++                comparison = f"{row.embedding_key} vs sbert_original"
++                version = row.version
++            rows.append({
++                "phase": "phase4",
++                "comparison_family": family,
++                "comparison": comparison,
++                "ratio": row.ratio,
++                "version": version,
++                "embedding_key": row.embedding_key,
++                "embedding_label": row.embedding_label,
++                "metric": row.metric,
++                "delta_mean": row.delta_mean,
++                "ci_lower": row.ci_lower,
++                "ci_upper": row.ci_upper,
++                "p_raw": row.p_raw,
++                "p_holm": row.p_holm,
++                "p_bh": row.p_bh,
++                "n_pairs": row.n_pairs,
++                "bootstrap_unit": getattr(row, "bootstrap_unit", "subjects_resampled_within_outer_fold"),
++                "source_artifact": rel,
++            })
++    return pd.DataFrame(rows)
++
++
++def copy_assets(inputs: dict[str, Any], output_dir: Path) -> dict[str, Path]:
++    figures_dir = output_dir / "figures"
++    figures_dir.mkdir(parents=True, exist_ok=True)
++    copied: dict[str, Path] = {}
++    for key, src in inputs["figures"].items():
++        dst = figures_dir / f"{key}{src.suffix}"
++        shutil.copy2(src, dst)
++        copied[key] = dst
++    return copied
++
++
++def plot_figure6(synthesis: pd.DataFrame, pdf_path: Path, png_path: Path) -> None:
++    import matplotlib
++
++    matplotlib.use("Agg")
++    import matplotlib.pyplot as plt
++
++    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
++    labels = {k: v for k, v in zip(synthesis["embedding_key"], synthesis["embedding_label"])}
++    heat = synthesis.pivot_table(index=["family", "embedding_key"], columns="ratio", values="delta_selection_vs_a")
++    heat = heat.reindex(pd.MultiIndex.from_product([["fixed_params", "tuned_params"], MODEL_ORDER], names=["family", "embedding_key"]))
++    im = axes[0].imshow(heat.to_numpy(dtype=float), aspect="auto", cmap="coolwarm")
++    axes[0].set_xticks(range(len(RATIOS)), [str(r) for r in RATIOS])
++    axes[0].set_yticks(range(len(heat.index)), [f"{fam.replace('_', ' ')}\n{labels.get(key, key)}" for fam, key in heat.index], fontsize=7)
++    axes[0].set_title("B−A selection contribution (item_r)")
++    axes[0].set_xlabel("Administered items (m)")
++    fig.colorbar(im, ax=axes[0], fraction=0.046, pad=0.04)
++
++    cmap = plt.get_cmap("tab10")
++    color_map = {key: cmap(i) for i, key in enumerate(MODEL_ORDER)}
++    marker_map = {"fixed_params": "o", "tuned_params": "s"}
++    for row in synthesis.itertuples(index=False):
++        axes[1].scatter(
++            row.jaccard_mean_vs_s_old,
++            row.delta_selection_vs_a,
++            color=color_map[row.embedding_key],
++            marker=marker_map[row.family],
++            s=45,
++            alpha=0.85,
++        )
++    for key in MODEL_ORDER:
++        axes[1].scatter([], [], color=color_map[key], label=labels.get(key, key))
++    axes[1].set_title("Selection change vs performance contribution")
++    axes[1].set_xlabel("Mean Jaccard(S_new, S_old)")
++    axes[1].set_ylabel("B−A Δ item_r")
++    axes[1].grid(True, alpha=0.25)
++    axes[1].legend(fontsize=7, loc="best")
++    fig.suptitle("Figure 6 — Integrated Phase 4 selection/performance synthesis")
++    fig.tight_layout(rect=[0, 0, 1, 0.94])
++    pdf_path.parent.mkdir(parents=True, exist_ok=True)
++    fig.savefig(pdf_path, bbox_inches="tight")
++    fig.savefig(png_path, dpi=200, bbox_inches="tight")
++    plt.close(fig)
++
++
++def f4(x: Any) -> str:
++    if x is None or pd.isna(x):
++        return "NA"
++    return f"{float(x):.4f}"
++
++
++def build_report_markdown(dfs: dict[str, pd.DataFrame], best: pd.DataFrame, synthesis: pd.DataFrame) -> str:
++    phase1_best = dfs["phase1_table1"].sort_values("item_r", ascending=False).iloc[0]
++    phase2_best_overall = dfs["phase2_table3"].groupby("predictor")["item_r"].mean().sort_values(ascending=False).index[0]
++    phase3_cov = dfs["phase3_summary"].sort_values("mean_selected_set_coverage_shifted_cosine", ascending=False).iloc[0]
++    phase3_gap = dfs["phase3_summary"].sort_values("within_minus_between_raw_cosine", ascending=False).iloc[0]
++    phase4_best = best.sort_values("item_r_mean", ascending=False).iloc[0]
++    max_sel = synthesis.sort_values("delta_selection_vs_a", ascending=False).iloc[0]
++
++    lines = [
++        "# Final Report: Questionnaire Embeddings Phase 1–4 Integrated Analysis",
++        "",
++        "## Scope and deliverables",
++        "This F015 report aggregates existing accepted artifacts only. It does not rerun Phase 1–4 experiments, regenerate embeddings, or re-estimate bootstrap tests.",
++        f"Primary metric: **{PRIMARY_METRIC}**. Key secondary metrics: **{SECONDARY_METRICS}**.",
++        "",
++        "## Executive summary",
++        f"- Phase 1 selected **{phase1_best['strategy']}** as the strongest item-selection strategy in the observed Table 1 cells (best cell m={int(phase1_best['ratio'])}, item_r={f4(phase1_best['item_r'])}).",
++        f"- Phase 2 selected **{phase2_best_overall}** as the recommended predictor family over Coverage-selected items.",
++        f"- Phase 3 diagnostics suggested **{phase3_cov['embedding_label']}** for highest selected-set coverage and **{phase3_gap['embedding_label']}** for strongest within-minus-between trait separation.",
++        f"- Phase 4 best observed pipeline cell was **{phase4_best['recommended_version']} / {phase4_best['embedding_label']}** at m={int(phase4_best['ratio'])}, item_r={f4(phase4_best['item_r_mean'])}.",
++        f"- Largest positive B−A re-selection contribution was **{max_sel['b_version']} minus {max_sel['a_version']}** for {max_sel['embedding_label']} at m={int(max_sel['ratio'])}, Δitem_r={f4(max_sel['delta_selection_vs_a'])}.",
++        "",
++        "## Phase 1: item-selection contribution",
++        "Phase 1 compared random, balanced-random, semantic Coverage, Coverage+Diversity, TraitPredictiveness, and Hybrid strategies. The final report carries forward Coverage as the preferred semantic selection strategy and treats Phase 1 Table 1/Table 2 as the source of item-level and trait-level evidence.",
++        "",
++        "## Phase 2: prediction-algorithm contribution",
++        "Phase 2 compared Tuned UniformKNN, CosineWeightedKNN, SoftmaxKNN, KernelSmoothing, and the cross-phase original-paper UniformKNN K=5 baseline. The final Phase 4 pipeline uses SoftmaxKNN because it gave the best overall item-level Pearson r in Phase 2 and supports both fixed Phase 2 hyperparameters and train-inner tuning.",
++        "",
++        "## Phase 3: embedding-space diagnostics",
++        "Phase 3 compared SBERT original, MiniLM, MPNet, E5, and BGE using Coverage/Redundancy and raw-cosine trait-structure diagnostics. These diagnostics are explanatory hypotheses, not predictive-performance claims; Phase 4 is the predictive test.",
++        "",
++        "## Phase 4: A1/A2/B1/B2 attribution",
++        "- **A1_fixed** = fixed historical SBERT Coverage `S_old` plus fixed Phase 2 SoftmaxKNN hyperparameters. This isolates embedding-neighbor geometry under a fixed administered item set.",
++        "- **A2_tuned** = fixed `S_old` plus embedding-specific train-inner K/τ tuning. This estimates geometry contribution after calibration without changing item selection.",
++        "- **B1_fixed** = embedding-specific Coverage re-selection `S_new` plus fixed Phase 2 hyperparameters. This adds re-selection contribution while keeping hyperparameters fixed.",
++        "- **B2_tuned** = embedding-specific `S_new` plus embedding-specific train-inner K/τ tuning. This is the full re-selected+tuned Phase 4 pipeline.",
++        "The B−A comparisons are paired within the same embedding and tuning regime, so B1−A1 and B2−A2 quantify selection contribution beyond the corresponding fixed-`S_old` baseline.",
++        "",
++        "## Best pipeline by administered-item ratio",
++        "| m | version | embedding | selection | predictor | K | tau | item_r | trait_r_mean | profile_r | MAE |",
++        "|---:|---|---|---|---|---:|---:|---:|---:|---:|---:|",
++    ]
++    for row in best.itertuples(index=False):
++        lines.append(
++            f"| {int(row.ratio)} | {row.recommended_version} | {row.embedding_label} | {row.selection_scope} | {row.predictor} | {int(row.K_mode)} | {f4(row.tau_mean)} | {f4(row.item_r_mean)} | {f4(row.trait_r_mean)} | {f4(row.profile_r_mean)} | {f4(row.item_mae_mean)} |"
++        )
++    lines.extend([
++        "",
++        "## Statistical inference",
++        "The primary Phase 4 statistical comparisons use paired bootstrap over participants while preserving outer-fold pairing. New embeddings are compared against `sbert_original`; B−A selection-contribution tests compare B1 vs A1 and B2 vs A2 within the same embedding and ratio. Raw p-values plus Holm and Benjamini-Hochberg corrected p-values are preserved in `statistical_summary.csv`.",
++        "",
++        "## Reproducibility notes",
++        "- Random state is fixed at 0 in upstream CV and selection code.",
++        "- Outer folds are participant-level folds and are paired across Phase 4 A/B comparisons.",
++        "- A2/B2 K and τ values are selected only on train-inner validation splits; test participants are held out for final evaluation.",
++        "- Phase 4 primary predictions are continuous and clipped to [1,5] without rounding; rounded accuracy and rounded MAE are supplemental outputs only.",
++        "- This report reads existing CSV/TXT/PNG artifacts and records source hashes in `report_manifest.json`.",
++        "",
++        "## Output inventory",
++        "- `final_summary.csv`: normalized Phase 1–4 and recommended-pipeline rows.",
++        "- `statistical_summary.csv`: normalized inferential tests from Phase 1, Phase 2, and Phase 4.",
++        "- `best_pipeline_table.csv`: best observed Phase 4 pipeline by 10/30/50/90 administered items.",
++        "- `figures/table5_phase4_integrated_synthesis.csv` (**Table 5**): A-vs-B synthesis table for Phase 4.",
++        "- `figures/figure6_phase4_selection_vs_performance.pdf/png` (**Figure 6**): new integrated selection/performance synthesis figure.",
++        "",
++        "## Limitations",
++        LIMITATION_TEXT,
++        "No cross-questionnaire generalization experiment is added in F015; the report is an aggregation and synthesis of existing NEO-PI-R artifacts.",
++        "",
++    ])
++    return "\n".join(lines)
++
++
++def render_text_report(markdown: str) -> str:
++    lines = []
++    for line in markdown.splitlines():
++        stripped = line.lstrip()
++        if stripped.startswith("#"):
++            line = stripped.lstrip("#").lstrip()
++        lines.append(line.replace("**", "").replace("`", ""))
++    return "\n".join(lines)
++
++
++def add_text_page(pdf: Any, title: str, paragraphs: list[str]) -> None:
++    import matplotlib.pyplot as plt
++
++    fig = plt.figure(figsize=(8.27, 11.69))
++    fig.patch.set_facecolor("white")
++    ax = fig.add_axes([0, 0, 1, 1])
++    ax.axis("off")
++    y = 0.95
++    ax.text(0.07, y, title, fontsize=16, fontweight="bold", va="top")
++    y -= 0.06
++    for para in paragraphs:
++        for line in textwrap.wrap(para, width=95):
++            ax.text(0.07, y, line, fontsize=9.5, va="top")
++            y -= 0.022
++            if y < 0.08:
++                pdf.savefig(fig, bbox_inches="tight")
++                plt.close(fig)
++                fig = plt.figure(figsize=(8.27, 11.69))
++                ax = fig.add_axes([0, 0, 1, 1])
++                ax.axis("off")
++                y = 0.95
++        y -= 0.018
++    pdf.savefig(fig, bbox_inches="tight")
++    plt.close(fig)
++
++
++def add_table_page(pdf: Any, title: str, df: pd.DataFrame) -> None:
++    import matplotlib.pyplot as plt
++
++    fig, ax = plt.subplots(figsize=(11.69, 8.27))
++    ax.axis("off")
++    ax.set_title(title, fontsize=14, fontweight="bold", pad=14)
++    display = df.copy()
++    for col in display.columns:
++        if pd.api.types.is_float_dtype(display[col]):
++            display[col] = display[col].map(f4)
++    table = ax.table(cellText=display.astype(str).values, colLabels=display.columns, loc="center", cellLoc="center")
++    table.auto_set_font_size(False)
++    table.set_fontsize(7)
++    table.scale(1, 1.35)
++    pdf.savefig(fig, bbox_inches="tight")
++    plt.close(fig)
++
++
++def add_image_page(pdf: Any, title: str, image_path: Path, caption: str) -> None:
++    import matplotlib.image as mpimg
++    import matplotlib.pyplot as plt
++
++    fig, ax = plt.subplots(figsize=(11.69, 8.27))
++    ax.axis("off")
++    ax.set_title(title, fontsize=14, fontweight="bold", pad=12)
++    img = mpimg.imread(image_path)
++    ax.imshow(img)
++    fig.text(0.5, 0.03, caption, ha="center", fontsize=9)
++    pdf.savefig(fig, bbox_inches="tight")
++    plt.close(fig)
++
++
++def render_pdf_report(pdf_path: Path, markdown: str, best: pd.DataFrame, copied_assets: dict[str, Path], figure6: Path) -> None:
++    import matplotlib
++
++    matplotlib.use("Agg")
++    from matplotlib.backends.backend_pdf import PdfPages
++
++    paragraphs = [p.strip("- ") for p in markdown.split("\n") if p.strip() and not p.startswith("|")]
++    metadata = {"Title": "F015 Final Report", "Author": "questionnaire-embeddings", "Subject": "Deterministic aggregation report", "Keywords": "F015 Phase 1 Phase 2 Phase 3 Phase 4", "CreationDate": None, "ModDate": None}
++    with PdfPages(pdf_path, metadata=metadata) as pdf:
++        add_text_page(pdf, "F015 Final Integrated Report", paragraphs[:18])
++        add_text_page(pdf, "Phase 4 attribution, reproducibility, and limitations", paragraphs[18:])
++        add_table_page(pdf, "Best pipeline by administered-item ratio", best[["ratio", "recommended_version", "embedding_label", "selection_scope", "K_mode", "tau_mean", "item_r_mean", "trait_r_mean", "profile_r_mean", "item_mae_mean"]])
++        for key, title in [
++            ("phase1_figure1_learning_curve", "Phase 1 learning curve"),
++            ("phase2_figure3_delta_r", "Phase 2 predictor deltas"),
++            ("phase3_figure5", "Phase 3 embedding diagnostics"),
++            ("phase4_figure4", "Phase 4 A/B learning curves"),
++        ]:
++            add_image_page(pdf, title, copied_assets[key], f"Copied from accepted upstream artifact: {copied_assets[key].name}")
++        add_image_page(pdf, "Figure 6 — new integrated Phase 4 synthesis", figure6, "Generated by F015 from table4, overlap, and B−A contribution artifacts.")
++
++
++def write_manifest(inputs: dict[str, Any], output_dir: Path, output_files: dict[str, Path], row_counts: dict[str, int]) -> None:
++    sources = []
++    for key, path in sorted(inputs["sources"].items()):
++        sources.append({
++            "key": key,
++            "path": str(path.relative_to(PROJECT_ROOT)),
++            "sha256": sha256_file(path),
++            "bytes": path.stat().st_size,
++        })
++    manifest = {
++        "feature_id": "F015",
++        "generated_at": "deterministic_not_recorded",
++        "script_path": "scripts/generate_final_report.py",
++        "output_dir": str(output_dir.relative_to(PROJECT_ROOT) if output_dir.is_relative_to(PROJECT_ROOT) else output_dir),
++        "no_experiments_rerun": True,
++        "primary_metric": PRIMARY_METRIC,
++        "secondary_metrics": SECONDARY_METRICS,
++        "limitation_cross_questionnaire_not_run": True,
++        "source_artifacts": sources,
++        "output_files": {k: str(v.relative_to(output_dir)) for k, v in sorted(output_files.items())},
++        "row_counts": row_counts,
++        "required_phase4_versions": list(VERSION_ORDER),
++        "required_ratios": list(RATIOS),
++    }
++    (output_dir / "report_manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
++
++
++def main() -> int:
++    args = parse_args()
++    output_dir = args.output_dir.resolve()
++    output_dir.mkdir(parents=True, exist_ok=True)
++    figures_dir = output_dir / "figures"
++    figures_dir.mkdir(parents=True, exist_ok=True)
++
++    inputs = load_inputs()
++    dfs = inputs["dataframes"]
++    table4 = dfs["phase4_table4"]
++
++    synthesis = build_phase4_integrated_synthesis(table4, dfs["phase4_contribution"], dfs["phase4_overlap"])
++    best = build_best_pipeline_table(table4)
++    final_summary = build_final_summary(dfs, best)
++    statistical_summary = build_statistical_summary(dfs)
++
++    final_summary_path = output_dir / "final_summary.csv"
++    stats_path = output_dir / "statistical_summary.csv"
++    best_path = output_dir / "best_pipeline_table.csv"
++    synth_path = figures_dir / "table5_phase4_integrated_synthesis.csv"
++    figure6_pdf = figures_dir / "figure6_phase4_selection_vs_performance.pdf"
++    figure6_png = figures_dir / "figure6_phase4_selection_vs_performance.png"
++    md_path = output_dir / "final_report.md"
++    txt_path = output_dir / "final_report.txt"
++    pdf_path = output_dir / "final_report.pdf"
++
++    final_summary.to_csv(final_summary_path, index=False)
++    statistical_summary.to_csv(stats_path, index=False)
++    best.to_csv(best_path, index=False)
++    synthesis.to_csv(synth_path, index=False)
++    plot_figure6(synthesis, figure6_pdf, figure6_png)
++
++    copied_assets = copy_assets(inputs, output_dir)
++    markdown = build_report_markdown(dfs, best, synthesis)
++    md_path.write_text(markdown + "\n", encoding="utf-8")
++    txt_path.write_text(render_text_report(markdown) + "\n", encoding="utf-8")
++    render_pdf_report(pdf_path, markdown, best, copied_assets, figure6_png)
++
++    output_files = {
++        "final_summary": final_summary_path,
++        "statistical_summary": stats_path,
++        "best_pipeline_table": best_path,
++        "phase4_integrated_synthesis": synth_path,
++        "figure6_pdf": figure6_pdf,
++        "figure6_png": figure6_png,
++        "final_report_md": md_path,
++        "final_report_txt": txt_path,
++        "final_report_pdf": pdf_path,
++        "report_manifest": output_dir / "report_manifest.json",
++    }
++    row_counts = {
++        "final_summary": len(final_summary),
++        "statistical_summary": len(statistical_summary),
++        "best_pipeline_table": len(best),
++        "phase4_integrated_synthesis": len(synthesis),
++    }
++    write_manifest(inputs, output_dir, output_files, row_counts)
++
++    print("=" * 70)
++    print("F015 final report generated")
++    print("=" * 70)
++    for key, path in output_files.items():
++        print(f"[SAVE] {key}: {path}")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/questionnaire-embeddings/scripts/test_generate_final_report.py b/questionnaire-embeddings/scripts/test_generate_final_report.py
+new file mode 100644
+index 0000000..255fbf3
+--- /dev/null
++++ b/questionnaire-embeddings/scripts/test_generate_final_report.py
+@@ -0,0 +1,161 @@
++#!/usr/bin/env python3
++"""Smoke checks for F015 final report generation."""
++
++from __future__ import annotations
++
++import json
++import subprocess
++import sys
++from pathlib import Path
++
++import pandas as pd
++
++PROJECT_ROOT = Path(__file__).resolve().parent.parent
++BASE_OUTPUT_DIR = PROJECT_ROOT / "results" / "final_report_smoke"
++
++
++def fresh_output_dir(base: Path) -> Path:
++    """Return a non-existing output directory without deleting old artifacts."""
++    if not base.exists():
++        return base
++    for i in range(1, 1000):
++        candidate = base.with_name(f"{base.name}_{i}")
++        if not candidate.exists():
++            return candidate
++    raise RuntimeError(f"Could not find fresh smoke output directory near {base}")
++
++
++def run_report() -> Path:
++    output_dir = fresh_output_dir(BASE_OUTPUT_DIR)
++    subprocess.run(
++        [sys.executable, "scripts/generate_final_report.py", "--output-dir", str(output_dir)],
++        cwd=PROJECT_ROOT,
++        check=True,
++    )
++    return output_dir
++
++
++def check_outputs(output_dir: Path) -> None:
++    required = [
++        output_dir / "final_report.md",
++        output_dir / "final_report.txt",
++        output_dir / "final_report.pdf",
++        output_dir / "final_summary.csv",
++        output_dir / "statistical_summary.csv",
++        output_dir / "best_pipeline_table.csv",
++        output_dir / "report_manifest.json",
++        output_dir / "figures" / "table5_phase4_integrated_synthesis.csv",
++        output_dir / "figures" / "figure6_phase4_selection_vs_performance.pdf",
++        output_dir / "figures" / "figure6_phase4_selection_vs_performance.png",
++    ]
++    missing = [str(p) for p in required if not p.exists()]
++    if missing:
++        raise AssertionError(f"Missing final report outputs: {missing}")
++
++    pdf_path = output_dir / "final_report.pdf"
++    assert pdf_path.stat().st_size > 10_000, "final_report.pdf is unexpectedly small"
++    assert pdf_path.read_bytes()[:4] == b"%PDF", "final_report.pdf is not a PDF"
++
++    summary = pd.read_csv(output_dir / "final_summary.csv")
++    required_summary_cols = {
++        "section",
++        "phase",
++        "ratio",
++        "version",
++        "embedding_key",
++        "embedding_label",
++        "selection_strategy",
++        "selection_scope",
++        "predictor",
++        "item_r_mean",
++        "trait_r_mean",
++        "source_artifact",
++    }
++    assert required_summary_cols <= set(summary.columns), sorted(required_summary_cols - set(summary.columns))
++    assert {"phase1", "phase2", "phase3", "phase4", "final"} <= set(summary["phase"]), "missing phase coverage"
++    assert {"A1_fixed", "A2_tuned", "B1_fixed", "B2_tuned"} <= set(summary["version"].dropna()), "missing Phase 4 versions"
++    assert "recommended_pipeline" in set(summary["section"]), "missing recommended pipeline rows"
++    recommended = summary[summary["section"] == "recommended_pipeline"]
++    assert recommended["K"].notna().all(), "recommended rows must populate normalized K"
++    assert recommended["tau"].notna().all(), "recommended rows must populate normalized tau"
++    assert recommended["source_artifact"].notna().all(), "recommended rows must populate source_artifact"
++
++    best = pd.read_csv(output_dir / "best_pipeline_table.csv")
++    assert set(best["ratio"]) == {10, 30, 50, 90}, "best pipeline table must cover all ratios"
++    required_best_cols = {
++        "ratio",
++        "recommended_version",
++        "embedding_key",
++        "selection_scope",
++        "predictor",
++        "K_mode",
++        "tau_mean",
++        "item_r_mean",
++        "trait_r_mean",
++        "profile_r_mean",
++        "item_mae_mean",
++    }
++    assert required_best_cols <= set(best.columns), sorted(required_best_cols - set(best.columns))
++
++    stats = pd.read_csv(output_dir / "statistical_summary.csv")
++    assert {"phase4_vs_sbert", "phase4_selection_contribution"} <= set(stats["comparison_family"]), "missing Phase 4 statistical families"
++    assert {"p_raw", "p_holm", "p_bh"} <= set(stats.columns), "missing p-value columns"
++
++    synth = pd.read_csv(output_dir / "figures" / "table5_phase4_integrated_synthesis.csv")
++    assert len(synth) == 40, "Table 5 must cover 2 families × 5 embeddings × 4 ratios"
++    assert set(synth["family"]) == {"fixed_params", "tuned_params"}, "missing synthesis families"
++    assert set(synth["ratio"]) == {10, 30, 50, 90}, "missing synthesis ratios"
++    assert {"A1_fixed", "A2_tuned"} == set(synth["a_version"]), "missing A versions in synthesis"
++    assert {"B1_fixed", "B2_tuned"} == set(synth["b_version"]), "missing B versions in synthesis"
++
++    report = (output_dir / "final_report.md").read_text(encoding="utf-8")
++    required_text = [
++        "# Final Report",
++        "Phase 1",
++        "Phase 2",
++        "Phase 3",
++        "Phase 4",
++        "item-level Pearson r",
++        "A1_fixed",
++        "A2_tuned",
++        "B1_fixed",
++        "B2_tuned",
++        "Table 5",
++        "Figure 6",
++        "NEO-PI-R",
++        "cross-questionnaire generalization remains to be tested",
++    ]
++    missing_text = [text for text in required_text if text not in report]
++    if missing_text:
++        raise AssertionError(f"final_report.md missing required narrative text: {missing_text}")
++    text_report = (output_dir / "final_report.txt").read_text(encoding="utf-8")
++    assert "Scope and deliverables" in text_report, "text report should strip markdown heading markers"
++    assert "#Scope" not in text_report and "##" not in text_report, "text report has malformed heading markers"
++
++    manifest = json.loads((output_dir / "report_manifest.json").read_text(encoding="utf-8"))
++    assert manifest["feature_id"] == "F015", "manifest feature_id mismatch"
++    assert manifest["no_experiments_rerun"] is True, "manifest must record no experiment rerun"
++    assert manifest["limitation_cross_questionnaire_not_run"] is True, "manifest must record generalization limitation"
++    assert manifest["row_counts"]["phase4_integrated_synthesis"] == 40, "manifest row count mismatch"
++    source_keys = {entry["key"] for entry in manifest["source_artifacts"]}
++    assert "phase4_table4" in source_keys and "phase4_contribution" in source_keys, "manifest missing key Phase 4 sources"
++
++    copied_figures = [
++        output_dir / "figures" / "phase1_figure1_learning_curve.png",
++        output_dir / "figures" / "phase2_figure3_delta_r.png",
++        output_dir / "figures" / "phase3_figure5.png",
++        output_dir / "figures" / "phase4_figure4.png",
++    ]
++    for figure in copied_figures:
++        assert figure.exists() and figure.stat().st_size > 0, f"missing copied figure: {figure}"
++
++
++def main() -> int:
++    output_dir = run_report()
++    check_outputs(output_dir)
++    print(f"F015 final-report smoke checks passed: {output_dir}")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
